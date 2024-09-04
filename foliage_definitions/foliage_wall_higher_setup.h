@@ -11,7 +11,8 @@ class FoliageWallHigherSetup {
 
     public:
 
-    static void Setup(std::array<FoliageInfo, static_cast<size_t>(FoliageType::Foliage_MAX)> &mainDict, int mapIndexStart) {
+	template<size_t foliageSize>
+    static void Setup(std::array<FoliageInfo, foliageSize> &mainFoliageArray, int mapIndexStart) {
 
 		Colour colour (0.2, 0.05, 0.05);
 
@@ -204,7 +205,7 @@ class FoliageWallHigherSetup {
 				std::cerr << std::format("Foliage index {} not in range.", foliageIndex) << std::endl;
 				continue;
 			}
-			mainDict[foliageIndex] = info;
+			mainFoliageArray[foliageIndex] = info;
 		}
     }
 };

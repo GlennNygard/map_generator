@@ -11,8 +11,8 @@ class FoliageBorderTreeSetup {
 
 	public:
 
-	static void Setup(std::array<FoliageInfo, static_cast<size_t>(
-			FoliageType::Foliage_MAX)> &mainDict, int mapIndexStart) {
+	template<size_t foliageSize>
+    static void Setup(std::array<FoliageInfo, foliageSize> &mainFoliageArray, int mapIndexStart) {
 
 		Colour colour (0.08, 0.24, 0.08);
         float foliageHeight = 0;
@@ -91,7 +91,7 @@ class FoliageBorderTreeSetup {
 				.SetRandomRotation(true);
 
 			// Write data to main dict.
-			mainDict[static_cast<int>(info.foliageType)] = info;
+			mainFoliageArray[static_cast<int>(info.foliageType)] = info;
 		}
     }
 };

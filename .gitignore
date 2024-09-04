@@ -2,7 +2,7 @@
 *.DS_Store
 *.DSYM
 map_generator
-*.jpg
-*.txt
+*output
+
 
 

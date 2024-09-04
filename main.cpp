@@ -5,6 +5,7 @@
 #include <format>
 #include <string>
 #include <string_view>
+#include <algorithm>
 
 #include "foliage/foliage.h"
 #include "map_constructor.h"
@@ -12,7 +13,9 @@
 #include "gmath.h"
 
 
-int main(int argc,char **argv) {
+int main(int argc,char *argv[]) {
+
+    std::copy(argv, argv + argc, std::ostream_iterator<char *>(std::cout, "\n"));
 
     std::cout << "Starting up..." << std::endl;
 
@@ -57,14 +60,7 @@ int main(int argc,char **argv) {
     std::cout << "Save completed! map: "+std::to_string(currentIndex) << std::endl;
 
     // Saving thumbnail.
-    if(MapDiskManager::get_path_exists(MapDiskManager::SURVIVAL_MAPS_THUMBNAILS_PATH)) {
-        mapDiskManager.save_map_thumbnail(mapObject.map, mapName);
-    }
-    else {
-        std::cerr <<
-            "Thumbnail folder does not exist. Path: "+
-                MapDiskManager::SURVIVAL_MAPS_THUMBNAILS_PATH << std::endl;
-    }
+    mapDiskManager.save_map_thumbnail(mapObject.map, mapName);
 
     return 0;
 }

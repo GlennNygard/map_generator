@@ -16,7 +16,18 @@
 #include "foliage_definitions/foliage_definitions.h"
 
 
+
+const std::string MapDiskManager::SEPARATOR = ",";
+const std::string MapDiskManager::CONTENT_SEPARATOR = "-";
+
+
 MapDiskManager::MapDiskManager() {
+
+    _relationalMapPath = std::filesystem::path ("resources");
+    _mapsPath = std::filesystem::path (getAssetPath()) / "maps" / "final";
+    _mapsThumbnailsPath = std::filesystem::path (getAssetPath()) / "maps" / "thumbnails" / "survival";
+
+    create_required_paths();
 
     // Create reverse dict.
     _foliageMapMapping = std::unordered_map<FoliageType, int>();
@@ -33,59 +44,6 @@ MapDiskManager::MapDiskManager() {
 }
 
 /// <summary>
-/// This is messy and should be improved in the future.
-/// </summary>
-/// <param name="nodeType"></param>
-/// <param name="nodeBiome"></param>
-/// <returns></returns>
-int NodeDataToMapType(int nodeType, LevelBiome nodeBiome) {
-    if(nodeType == FoliageHelpers::FLOOR_NODE_TYPE && nodeBiome == LevelBiome::None) {
-        return MapDiskManager::FLOOR_GENERIC_TYPE;
-    }
-    if(nodeType == FoliageHelpers::BORDER_NODE_TYPE && nodeBiome == LevelBiome::None) {
-        return MapDiskManager::BORDER_GENERIC_TYPE;
-    }
-    if(nodeType == FoliageHelpers::HIGH_GROUND_NODE_TYPE && nodeBiome == LevelBiome::None) {
-        return MapDiskManager::HIGH_GENERIC_TYPE;
-    }
-    if(nodeType == FoliageHelpers::LOW_GROUND_NODE_TYPE && nodeBiome == LevelBiome::None) {
-        return MapDiskManager::LOW_GENERIC_TYPE;
-    }
-
-    if(nodeType == FoliageHelpers::FLOOR_NODE_TYPE && nodeBiome == LevelBiome::Desert) {
-        return MapDiskManager::FLOOR_DESERT_TYPE;
-    }
-    if(nodeType == FoliageHelpers::BORDER_NODE_TYPE && nodeBiome == LevelBiome::Desert) {
-        return MapDiskManager::BORDER_DESERT_TYPE;
-    }
-    if(nodeType == FoliageHelpers::HIGH_GROUND_NODE_TYPE && nodeBiome == LevelBiome::Desert) {
-        return MapDiskManager::HIGH_DESERT_TYPE;
-    }
-    if(nodeType == FoliageHelpers::LOW_GROUND_NODE_TYPE && nodeBiome == LevelBiome::Desert) {
-        return MapDiskManager::LOW_DESERT_TYPE;
-    }
-
-    return MapDiskManager::FLOOR_GENERIC_TYPE;
-}
-
-const std::string MapDiskManager::SEPARATOR = ",";
-
-const std::string MapDiskManager::CONTENT_SEPARATOR = "-";
-// const int MapDiskManager::INITIAL_OFFSET = 2;
-
-
-const std::string MapDiskManager::MAPS_PATH = getAssetPath() + "/maps";
-
-const std::string MapDiskManager::SURVIVAL_MAPS_PATH = getAssetPath() + "/maps/survival";
-const std::string MapDiskManager::SURVIVAL_MAPS_THUMBNAILS_PATH = getAssetPath() + "/maps/thumbnails/survival";
-const std::string MapDiskManager::CHALLENGE_RESOURCE_PATH = getAssetPath() + "/maps/challenges/resources";
-
-// Example formatting:
-// 512,512,1-10,0-22,1-4
-
-// First two entries are map size.
-
-/// <summary>
 /// Save a map to disk. Can only be run in the editor as
 /// Android / iOS doesn't support file access to the Asset
 /// folder.
@@ -94,18 +52,8 @@ const std::string MapDiskManager::CHALLENGE_RESOURCE_PATH = getAssetPath() + "/m
 /// <param name="savePath">Full Asset folder path.</param>
 void MapDiskManager::save_map(Matrix<MapNode> map, std::string savePath) {
 
-    std::vector<std::filesystem::path> pathsThatMustExist = {
-        std::filesystem::path("output") / "maps" / "thumbnails" / "survival",
-        std::filesystem::path("output") / "maps" / "RandomGrassMap-Small",
-    };
-
-    for(auto path : pathsThatMustExist) {
-        if(!get_path_exists(path)) {
-            std::filesystem::create_directories(path);
-        }
-    }
-
-    std::vector<std::string> content (map.dim_a() * map.dim_b() + MapDiskManager::INITIAL_OFFSET);
+    std::vector<std::string> content (
+        map.dim_a() * map.dim_b() + MapDiskManager::INITIAL_OFFSET);
     content[0] = std::to_string(map.dim_a());
     content[1] = std::to_string(map.dim_b());
 
@@ -116,7 +64,7 @@ void MapDiskManager::save_map(Matrix<MapNode> map, std::string savePath) {
             MapNode mapNode = map[x][y];
 
             std::string nodeData =
-                std::to_string(NodeDataToMapType(
+                std::to_string(node_data_to_map_type(
                     mapNode.nodeType,
                     mapNode.nodeBiome)) +
                 MapDiskManager::CONTENT_SEPARATOR +
@@ -136,6 +84,58 @@ void MapDiskManager::save_map(Matrix<MapNode> map, std::string savePath) {
 
     std::string saveString = join(content, MapDiskManager::SEPARATOR);
     write_to_file(saveString, savePath);
+}
+
+
+/// <summary>
+/// This is messy and should be improved in the future.
+/// </summary>
+/// <param name="nodeType"></param>
+/// <param name="nodeBiome"></param>
+/// <returns></returns>
+int MapDiskManager::node_data_to_map_type(int nodeType, LevelBiome nodeBiome) {
+    if(nodeType == FoliageHelpers::FLOOR_NODE_TYPE && nodeBiome == LevelBiome::None) {
+        return FLOOR_GENERIC_TYPE;
+    }
+    if(nodeType == FoliageHelpers::BORDER_NODE_TYPE && nodeBiome == LevelBiome::None) {
+        return BORDER_GENERIC_TYPE;
+    }
+    if(nodeType == FoliageHelpers::HIGH_GROUND_NODE_TYPE && nodeBiome == LevelBiome::None) {
+        return HIGH_GENERIC_TYPE;
+    }
+    if(nodeType == FoliageHelpers::LOW_GROUND_NODE_TYPE && nodeBiome == LevelBiome::None) {
+        return LOW_GENERIC_TYPE;
+    }
+
+    if(nodeType == FoliageHelpers::FLOOR_NODE_TYPE && nodeBiome == LevelBiome::Desert) {
+        return FLOOR_DESERT_TYPE;
+    }
+    if(nodeType == FoliageHelpers::BORDER_NODE_TYPE && nodeBiome == LevelBiome::Desert) {
+        return BORDER_DESERT_TYPE;
+    }
+    if(nodeType == FoliageHelpers::HIGH_GROUND_NODE_TYPE && nodeBiome == LevelBiome::Desert) {
+        return HIGH_DESERT_TYPE;
+    }
+    if(nodeType == FoliageHelpers::LOW_GROUND_NODE_TYPE && nodeBiome == LevelBiome::Desert) {
+        return LOW_DESERT_TYPE;
+    }
+
+    return MapDiskManager::FLOOR_GENERIC_TYPE;
+}
+
+void MapDiskManager::create_required_paths() {
+    std::vector<std::filesystem::path> pathsThatMustExist = {
+        _mapsPath,
+        _mapsThumbnailsPath,
+        _relationalMapPath,
+        _mapsPath / "RandomGrassMap-Small",
+    };
+
+    for(auto path : pathsThatMustExist) {
+        if(!get_path_exists(path)) {
+            std::filesystem::create_directories(path);
+        }
+    }
 }
 
 void MapDiskManager::write_to_file(std::string data, std::string path) {
@@ -172,7 +172,6 @@ std::vector<std::string> MapDiskManager::split(std::string str, std::string deli
 }
 
 Matrix<MapNode> MapDiskManager::load_map(std::string filePath) {
-    // std::string loadText = Resources.Load<TextAsset>(resourceName).text;
 
     // Open the file using ifstream.
     std::ifstream file(filePath);
@@ -197,50 +196,25 @@ Matrix<MapNode> MapDiskManager::load_map(std::string filePath) {
     return convert_string_to_map(loadText);
 }
 
-// bool SaveMapToResources(MapNode[,] map, string resourceName) {
-//     SaveMap(map, Path.Join(CHALLENGE_RESOURCE_PATH, resourceName+".txt"));
-//     Logger.Log("Save completed!");
-//     return true;
-// }
-
-// std::vector<MapNode> MapDiskManager::LoadMapFromResources(std::string resourceName) {
-//     std::string loadText = Resources.Load<TextAsset>(resourceName).text;
-//     return convert_string_to_map(loadText);
-// }
-
-// MapNode[,] LoadMapFromAddressableLabel(string labelName) {
-//     string loadText = AddressablesHelpers.LoadRandomResource<TextAsset>(labelName).text;
-//     return convert_string_to_map(loadText);
-// }
-
-// void LoadMapFromAddressableLabelAsync(string labelName, Action<MapNode[,]> callback) {
-//     AddressablesHelpers.LoadRandomResourceAsync<TextAsset>(labelName, (TextAsset textAsset)=> {
-//         string loadText = textAsset.text;
-//         var map = convert_string_to_map(loadText);
-//         callback(map);
-//     });
-// }
-
-// MapNode[,] LoadMapFromAddressableLabelAsync(string labelName) {
-//     TextAsset textAsset = await AddressablesHelpers.LoadRandomResourceAsync<TextAsset>(labelName);
-//     string loadText = textAsset.text;
-//     var map = convert_string_to_map(loadText);
-//     return map;
-// }
-
 std::string MapDiskManager::get_base_map_path() {
-    return MAPS_PATH;
+    return _mapsPath;
 }
 
 std::string MapDiskManager::get_map_path(std::string mapName) {
-    std::filesystem::path path (MAPS_PATH);
+    std::filesystem::path path (_mapsPath);
     path /= (mapName);
     return path.generic_string();
 }
 
 std::string MapDiskManager::get_map_path(LevelBiome biome, MapSize size) {
     std::string mapName = get_map_name_prefix(biome, size);
-    std::filesystem::path path (MAPS_PATH);
+    std::filesystem::path path (_mapsPath);
+    path /= (mapName);
+    return path.generic_string();
+}
+
+std::string MapDiskManager::get_relational_map_path(std::string mapName) {
+    std::filesystem::path path (_relationalMapPath);
     path /= (mapName);
     return path.generic_string();
 }
@@ -253,7 +227,8 @@ std::string MapDiskManager::get_map_name_prefix(LevelBiome biome, MapSize size) 
 
 Matrix<MapNode> MapDiskManager::convert_string_to_map(std::string loadText) {
 
-    // string loadText = File.ReadAllText(loadPath);
+    // Example formatting:
+    // 512,512,1-10,0-22,1-4
 
     std::vector<std::string> content = split(loadText, ",");
 
@@ -266,7 +241,6 @@ Matrix<MapNode> MapDiskManager::convert_string_to_map(std::string loadText) {
     Matrix<MapNode> map (lengthX, lengthY);
 
     int i = 0;
-    // for(int y = map.GetLength(1)-1; y >= 0; y--) {
     for(int y = 0; y < map.dim_b(); y++) {
         for(int x = 0; x < map.dim_a(); x++) {
 
@@ -374,22 +348,12 @@ void MapDiskManager::save_map_thumbnail(Matrix<MapNode> fullMap, std::string map
         }
     }
 
-    
-
-    // Magick::Blob blob(&mapColours[0], mapColours.size());
-
-    // image.size(std::format("{}x{}", fullSizeX, fullSizeY));
-    // image.magick("RGB"); 
-    // image.read(blob);
-
-    std::filesystem::path path (SURVIVAL_MAPS_THUMBNAILS_PATH);
+    std::filesystem::path path (_mapsThumbnailsPath);
     path /= (mapName+".jpg");
 
     std::cout << "Saving thumbnail to: "+path.generic_string() << std::endl;
 
-    // Write the image to a file.
-    // Quality is in the range 1-100.
-    // Mode 3 = RGB.
+    // Write the image to a file (RGB).
     int result = stbi_write_jpg(
         path.c_str(),
         fullSizeX, fullSizeY, channelNum, &mapColours[0],
@@ -401,17 +365,4 @@ void MapDiskManager::save_map_thumbnail(Matrix<MapNode> fullMap, std::string map
     else {
         std::cout << "Thumbnail saved successfully: "+mapName << std::endl;
     }
-
-
-    // Texture2D mapTex = new Texture2D(
-    //     fullSizeX,
-    //     fullSizeY);
-    // mapTex.SetPixels32(mapColours);
-    // mapTex.Apply();
-    // byte[] itemBGBytes = mapTex.EncodeToPNG();
-    // File.WriteAllBytes(
-    //     Path.Join(SURVIVAL_MAPS_THUMBNAILS_PATH, mapName+".png"),
-    //     itemBGBytes);
-
-    
 }

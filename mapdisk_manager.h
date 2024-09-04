@@ -37,8 +37,6 @@ class MapObject {
     int SectionCountX;
     int SectionCountY;
 
-    // int SectionCountY = LengthY / MapDefinitions::SECTION_NODE_COUNT;
-
     MapObject(int lengthX, int lengthY) {
         LengthX = lengthX;
         LengthY = lengthY;
@@ -115,24 +113,6 @@ class MapDiskManager {
     };
 
 
-    // static const std::string SEPARATOR = ",";
-    // static const std::string CONTENT_SEPARATOR = "-";
-    // static const int INITIAL_OFFSET = 2;
-    // static const std::string MAPS_PATH = getAssetPath() + "/Maps";
-    // static const std::string SURVIVAL_MAPS_PATH = getAssetPath() + "/Maps/Survival";
-    // static const std::string SURVIVAL_MAPS_THUMBNAILS_PATH = getAssetPath() + "/Maps/.Thumbnails/Survival";
-    // static const std::string CHALLENGE_RESOURCE_PATH = getAssetPath() + "/Maps/Challenges/Resources";
-    
-    
-    static const std::string SEPARATOR;
-    static const std::string CONTENT_SEPARATOR;
-    static const int INITIAL_OFFSET = 2;
-    static const std::string MAPS_PATH;
-    static const std::string SURVIVAL_MAPS_PATH;
-    static const std::string SURVIVAL_MAPS_THUMBNAILS_PATH;
-    static const std::string CHALLENGE_RESOURCE_PATH;
-
-
     /// <summary>
     /// These are use for map names when storing/getting maps to/from disk.
     /// </summary>
@@ -178,19 +158,12 @@ class MapDiskManager {
         {LevelBiome::Snow, 100},
     };
 
-    // static bool MapExists(std::string loadPath) {
-    //     return File.Exists(loadPath);
-    // }
-
 
     /// <summary>
     /// Mappings from foliage types to map integers.
     /// These integers are written to map files and should
     /// never be changed.
     /// </summary>
-    /// <typeparam name="FoliageType"></typeparam>
-    /// <typeparam name="int"></typeparam>
-
     std::unordered_map<int, FoliageType> _mapFoliageMapping;
     static std::string join(const std::vector<std::string> &lst, const std::string &delim);
 
@@ -198,23 +171,21 @@ class MapDiskManager {
     Matrix<MapNode> load_map(std::string resourceName);
     std::optional<MapObject> load_map_object(std::string resourcePath);
 
-    Matrix<MapNode> convert_string_to_map(std::string loadText);
     void save_map(Matrix<MapNode> map, std::string savePath);
     void write_to_file(std::string data, std::string path);
 
     std::vector<std::string> split(std::string str, std::string delimiter);
 
 
-    const std::string get_challenge_path(std::string mapName) {
-        // return Path.Join(CHALLENGE_RESOURCE_PATH, mapName+".txt");
-        std::filesystem::path path (CHALLENGE_RESOURCE_PATH);
-        path /= (mapName+".txt");
-        return path.generic_string();
-    }
+    // const std::string get_challenge_path(std::string mapName) {
+    //     std::filesystem::path path (_challengeResourcePath);
+    //     path /= (mapName+".txt");
+    //     return path.generic_string();
+    // }
 
-    const std::string get_challenge_resource_path(std::string mapName) {
-        return mapName;
-    }
+    // const std::string get_challenge_resource_path(std::string mapName) {
+    //     return mapName;
+    // }
 
     static const bool get_path_exists(std::string loadPath) {
         return std::filesystem::exists(loadPath);
@@ -226,6 +197,7 @@ class MapDiskManager {
     std::string get_base_map_path();
     std::string get_map_path(std::string mapName);
     std::string get_map_path(LevelBiome biome, MapSize mapSize);
+    std::string get_relational_map_path(std::string mapName);
     std::string get_map_name_prefix(LevelBiome biome, MapSize mapSize);
 
     void save_map_thumbnail(Matrix<MapNode> fullMap, std::string mapName);
@@ -239,6 +211,16 @@ class MapDiskManager {
     }
 
     private:
+
+    static const int INITIAL_OFFSET = 2;
+    static const std::string SEPARATOR;
+    static const std::string CONTENT_SEPARATOR;
+
+    std::filesystem::path _mapsPath;
+    std::filesystem::path _mapsThumbnailsPath;
+
+    std::filesystem::path _relationalMapPath;
+
     std::unordered_map<FoliageType, int> _foliageMapMapping;
     std::unordered_map<int, int> _mapNodeTypeMapping = std::unordered_map<int,int> {
         {FLOOR_GENERIC_TYPE, FoliageHelpers::FLOOR_NODE_TYPE},
@@ -263,4 +245,9 @@ class MapDiskManager {
         {BORDER_DESERT_TYPE, LevelBiome::Desert},
         {LOW_DESERT_TYPE, LevelBiome::Desert},
     };
+
+    int node_data_to_map_type(int nodeType, LevelBiome nodeBiome);
+
+    Matrix<MapNode> convert_string_to_map(std::string loadText);
+    void create_required_paths();
 };

@@ -19,31 +19,18 @@ void BiomeFoliageInfo::Setup(
 		std::unordered_map<FoliageType, int> walkableAllowedTypes,
 		std::string relationsFile) {
 
-	// PossibleTypes = new int[FoliageHelpers.FoliageCount];
-	// WalkablePossibleTypes = new int[FoliageHelpers.FoliageCount];
-	// StartPossibleTypes = new int[Foliage_MAX];
-
-	// NeighbourBonus = new (FoliageType, int)[FoliageHelpers.FoliageCount][];
-
 	// We set up a set for easy access later.
-	// defaultSet = new FoliageType[FoliageHelpers.FoliageCount];
-	// walkableDefaultSet = new FoliageType[FoliageHelpers.FoliageCount];
-
-
 	defaultSet = std::vector<FoliageType>(static_cast<size_t>(FoliageType::Foliage_MAX));
 	walkableDefaultSet = std::vector<FoliageType>(static_cast<size_t>(FoliageType::Foliage_MAX));
 
 	MapDiskManager mdm = MapDiskManager();
-	auto relationsPath = mdm.get_map_path(relationsFile);
+	auto relationsPath = mdm.get_relational_map_path(relationsFile);
 	auto mapObjectOptional = mdm.load_map_object(relationsPath);
 	if(!mapObjectOptional) {
 		std::cerr << "Could not load relations file: "+relationsPath << std::endl;
 		return;
 	}
 	auto mapObject = *mapObjectOptional;
-
-
-
 
 	std::unordered_map<FoliageType, std::unordered_map<FoliageType, int>> upRelationsDict = {};
 	std::unordered_map<FoliageType, std::unordered_map<FoliageType, int>> downRelationsDict = {};

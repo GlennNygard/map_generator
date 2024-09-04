@@ -11,7 +11,8 @@ class FoliageCliffsideHighSetup {
 
     public:
 
-    static void Setup(std::array<FoliageInfo, static_cast<size_t>(FoliageType::Foliage_MAX)> &mainDict, int mapIndexStart) {
+    template<size_t foliageSize>
+    static void Setup(std::array<FoliageInfo, foliageSize> &mainFoliageArray, int mapIndexStart) {
 
         Colour colour (0.6, 0.55, 0.5);
         float foliageHeight = 0;
@@ -139,7 +140,7 @@ class FoliageCliffsideHighSetup {
 				.SetDirectionSet(directionSet);
 
 			// Write data to main dict.
-			mainDict[static_cast<int>(info.foliageType)] = info;
+			mainFoliageArray[static_cast<int>(info.foliageType)] = info;
 		}
     }
 };

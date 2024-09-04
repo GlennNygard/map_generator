@@ -14,9 +14,8 @@ class FoliageCommonSetup {
 
     public:
 
-    static const void Setup(
-			std::array<FoliageInfo, static_cast<size_t>(FoliageType::Foliage_MAX)> &mainDict,
-			int mapIndexStart) {
+    template<size_t foliageSize>
+    static void Setup(std::array<FoliageInfo, foliageSize> &mainFoliageArray, int mapIndexStart) {
 
 		std::vector<FoliageInfo> foliageList = {};
 
@@ -478,7 +477,7 @@ class FoliageCommonSetup {
 				std::cerr << std::format("Foliage index {} not in range.", foliageIndex) << std::endl;
 				continue;
 			}
-			mainDict[foliageIndex] = info;
+			mainFoliageArray[foliageIndex] = info;
 		}
     }
 };
