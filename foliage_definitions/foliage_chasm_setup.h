@@ -21,7 +21,7 @@ class FoliageChasmSetup {
         Colour colour (0.05, 0.05, 0.05);
         float foliageHeight = 0;
 
-		std::vector<FoliageInfo> newDict = {};
+		std::vector<FoliageInfo> foliageList = {};
 
         std::vector<FoliageType> directionSet = {
             FoliageType::Foliage_ChasmWallUp,
@@ -77,7 +77,7 @@ class FoliageChasmSetup {
 			// 36
         };
 
-        newDict.push_back(FoliageInfo(
+        foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_ChasmWallUp,
 			FoliageHelpers::LOW_GROUND_NODE_TYPE,
 			false,
@@ -87,7 +87,7 @@ class FoliageChasmSetup {
 			Direction::DirectionUp)
             .SetHeight(foliageHeight));
 
-		newDict.push_back(FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_ChasmWallDown,
 			FoliageHelpers::LOW_GROUND_NODE_TYPE,
 			false,
@@ -97,7 +97,7 @@ class FoliageChasmSetup {
 			Direction::DirectionDown)
 			.SetPossibleRotations({180}));
 
-		newDict.push_back(FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_ChasmWallLeft,
 			FoliageHelpers::LOW_GROUND_NODE_TYPE,
 			false,
@@ -107,7 +107,7 @@ class FoliageChasmSetup {
 			Direction::DirectionLeft)
 			.SetPossibleRotations({270}));
 
-		newDict.push_back(FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_ChasmWallRight,
 			FoliageHelpers::LOW_GROUND_NODE_TYPE,
 			false,
@@ -117,7 +117,7 @@ class FoliageChasmSetup {
 			Direction::DirectionRight)
 			.SetPossibleRotations({90}));
 
-		newDict.push_back(FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_ChasmWallUpLeft,
 			FoliageHelpers::LOW_GROUND_NODE_TYPE,
 			false,
@@ -126,7 +126,7 @@ class FoliageChasmSetup {
 			LevelBiome::None,
 			Direction::DirectionUpLeft));
 
-		newDict.push_back(FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_ChasmWallUpRight,
 			FoliageHelpers::LOW_GROUND_NODE_TYPE,
 			false,
@@ -136,7 +136,7 @@ class FoliageChasmSetup {
 			Direction::DirectionUpRight)
 			.SetPossibleRotations({90}));
 
-		newDict.push_back(FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_ChasmWallDownLeft,
 			FoliageHelpers::LOW_GROUND_NODE_TYPE,
 			false,
@@ -146,7 +146,7 @@ class FoliageChasmSetup {
 			Direction::DirectionDownLeft)
 			.SetPossibleRotations({270}));
 
-		newDict.push_back(FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_ChasmWallDownRight,
 			FoliageHelpers::LOW_GROUND_NODE_TYPE,
 			false,
@@ -156,7 +156,7 @@ class FoliageChasmSetup {
 			Direction::DirectionDownRight)
 			.SetPossibleRotations({180}));
 
-		newDict.push_back(FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_ChasmMiddle,
 			FoliageHelpers::LOW_GROUND_NODE_TYPE,
 			false,
@@ -166,7 +166,7 @@ class FoliageChasmSetup {
 			Direction::DirectionNone));
 
 
-		newDict.push_back(FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_ChasmWallThreeUp,
 			FoliageHelpers::LOW_GROUND_NODE_TYPE,
 			false,
@@ -176,7 +176,7 @@ class FoliageChasmSetup {
 			Direction::DirectionUp)
             .SetHeight(foliageHeight));
 
-		newDict.push_back(FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_ChasmWallThreeDown,
 			FoliageHelpers::LOW_GROUND_NODE_TYPE,
 			false,
@@ -187,7 +187,7 @@ class FoliageChasmSetup {
             .SetHeight(foliageHeight)
 			.SetPossibleRotations({180}));
 
-		newDict.push_back(FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_ChasmWallThreeLeft,
 			FoliageHelpers::LOW_GROUND_NODE_TYPE,
 			false,
@@ -197,7 +197,7 @@ class FoliageChasmSetup {
 			Direction::DirectionLeft)
 			.SetPossibleRotations({270}));
 
-		newDict.push_back(FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_ChasmWallThreeRight,
 			FoliageHelpers::LOW_GROUND_NODE_TYPE,
 			false,
@@ -208,7 +208,7 @@ class FoliageChasmSetup {
 			.SetPossibleRotations({90}));
 
 
-		newDict.push_back(FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_ChasmWallFrontBackUp,
 			FoliageHelpers::LOW_GROUND_NODE_TYPE,
 			false,
@@ -218,7 +218,7 @@ class FoliageChasmSetup {
 			Direction::DirectionUp)
 			.SetPossibleRotations({90}));
 
-		newDict.push_back(FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_ChasmWallFrontBackLeft,
 			FoliageHelpers::LOW_GROUND_NODE_TYPE,
 			false,
@@ -227,7 +227,7 @@ class FoliageChasmSetup {
 			LevelBiome::None,
 			Direction::DirectionDown));
 
-		newDict.push_back(FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_ChasmWallAll,
 			FoliageHelpers::LOW_GROUND_NODE_TYPE,
 			false,
@@ -237,7 +237,7 @@ class FoliageChasmSetup {
 			Direction::DirectionDown));
 
 
-		newDict.push_back(FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_ChasmWallCenterUpLeft,
 			FoliageHelpers::LOW_GROUND_NODE_TYPE,
 			false,
@@ -246,7 +246,7 @@ class FoliageChasmSetup {
 			LevelBiome::None,
 			Direction::DirectionUpLeft));
 
-		newDict.push_back(FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_ChasmWallCenterUpRight,
 			FoliageHelpers::LOW_GROUND_NODE_TYPE,
 			false,
@@ -255,7 +255,7 @@ class FoliageChasmSetup {
 			LevelBiome::None,
 			Direction::DirectionUpRight));
 
-		newDict.push_back(FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_ChasmWallCenterDownLeft,
 			FoliageHelpers::LOW_GROUND_NODE_TYPE,
 			false,
@@ -264,7 +264,7 @@ class FoliageChasmSetup {
 			LevelBiome::None,
 			Direction::DirectionDownLeft));
 
-		newDict.push_back(FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_ChasmWallCenterDownRight,
 			FoliageHelpers::LOW_GROUND_NODE_TYPE,
 			false,
@@ -273,104 +273,103 @@ class FoliageChasmSetup {
 			LevelBiome::None,
 			Direction::DirectionDownRight));
 
-		newDict.push_back(FoliageInfo()
+		foliageList.push_back(FoliageInfo()
 			.SetFoliageType(FoliageType::Foliage_ChasmWallInsideUp)
 			.SetMapIndex(mapIndexStart + 21)
 			.SetDirection(Direction::DirectionUp)
             .SetHeight(foliageHeight));
 
-		newDict.push_back(FoliageInfo()
+		foliageList.push_back(FoliageInfo()
 			.SetFoliageType(FoliageType::Foliage_ChasmWallInsideDown)
 			.SetMapIndex(mapIndexStart + 22)
 			.SetDirection(Direction::DirectionDown)
 			.SetPossibleRotations({180}));
 
-		newDict.push_back(FoliageInfo()
+		foliageList.push_back(FoliageInfo()
 			.SetFoliageType(FoliageType::Foliage_ChasmWallInsideLeft)
 			.SetMapIndex(mapIndexStart + 23)
 			.SetDirection(Direction::DirectionLeft)
 			.SetPossibleRotations({270}));
 
-		newDict.push_back(FoliageInfo()
+		foliageList.push_back(FoliageInfo()
 			.SetFoliageType(FoliageType::Foliage_ChasmWallInsideRight)
 			.SetMapIndex(mapIndexStart + 24)
 			.SetDirection(Direction::DirectionRight)
 			.SetPossibleRotations({90}));
 
 
-		newDict.push_back(FoliageInfo()
+		foliageList.push_back(FoliageInfo()
 			.SetFoliageType(FoliageType::Foliage_ChasmWallCenterInsideUpLeft)
 			.SetMapIndex(mapIndexStart + 25)
 			.SetDirection(Direction::DirectionUpLeft));
 
-		newDict.push_back(FoliageInfo()
+		foliageList.push_back(FoliageInfo()
 			.SetFoliageType(FoliageType::Foliage_ChasmWallCenterInsideUpRight)
 			.SetMapIndex(mapIndexStart + 26)
 			.SetDirection(Direction::DirectionUpRight));
 
-		newDict.push_back(FoliageInfo()
+		foliageList.push_back(FoliageInfo()
 			.SetFoliageType(FoliageType::Foliage_ChasmWallCenterInsideDownLeft)
 			.SetMapIndex(mapIndexStart + 27)
 			.SetDirection(Direction::DirectionDownLeft));
 
-		newDict.push_back(FoliageInfo()
+		foliageList.push_back(FoliageInfo()
 			.SetFoliageType(FoliageType::Foliage_ChasmWallCenterInsideDownRight)
 			.SetMapIndex(mapIndexStart + 28)
 			.SetDirection(Direction::DirectionDownRight));
 
 
-		newDict.push_back(FoliageInfo()
+		foliageList.push_back(FoliageInfo()
 			.SetFoliageType(FoliageType::Foliage_ChasmWallInsideUpLeft)
 			.SetMapIndex(mapIndexStart + 29)
 			.SetDirection(Direction::DirectionUpLeft)
 			.SetPossibleRotations({0}));
 
-		newDict.push_back(FoliageInfo()
+		foliageList.push_back(FoliageInfo()
 			.SetFoliageType(FoliageType::Foliage_ChasmWallInsideUpRight)
 			.SetMapIndex(mapIndexStart + 30)
 			.SetDirection(Direction::DirectionUpRight)
 			.SetPossibleRotations({90}));
 
-		newDict.push_back(FoliageInfo()
+		foliageList.push_back(FoliageInfo()
 			.SetFoliageType(FoliageType::Foliage_ChasmWallInsideDownLeft)
 			.SetMapIndex(mapIndexStart + 31)
 			.SetDirection(Direction::DirectionDownLeft)
 			.SetPossibleRotations({270}));
 
-		newDict.push_back(FoliageInfo()
+		foliageList.push_back(FoliageInfo()
 			.SetFoliageType(FoliageType::Foliage_ChasmWallInsideDownRight)
 			.SetMapIndex(mapIndexStart + 32)
 			.SetDirection(Direction::DirectionDownRight)
 			.SetPossibleRotations({180}));
 
 
-		newDict.push_back(FoliageInfo()
+		foliageList.push_back(FoliageInfo()
 			.SetFoliageType(FoliageType::Foliage_ChasmWallDiagonalUpLeft)
 			.SetMapIndex(mapIndexStart + 33)
 			.SetDirection(Direction::DirectionUpLeft)
 			.SetPossibleRotations({0}));
 
-		newDict.push_back(FoliageInfo()
+		foliageList.push_back(FoliageInfo()
 			.SetFoliageType(FoliageType::Foliage_ChasmWallDiagonalUpRight)
 			.SetMapIndex(mapIndexStart + 34)
 			.SetDirection(Direction::DirectionUpRight)
 			.SetPossibleRotations({90}));
 
-		newDict.push_back(FoliageInfo()
+		foliageList.push_back(FoliageInfo()
 			.SetFoliageType(FoliageType::Foliage_ChasmWallDiagonalDownLeft)
 			.SetMapIndex(mapIndexStart + 35)
 			.SetDirection(Direction::DirectionDownLeft)
 			.SetPossibleRotations({270}));
 
-		newDict.push_back(FoliageInfo()
+		foliageList.push_back(FoliageInfo()
 			.SetFoliageType(FoliageType::Foliage_ChasmWallDiagonalDownRight)
 			.SetMapIndex(mapIndexStart + 36)
 			.SetDirection(Direction::DirectionDownRight)
 			.SetPossibleRotations({180}));
 
-		for(auto info : newDict) {
-			info.SetFoliageType(info.foliageType)
-				.SetNodeType(FoliageHelpers::LOW_GROUND_NODE_TYPE)
+		for(auto info : foliageList) {
+			info.SetNodeType(FoliageHelpers::LOW_GROUND_NODE_TYPE)
 				.SetNodeBiome(LevelBiome::None)
 				.SetWalkable(false)
 				.SetBuildable(false)

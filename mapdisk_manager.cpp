@@ -94,6 +94,17 @@ const std::string MapDiskManager::CHALLENGE_RESOURCE_PATH = getAssetPath() + "/m
 /// <param name="savePath">Full Asset folder path.</param>
 void MapDiskManager::save_map(Matrix<MapNode> map, std::string savePath) {
 
+    std::vector<std::filesystem::path> pathsThatMustExist = {
+        std::filesystem::path("output") / "maps" / "thumbnails" / "survival",
+        std::filesystem::path("output") / "maps" / "RandomGrassMap-Small",
+    };
+
+    for(auto path : pathsThatMustExist) {
+        if(!get_path_exists(path)) {
+            std::filesystem::create_directories(path);
+        }
+    }
+
     std::vector<std::string> content (map.dim_a() * map.dim_b() + MapDiskManager::INITIAL_OFFSET);
     content[0] = std::to_string(map.dim_a());
     content[1] = std::to_string(map.dim_b());

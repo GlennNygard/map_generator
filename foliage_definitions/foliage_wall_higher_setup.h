@@ -15,7 +15,7 @@ class FoliageWallHigherSetup {
 
 		Colour colour (0.2, 0.05, 0.05);
 
-        // float foliageHeight = HeightConstants.HIGH_GROUND_HEIGHT;
+		std::vector<FoliageInfo> foliageList = {};
 
 		std::vector<FoliageType> wallHigherDirections = {
             FoliageType::Foliage_WallHigherUp,
@@ -39,16 +39,16 @@ class FoliageWallHigherSetup {
             FoliageType::Foliage_WallHigherAll,
         };
 
-        mainDict[(int)FoliageType::Foliage_WallHigherUp] = FoliageInfo(
+        foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_WallHigherUp,
 			FoliageHelpers::HIGH_GROUND_NODE_TYPE,
 			false,
 			false,
 			mapIndexStart + 1,
 			LevelBiome::None,
-			Direction::DirectionUp);
+			Direction::DirectionUp));
 
-		mainDict[(int)FoliageType::Foliage_WallHigherDown] = FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_WallHigherDown,
 			FoliageHelpers::HIGH_GROUND_NODE_TYPE,
 			false,
@@ -56,9 +56,9 @@ class FoliageWallHigherSetup {
 			mapIndexStart + 2,
 			LevelBiome::None,
 			Direction::DirectionDown)
-			.SetPossibleRotations({180});
+			.SetPossibleRotations({180}));
 
-		mainDict[(int)FoliageType::Foliage_WallHigherLeft] = FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_WallHigherLeft,
 			FoliageHelpers::HIGH_GROUND_NODE_TYPE,
 			false,
@@ -66,9 +66,9 @@ class FoliageWallHigherSetup {
 			mapIndexStart + 3,
 			LevelBiome::None,
 			Direction::DirectionLeft)
-			.SetPossibleRotations({270});
+			.SetPossibleRotations({270}));
 
-		mainDict[(int)FoliageType::Foliage_WallHigherRight] = FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_WallHigherRight,
 			FoliageHelpers::HIGH_GROUND_NODE_TYPE,
 			false,
@@ -76,18 +76,18 @@ class FoliageWallHigherSetup {
 			mapIndexStart + 4,
 			LevelBiome::None,
 			Direction::DirectionRight)
-			.SetPossibleRotations({90});
+			.SetPossibleRotations({90}));
 
-		mainDict[(int)FoliageType::Foliage_WallHigherUpLeft] = FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_WallHigherUpLeft,
 			FoliageHelpers::HIGH_GROUND_NODE_TYPE,
 			false,
 			false,
 			mapIndexStart + 5,
 			LevelBiome::None,
-			Direction::DirectionUpLeft);
+			Direction::DirectionUpLeft));
 
-		mainDict[(int)FoliageType::Foliage_WallHigherUpRight] = FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_WallHigherUpRight,
 			FoliageHelpers::HIGH_GROUND_NODE_TYPE,
 			false,
@@ -95,9 +95,9 @@ class FoliageWallHigherSetup {
 			mapIndexStart + 6,
 			LevelBiome::None,
 			Direction::DirectionUpRight)
-			.SetPossibleRotations({90});
+			.SetPossibleRotations({90}));
 
-		mainDict[(int)FoliageType::Foliage_WallHigherDownLeft] = FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_WallHigherDownLeft,
 			FoliageHelpers::HIGH_GROUND_NODE_TYPE,
 			false,
@@ -105,9 +105,9 @@ class FoliageWallHigherSetup {
 			mapIndexStart + 7,
 			LevelBiome::None,
 			Direction::DirectionDownLeft)
-			.SetPossibleRotations({270});
+			.SetPossibleRotations({270}));
 
-		mainDict[(int)FoliageType::Foliage_WallHigherDownRight] = FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_WallHigherDownRight,
 			FoliageHelpers::HIGH_GROUND_NODE_TYPE,
 			false,
@@ -115,28 +115,28 @@ class FoliageWallHigherSetup {
 			mapIndexStart + 8,
 			LevelBiome::None,
 			Direction::DirectionDownRight)
-			.SetPossibleRotations({180});
+			.SetPossibleRotations({180}));
 
-		mainDict[(int)FoliageType::Foliage_WallHigherMiddle] = FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_WallHigherMiddle,
 			FoliageHelpers::HIGH_GROUND_NODE_TYPE,
 			false,
 			false,
 			mapIndexStart + 9,
 			LevelBiome::None,
-			Direction::DirectionNone);
+			Direction::DirectionNone));
 
 
-		mainDict[(int)FoliageType::Foliage_WallHigherThreeUp] = FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_WallHigherThreeUp,
 			FoliageHelpers::HIGH_GROUND_NODE_TYPE,
 			false,
 			false,
 			mapIndexStart + 10,
 			LevelBiome::None,
-			Direction::DirectionUp);
+			Direction::DirectionUp));
 
-		mainDict[(int)FoliageType::Foliage_WallHigherThreeDown] = FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_WallHigherThreeDown,
 			FoliageHelpers::HIGH_GROUND_NODE_TYPE,
 			false,
@@ -144,9 +144,9 @@ class FoliageWallHigherSetup {
 			mapIndexStart + 11,
 			LevelBiome::None,
 			Direction::DirectionDown)
-			.SetPossibleRotations({180});
+			.SetPossibleRotations({180}));
 
-		mainDict[(int)FoliageType::Foliage_WallHigherThreeLeft] = FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_WallHigherThreeLeft,
 			FoliageHelpers::HIGH_GROUND_NODE_TYPE,
 			false,
@@ -154,9 +154,9 @@ class FoliageWallHigherSetup {
 			mapIndexStart + 12,
 			LevelBiome::None,
 			Direction::DirectionLeft)
-			.SetPossibleRotations({270});
+			.SetPossibleRotations({270}));
 
-		mainDict[(int)FoliageType::Foliage_WallHigherThreeRight] = FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_WallHigherThreeRight,
 			FoliageHelpers::HIGH_GROUND_NODE_TYPE,
 			false,
@@ -164,10 +164,10 @@ class FoliageWallHigherSetup {
 			mapIndexStart + 13,
 			LevelBiome::None,
 			Direction::DirectionRight)
-			.SetPossibleRotations({90});
+			.SetPossibleRotations({90}));
 
 
-		mainDict[(int)FoliageType::Foliage_WallHigherFrontBackUp] = FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_WallHigherFrontBackUp,
 			FoliageHelpers::HIGH_GROUND_NODE_TYPE,
 			false,
@@ -175,24 +175,36 @@ class FoliageWallHigherSetup {
 			mapIndexStart + 14,
 			LevelBiome::None,
 			Direction::DirectionUp)
-			.SetPossibleRotations({90});
+			.SetPossibleRotations({90}));
 
-		mainDict[(int)FoliageType::Foliage_WallHigherFrontBackLeft] = FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_WallHigherFrontBackLeft,
 			FoliageHelpers::HIGH_GROUND_NODE_TYPE,
 			false,
 			false,
 			mapIndexStart + 15,
 			LevelBiome::None,
-			Direction::DirectionDown);
+			Direction::DirectionDown));
 
-		mainDict[(int)FoliageType::Foliage_WallHigherAll] = FoliageInfo(
+		foliageList.push_back(FoliageInfo(
 			FoliageType::Foliage_WallHigherAll,
 			FoliageHelpers::HIGH_GROUND_NODE_TYPE,
 			false,
 			false,
 			mapIndexStart + 16,
 			LevelBiome::None,
-			Direction::DirectionDown);
+			Direction::DirectionDown));
+
+		for(auto info : foliageList) {
+			info.SetColour(colour);
+
+			// Write data to main dict.
+			int foliageIndex = static_cast<int>(info.foliageType);
+			if(foliageIndex < 0 || foliageIndex >=  static_cast<int>(FoliageType::Foliage_MAX)) {
+				std::cerr << std::format("Foliage index {} not in range.", foliageIndex) << std::endl;
+				continue;
+			}
+			mainDict[foliageIndex] = info;
+		}
     }
 };

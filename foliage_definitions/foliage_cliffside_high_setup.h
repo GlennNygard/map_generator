@@ -130,8 +130,7 @@ class FoliageCliffsideHighSetup {
 			.SetPossibleRotations({0,90,180,270}));
 
 		for(auto info : foliageList) {
-			info.SetFoliageType(info.foliageType)
-				.SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
+			info.SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
 				.SetNodeBiome(LevelBiome::None)
 				.SetWalkable(false)
 				.SetBuildable(false)

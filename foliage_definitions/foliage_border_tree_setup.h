@@ -81,8 +81,7 @@ class FoliageBorderTreeSetup {
 			.SetDirection(Direction::DirectionNone));
 
 		for(auto info : foliageList) {
-			info.SetFoliageType(info.foliageType)
-				.SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
+			info.SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
 				.SetNodeBiome(LevelBiome::None)
 				.SetWalkable(true)
 				.SetBuildable(true)

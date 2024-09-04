@@ -47,7 +47,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(true)
                 .SetBuildable(true)
-                .SetMapIndex(0)
+                .SetMapIndex(mapIndexStart + 0)
                 .SetNodeBiome(LevelBiome::None)
                 .SetColour(Colour(0.05, 0.05, 0.05)));
 
@@ -56,61 +56,60 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(true)
                 .SetBuildable(true)
-                .SetMapIndex(1)
+                .SetMapIndex(mapIndexStart + 1)
                 .SetNodeBiome(LevelBiome::None)
-                .SetColour(Colour(0.05, 0.05, 0.05)));
+                .SetColour(Colour(0.12, 0.125, 0.12)));
 
         foliageList.push_back(FoliageInfo()
                 .SetFoliageType(FoliageType::Foliage_CantHaveFoliage)
                 .SetNodeType(FoliageHelpers::HIGH_GROUND_NODE_TYPE)
                 .SetWalkable(true)
                 .SetBuildable(true)
-                .SetMapIndex(3)
+                .SetMapIndex(mapIndexStart + 3)
                 .SetNodeBiome(LevelBiome::None)
-                .SetColour(Colour(0.05, 0.05, 0.05)));
+                .SetColour(Colour(0.25, 0.1, 0.1)));
 
 
-            // TREES.
-            
+		// TREES.
         foliageList.push_back(FoliageInfo()
                 .SetFoliageType(FoliageType::Foliage_TreeSmallFoliage)
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(true)
                 .SetBuildable(true)
-                .SetMapIndex(9)
+                .SetMapIndex(mapIndexStart + 9)
                 .SetNodeBiome(LevelBiome::None)
                 .SetRandomRotation(true)
-                .SetColour(Colour(0.05, 0.05, 0.05)));
+                .SetColour(Colour(0.10, 0.36, 0.10)));
 
         foliageList.push_back(FoliageInfo()
-                .SetFoliageType(FoliageType::Foliage_TreeSmallFoliage)
+                .SetFoliageType(FoliageType::Foliage_TreeSmallSnowFoliage)
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(true)
                 .SetBuildable(true)
-                .SetMapIndex(10)
+                .SetMapIndex(mapIndexStart + 10)
                 .SetNodeBiome(LevelBiome::None)
                 .SetRandomRotation(true)
-                .SetColour(Colour(0.05, 0.05, 0.05)));
+                .SetColour(Colour(0.08, 0.24, 0.08)));
 
         foliageList.push_back(FoliageInfo()
                 .SetFoliageType(FoliageType::Foliage_TreeFoliage)
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(true)
                 .SetBuildable(true)
-                .SetMapIndex(7)
+                .SetMapIndex(mapIndexStart + 7)
                 .SetNodeBiome(LevelBiome::None)
                 .SetRandomRotation(true)
-                .SetColour(Colour(0.05, 0.05, 0.05)));
+                .SetColour(Colour(0.08, 0.24, 0.08)));
 
         foliageList.push_back(FoliageInfo()
                 .SetFoliageType(FoliageType::Foliage_TreeSnowFoliage)
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(true)
                 .SetBuildable(true)
-                .SetMapIndex(8)
+                .SetMapIndex(mapIndexStart + 8)
                 .SetNodeBiome(LevelBiome::None)
                 .SetRandomRotation(true)
-                .SetColour(Colour(0.05, 0.05, 0.05)));
+                .SetColour(Colour(0.08, 0.24, 0.08)));
 
         foliageList.push_back(FoliageInfo()
                 .SetFoliageType(FoliageType::Foliage_TreeWallFoliage)
@@ -118,7 +117,7 @@ class FoliageCommonSetup {
                 .SetBuildable(false)
                 .SetFloorType(FoliageFloor::High)
                 .SetNodeType(FoliageHelpers::HIGH_GROUND_NODE_TYPE)
-                .SetMapIndex(52)
+                .SetMapIndex(mapIndexStart + 52)
                 .SetRandomRotation(true)
                 .SetColour(Colour(0.075, 0.225, 0.125)));
 
@@ -127,14 +126,14 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(true)
                 .SetBuildable(true)
-                .SetMapIndex(21)
+                .SetMapIndex(mapIndexStart + 21)
                 .SetNodeBiome(LevelBiome::None)
                 .SetRandomRotation(true)
-                .SetColour(Colour(0.05, 0.05, 0.05)));
+                .SetColour(Colour(0.05, 0.2, 0.1)));
 
         foliageList.push_back(FoliageInfo()
                 .SetFoliageType(FoliageType::Foliage_TreeEvergreenHighFoliage)
-                .SetMapIndex(51)
+                .SetMapIndex(mapIndexStart + 51)
                 .SetRandomRotation(true)
                 .SetColour(Colour(0.075, 0.225, 0.125))
                 );
@@ -144,37 +143,38 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(true)
                 .SetBuildable(true)
-                .SetMapIndex(22)
+                .SetMapIndex(mapIndexStart + 22)
                 .SetNodeBiome(LevelBiome::None)
-                .SetRandomRotation(true));
+                .SetRandomRotation(true)
+				.SetColour(Colour(0.075, 0.225, 0.125)));
 
         foliageList.push_back(FoliageInfo()
                 .SetFoliageType(FoliageType::Foliage_TreeSnowEvergreenFoliage)
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(true)
                 .SetBuildable(true)
-                .SetMapIndex(23)
+                .SetMapIndex(mapIndexStart + 23)
                 .SetNodeBiome(LevelBiome::None)
-                .SetRandomRotation(true));
+                .SetRandomRotation(true)
+				.SetColour(Colour(0.075, 0.225, 0.125)));
 
             // ROCKS.
         foliageList.push_back(FoliageInfo()
                 .SetFoliageType(FoliageType::Foliage_RockClusterFoliage)
-                .SetMapIndex(11)
+                .SetMapIndex(mapIndexStart + 11)
                 .SetRandomRotation(true)
-                .SetColour(Colour(0.41, 0.41, 0.41))
-                );
+                .SetColour(Colour(0.55, 0.55, 0.5)));
 
         foliageList.push_back(FoliageInfo()
                 .SetFoliageType(FoliageType::Foliage_RockClusterSnowFoliage)
-                .SetMapIndex(12)
+                .SetMapIndex(mapIndexStart + 12)
                 .SetRandomRotation(true)
                 .SetColour(Colour(0.41, 0.41, 0.41)));
 
             // BOULDERS.
         foliageList.push_back(FoliageInfo()
                 .SetFoliageType(FoliageType::Foliage_RoundBoulder)
-                .SetMapIndex(57)
+                .SetMapIndex(mapIndexStart + 57)
                 .SetBuildable(false)
                 .SetWalkable(false)
 
@@ -189,7 +189,7 @@ class FoliageCommonSetup {
                 .SetFoliageType(FoliageType::Foliage_GroundUnbuildable)
                 .SetWalkable(true)
                 .SetBuildable(false)
-                .SetMapIndex(53)
+                .SetMapIndex(mapIndexStart + 53)
                 .SetColour(Colour(0.5, 0.5, 0.55))
                 );
 
@@ -198,7 +198,7 @@ class FoliageCommonSetup {
                 .SetWalkable(true)
                 .SetBuildable(false)
                 .SetThrotten(ThrottenAmount::Level01)
-                .SetMapIndex(54)
+                .SetMapIndex(mapIndexStart + 54)
                 .SetColour(Colour(0.3, 0.25, 0.35))
                 );
 
@@ -207,7 +207,7 @@ class FoliageCommonSetup {
                 .SetWalkable(true)
                 .SetBuildable(false)
                 .SetThrotten(ThrottenAmount::Level02)
-                .SetMapIndex(55)
+                .SetMapIndex(mapIndexStart + 55)
                 .SetColour(Colour(0.35, 0.3, 0.35))
                 );
             
@@ -216,7 +216,7 @@ class FoliageCommonSetup {
                 .SetWalkable(true)
                 .SetBuildable(false)
                 .SetThrotten(ThrottenAmount::Completely)
-                .SetMapIndex(56)
+                .SetMapIndex(mapIndexStart + 56)
                 .SetColour(Colour(0.45, 0.4, 0.35))
                 );
 
@@ -226,7 +226,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(true)
                 .SetBuildable(true)
-                .SetMapIndex(4)
+                .SetMapIndex(mapIndexStart + 4)
                 .SetNodeBiome(LevelBiome::Desert)
                 .SetColour(Colour(0.3, 0.25, 0.25))
                 .SetThrotten(ThrottenAmount::Level01));
@@ -236,7 +236,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(true)
                 .SetBuildable(true)
-                .SetMapIndex(5)
+                .SetMapIndex(mapIndexStart + 5)
                 .SetNodeBiome(LevelBiome::Desert)
                 .SetColour(Colour(0.35, 0.3, 0.25))
                 .SetThrotten(ThrottenAmount::Level02));
@@ -246,7 +246,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(true)
                 .SetBuildable(true)
-                .SetMapIndex(6)
+                .SetMapIndex(mapIndexStart + 6)
                 .SetNodeBiome(LevelBiome::Desert)
                 .SetThrotten(ThrottenAmount::Completely)
                 .SetColour(Colour(0.45, 0.4, 0.25)));
@@ -256,14 +256,14 @@ class FoliageCommonSetup {
 
         foliageList.push_back(FoliageInfo()
             .SetFoliageType(FoliageType::Foliage_HillSmall)
-            .SetMapIndex(24)
+            .SetMapIndex(mapIndexStart + 24)
             .SetNodeBiome(LevelBiome::Desert)
             .SetRandomRotation(true)
             .SetColour(Colour(0.75, 0.6, 0.55)));
 
         foliageList.push_back(FoliageInfo()
             .SetFoliageType(FoliageType::Foliage_HillSmallDesert)
-            .SetMapIndex(26)
+            .SetMapIndex(mapIndexStart + 26)
             .SetNodeBiome(LevelBiome::Desert)
             // .SetBiomeResourcePrefabs(LevelBiome::Desert,
             // 	new std::vector<ResourceType> {ResourceType.HillSmall})
@@ -276,7 +276,7 @@ class FoliageCommonSetup {
 
         foliageList.push_back(FoliageInfo()
             .SetFoliageType(FoliageType::Foliage_HillSmallSnow)
-            .SetMapIndex(25)
+            .SetMapIndex(mapIndexStart + 25)
             .SetNodeBiome(LevelBiome::Snow)
             .SetRandomRotation(true)
             .SetColour(Colour(0.55, 0.6, 0.75)));
@@ -290,7 +290,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(false)
                 .SetBuildable(false)
-                .SetMapIndex(1301)
+                .SetMapIndex(mapIndexStart + 1301)
                 .SetNodeBiome(LevelBiome::None)
                 .SetDirection(Direction::DirectionNone)
                 .SetDirectionSet(cliffsideDesertDirections));
@@ -300,7 +300,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(false)
                 .SetBuildable(false)
-                .SetMapIndex(1201)
+                .SetMapIndex(mapIndexStart + 1201)
                 .SetNodeBiome(LevelBiome::None)
                 .SetDirection(Direction::DirectionUp)
                 .SetDirectionSet(cliffsideDesertDirections));
@@ -310,7 +310,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(false)
                 .SetBuildable(false)
-                .SetMapIndex(1202)
+                .SetMapIndex(mapIndexStart + 1202)
                 .SetNodeBiome(LevelBiome::None)
                 .SetDirection(Direction::DirectionDown)
                 .SetDirectionSet(cliffsideDesertDirections));
@@ -320,7 +320,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(false)
                 .SetBuildable(false)
-                .SetMapIndex(1203)
+                .SetMapIndex(mapIndexStart + 1203)
                 .SetNodeBiome(LevelBiome::None)
                 .SetDirection(Direction::DirectionLeft)
                 .SetDirectionSet(cliffsideDesertDirections));
@@ -330,7 +330,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(false)
                 .SetBuildable(false)
-                .SetMapIndex(1204)
+                .SetMapIndex(mapIndexStart + 1204)
                 .SetNodeBiome(LevelBiome::None)
                 .SetDirection(Direction::DirectionRight)
                 .SetDirectionSet(cliffsideDesertDirections));
@@ -340,7 +340,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(false)
                 .SetBuildable(false)
-                .SetMapIndex(1205)
+                .SetMapIndex(mapIndexStart + 1205)
                 .SetNodeBiome(LevelBiome::None)
                 .SetDirection(Direction::DirectionUpLeft)
                 .SetDirectionSet(cliffsideDesertDirections));
@@ -350,7 +350,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(false)
                 .SetBuildable(false)
-                .SetMapIndex(1206)
+                .SetMapIndex(mapIndexStart + 1206)
                 .SetNodeBiome(LevelBiome::None)
                 .SetDirection(Direction::DirectionUpRight)
                 .SetDirectionSet(cliffsideDesertDirections));
@@ -360,7 +360,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(false)
                 .SetBuildable(false)
-                .SetMapIndex(1207)
+                .SetMapIndex(mapIndexStart + 1207)
                 .SetNodeBiome(LevelBiome::None)
                 .SetDirection(Direction::DirectionDownLeft)
                 .SetDirectionSet(cliffsideDesertDirections));
@@ -370,7 +370,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(false)
                 .SetBuildable(false)
-                .SetMapIndex(1208)
+                .SetMapIndex(mapIndexStart + 1208)
                 .SetNodeBiome(LevelBiome::None)
                 .SetDirection(Direction::DirectionDownRight)
                 .SetDirectionSet(cliffsideDesertDirections));
@@ -380,7 +380,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(false)
                 .SetBuildable(false)
-                .SetMapIndex(16)
+                .SetMapIndex(mapIndexStart + 16)
                 .SetNodeBiome(LevelBiome::None)
                 .SetThrotten(ThrottenAmount::Completely));
 
@@ -389,7 +389,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(false)
                 .SetBuildable(false)
-                .SetMapIndex(17)
+                .SetMapIndex(mapIndexStart + 17)
                 .SetNodeBiome(LevelBiome::None)
                 .SetThrotten(ThrottenAmount::Completely));
 
@@ -398,7 +398,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(false)
                 .SetBuildable(false)
-                .SetMapIndex(18)
+                .SetMapIndex(mapIndexStart + 18)
                 .SetNodeBiome(LevelBiome::None)
                 .SetThrotten(ThrottenAmount::Completely));
 
@@ -408,7 +408,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(true)
                 .SetBuildable(true)
-                .SetMapIndex(14)
+                .SetMapIndex(mapIndexStart + 14)
                 .SetNodeBiome(LevelBiome::None));
 
         foliageList.push_back(FoliageInfo()
@@ -416,7 +416,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(true)
                 .SetBuildable(true)
-                .SetMapIndex(13)
+                .SetMapIndex(mapIndexStart + 13)
                 .SetNodeBiome(LevelBiome::None));
 
         foliageList.push_back(FoliageInfo()
@@ -424,7 +424,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(true)
                 .SetBuildable(true)
-                .SetMapIndex(15)
+                .SetMapIndex(mapIndexStart + 15)
                 .SetNodeBiome(LevelBiome::None));
 
         foliageList.push_back(FoliageInfo()
@@ -432,7 +432,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(true)
                 .SetBuildable(true)
-                .SetMapIndex(33)
+                .SetMapIndex(mapIndexStart + 33)
                 .SetNodeBiome(LevelBiome::Desert)
                 .SetThrotten(ThrottenAmount::Completely)
                 .SetColour(Colour(0.55, 0.5, 0.25))
@@ -443,7 +443,7 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(true)
                 .SetBuildable(true)
-                .SetMapIndex(38)
+                .SetMapIndex(mapIndexStart + 38)
                 .SetNodeBiome(LevelBiome::None));
 
         foliageList.push_back(FoliageInfo()
@@ -451,13 +451,13 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(true)
                 .SetBuildable(true)
-                .SetMapIndex(40)
+                .SetMapIndex(mapIndexStart + 40)
                 .SetNodeBiome(LevelBiome::Desert)
                 .SetThrotten(ThrottenAmount::Completely));
 
         foliageList.push_back(FoliageInfo()
                 .SetFoliageType(FoliageType::Foliage_StoneCircle)
-                .SetMapIndex(58)
+                .SetMapIndex(mapIndexStart + 58)
                 .SetNodeBiome(LevelBiome::None)
                 .SetRandomRotation(true));
 
@@ -466,12 +466,11 @@ class FoliageCommonSetup {
                 .SetNodeType(FoliageHelpers::FLOOR_NODE_TYPE)
                 .SetWalkable(true)
                 .SetBuildable(false)
-                .SetMapIndex(50)
+                .SetMapIndex(mapIndexStart + 50)
                 .SetNodeBiome(LevelBiome::Grass)
                 .SetRandomRotation(true));
 
 		for(auto info : foliageList) {
-			info.SetFoliageType(info.foliageType);
 
 			// Write data to main dict.
 			int foliageIndex = static_cast<int>(info.foliageType);
