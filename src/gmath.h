@@ -10,33 +10,33 @@ inline void hash_combine(std::size_t & s, const T & v)
 }
 
 struct Vector2Int {
-	int x;
-	int y;
+    int x;
+    int y;
 
     Vector2Int() {
-		x = 0;
-		y = 0;
-	}
+        x = 0;
+        y = 0;
+    }
 
     Vector2Int(int newX, int newY) {
         x = newX;
         y = newY;
     }
 
-	auto operator<=>(const Vector2Int&) const = default;
+    auto operator<=>(const Vector2Int&) const = default;
 
-	// bool operator==(const vector2Int& other) const {
-	// 	return x == other.x && y == other.y;
-	// }
+    // bool operator==(const vector2Int& other) const {
+    // 	return x == other.x && y == other.y;
+    // }
 
-	Vector2Int operator-(const Vector2Int& other) {
-		x -= other.x;
-		y -= other.y;
+    Vector2Int operator-(const Vector2Int& other) {
+        x -= other.x;
+        y -= other.y;
 
-		return *this;
-	}
+        return *this;
+    }
 
-	std::string to_string() const {
+    std::string to_string() const {
         return std::to_string(x) + std::to_string(y);
     }
 
@@ -52,8 +52,8 @@ template<>
 struct std::hash<Vector2Int> {
     std::size_t operator()(const Vector2Int& s) const noexcept {
         std::size_t res = 0;
-		hash_combine(res,s.x);
-		hash_combine(res,s.y);
+        hash_combine(res,s.x);
+        hash_combine(res,s.y);
         return res;
     }
 };

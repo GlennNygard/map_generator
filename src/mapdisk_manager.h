@@ -25,37 +25,34 @@ class MapObject {
     public:
     Matrix<MapNode> map;
 
-    /// <summary>
-    /// Map array size X.
-    /// </summary>
-    int LengthX;
-    /// <summary>
-    /// Map array size Y.
-    /// </summary>
-    int LengthY;
+    /// @brief Map array size X.
+    int lengthX;
+    
+    /// @brief Map array size Y.
+    int lengthY;
 
-    int SectionCountX;
-    int SectionCountY;
+    int sectionCountX;
+    int sectionCountY;
 
     MapObject(int lengthX, int lengthY) {
-        LengthX = lengthX;
-        LengthY = lengthY;
+        lengthX = lengthX;
+        lengthY = lengthY;
         map = Matrix<MapNode>(lengthX, lengthY);
 
-        SectionCountX = LengthX / MapDefinitions::SUBSECTION_SIDE_COUNT_X;
-        SectionCountY = LengthY / MapDefinitions::SUBSECTION_SIDE_COUNT_Y;
+        sectionCountX = lengthX / MapDefinitions::SUBSECTION_SIDE_COUNT_X;
+        sectionCountY = lengthY / MapDefinitions::SUBSECTION_SIDE_COUNT_Y;
     }
 
     MapObject(Matrix<MapNode> map) {
         this->map = map;
-        LengthX = map.dim_a();
-        LengthY = map.dim_b();
+        lengthX = map.dim_a();
+        lengthY = map.dim_b();
 
         // LengthX = MapDefinitions::FULL_GRID_COUNT_X;
         // LengthY = MapDefinitions::FULL_GRID_COUNT_Y;
 
-        SectionCountX = LengthX / MapDefinitions::SUBSECTION_SIDE_COUNT_X;
-        SectionCountY = LengthY / MapDefinitions::SUBSECTION_SIDE_COUNT_Y;
+        sectionCountX = lengthX / MapDefinitions::SUBSECTION_SIDE_COUNT_X;
+        sectionCountY = lengthY / MapDefinitions::SUBSECTION_SIDE_COUNT_Y;
     }
 
     /// <summary>
@@ -65,12 +62,12 @@ class MapObject {
     /// <param name="nodeTypeMap"></param>
     /// <param name="foliageMap"></param>
     MapObject(Matrix<int> nodeTypeMap, Matrix<FoliageType> foliageMap) {
-        LengthX = nodeTypeMap.dim_a();
-        LengthY = nodeTypeMap.dim_b();
-        map = Matrix<MapNode>(LengthX, LengthY);
+        lengthX = nodeTypeMap.dim_a();
+        lengthY = nodeTypeMap.dim_b();
+        map = Matrix<MapNode>(lengthX, lengthY);
 
-        for(int x = 0; x < LengthX; x++) {
-            for(int y = 0; y < LengthY; y++) {
+        for(int x = 0; x < lengthX; x++) {
+            for(int y = 0; y < lengthY; y++) {
                 auto mn = MapNode();
                 mn.nodeType = nodeTypeMap[x][y];
                 mn.foliageType = foliageMap[x][y];
@@ -112,13 +109,9 @@ class MapDiskManager {
         return path;
     };
 
-
-    /// <summary>
-    /// These are use for map names when storing/getting maps to/from disk.
-    /// </summary>
-    /// <typeparam name="ChallengeHelpers.MapSize"></typeparam>
-    /// <typeparam name="std::string"></typeparam>
-    /// <returns></returns>
+    /**
+     * These are use for map names when storing/getting maps to/from disk.
+     */
     const std::unordered_map<MapSize, std::string> MAP_SIZE_NAME_DICT = {
         {MapSize::MapSize_Small, "Small"},
         {MapSize::MapSize_Medium, "Medium"},
@@ -159,38 +152,32 @@ class MapDiskManager {
     };
 
 
-    /// <summary>
-    /// Mappings from foliage types to map integers.
-    /// These integers are written to map files and should
-    /// never be changed.
-    /// </summary>
+    /**
+     * Mappings from foliage types to map integers.
+     * These integers are written to map files and should
+     * never be changed.
+     */
     std::unordered_map<int, FoliageType> _mapFoliageMapping;
     static std::string join(const std::vector<std::string> &lst, const std::string &delim);
 
 
-    Matrix<MapNode> load_map(std::string resourceName);
+    Matrix<MapNode> load_map(std::filesystem::path mapPath);
     std::optional<MapObject> load_map_object(std::string resourcePath);
 
-    void save_map(Matrix<MapNode> map, std::string savePath);
+    
+    /**
+     * Save a map to disk. Can only be run in the editor as
+     * Android / iOS doesn't support file access to the Asset
+     * folder.
+     */
+    void save_map(Matrix<MapNode> map, std::filesystem::path directoryPath, std::string mapName);
     void write_to_file(std::string data, std::string path);
 
     std::vector<std::string> split(std::string str, std::string delimiter);
 
-
-    // const std::string get_challenge_path(std::string mapName) {
-    //     std::filesystem::path path (_challengeResourcePath);
-    //     path /= (mapName+".txt");
-    //     return path.generic_string();
-    // }
-
-    // const std::string get_challenge_resource_path(std::string mapName) {
-    //     return mapName;
-    // }
-
     static const bool get_path_exists(std::string loadPath) {
         return std::filesystem::exists(loadPath);
     }
-
 
     MapDiskManager();
 
@@ -249,5 +236,4 @@ class MapDiskManager {
     int node_data_to_map_type(int nodeType, LevelBiome nodeBiome);
 
     Matrix<MapNode> convert_string_to_map(std::string loadText);
-    void create_required_paths();
 };

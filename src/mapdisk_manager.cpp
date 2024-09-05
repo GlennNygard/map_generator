@@ -1,5 +1,13 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
+#ifndef RESOURCE_PATH
+#define RESOURCE_PATH "../resources/"
+#endif
+
+#ifndef OUTPUT_PATH
+#define OUTPUT_PATH "../output/"
+#endif
+
 #include <iostream>
 #include <filesystem>
 #include <fstream>
@@ -9,12 +17,11 @@
 #include <regex>
 #include <expected>
 
-#include "external/stb_image_write.h"
+#include "stb_image_write.h"
 
 #include "mapdisk_manager.h"
 #include "foliage/foliage.h"
 #include "foliage_definitions/foliage_definitions.h"
-
 
 
 const std::string MapDiskManager::SEPARATOR = ",";
@@ -23,11 +30,9 @@ const std::string MapDiskManager::CONTENT_SEPARATOR = "-";
 
 MapDiskManager::MapDiskManager() {
 
-    _relationalMapPath = std::filesystem::path ("resources");
-    _mapsPath = std::filesystem::path (getAssetPath()) / "maps" / "final";
-    _mapsThumbnailsPath = std::filesystem::path (getAssetPath()) / "maps" / "thumbnails" / "survival";
-
-    create_required_paths();
+    _relationalMapPath = std::filesystem::path (RESOURCE_PATH);
+    _mapsPath = std::filesystem::path (OUTPUT_PATH) / "maps" / "final";
+    _mapsThumbnailsPath = std::filesystem::path (OUTPUT_PATH) / "maps" / "thumbnails" / "survival";
 
     // Create reverse dict.
     _foliageMapMapping = std::unordered_map<FoliageType, int>();
@@ -43,14 +48,17 @@ MapDiskManager::MapDiskManager() {
     }
 }
 
-/// <summary>
-/// Save a map to disk. Can only be run in the editor as
-/// Android / iOS doesn't support file access to the Asset
-/// folder.
-/// </summary>
-/// <param name="map"></param>
-/// <param name="savePath">Full Asset folder path.</param>
-void MapDiskManager::save_map(Matrix<MapNode> map, std::string savePath) {
+
+void MapDiskManager::save_map(
+        Matrix<MapNode> map,
+        std::filesystem::path directoryPath,
+        std::string mapName) {
+
+    if(!get_path_exists(directoryPath)) {
+        std::filesystem::create_directories(directoryPath);
+    }
+
+    std::filesystem::path finalPath = directoryPath /= (mapName+".txt");
 
     std::vector<std::string> content (
         map.dim_a() * map.dim_b() + MapDiskManager::INITIAL_OFFSET);
@@ -83,16 +91,9 @@ void MapDiskManager::save_map(Matrix<MapNode> map, std::string savePath) {
     }
 
     std::string saveString = join(content, MapDiskManager::SEPARATOR);
-    write_to_file(saveString, savePath);
+    write_to_file(saveString, finalPath);
 }
 
-
-/// <summary>
-/// This is messy and should be improved in the future.
-/// </summary>
-/// <param name="nodeType"></param>
-/// <param name="nodeBiome"></param>
-/// <returns></returns>
 int MapDiskManager::node_data_to_map_type(int nodeType, LevelBiome nodeBiome) {
     if(nodeType == FoliageHelpers::FLOOR_NODE_TYPE && nodeBiome == LevelBiome::None) {
         return FLOOR_GENERIC_TYPE;
@@ -123,24 +124,7 @@ int MapDiskManager::node_data_to_map_type(int nodeType, LevelBiome nodeBiome) {
     return MapDiskManager::FLOOR_GENERIC_TYPE;
 }
 
-void MapDiskManager::create_required_paths() {
-    std::vector<std::filesystem::path> pathsThatMustExist = {
-        _mapsPath,
-        _mapsThumbnailsPath,
-        _relationalMapPath,
-        _mapsPath / "RandomGrassMap-Small",
-    };
-
-    for(auto path : pathsThatMustExist) {
-        if(!get_path_exists(path)) {
-            std::filesystem::create_directories(path);
-        }
-    }
-}
-
 void MapDiskManager::write_to_file(std::string data, std::string path) {
-    // std::string input;
-    // std::cin >> input;
     std::ofstream out(path);
     out << data;
     out.close();
@@ -171,15 +155,20 @@ std::vector<std::string> MapDiskManager::split(std::string str, std::string deli
     return res;
 }
 
-Matrix<MapNode> MapDiskManager::load_map(std::string filePath) {
+Matrix<MapNode> MapDiskManager::load_map(
+        std::filesystem::path mapPath) {
+
+    if(!get_path_exists(mapPath)) {
+        return Matrix<MapNode>();
+    }
 
     // Open the file using ifstream.
-    std::ifstream file(filePath);
+    std::ifstream file(mapPath);
 
-    // confirm file opening.
+    // Confirm file opening.
     if(!file.is_open()) {
         // print error message and return
-        std::cerr << "Failed to open file: " << filePath << std::endl;
+        std::cerr << "Failed to open file: " << mapPath << std::endl;
         return Matrix<MapNode>();
     }
 
@@ -307,7 +296,12 @@ std::optional<MapObject> MapDiskManager::load_map_object(std::string resourcePat
     return mapObject;
 }
 
-void MapDiskManager::save_map_thumbnail(Matrix<MapNode> fullMap, std::string mapName) {
+void MapDiskManager::save_map_thumbnail(
+        Matrix<MapNode> fullMap, std::string mapName) {
+
+    if(!get_path_exists(_mapsThumbnailsPath)) {
+        std::filesystem::create_directories(_mapsThumbnailsPath);
+    }
 
     const int thumbnailSizeMultiplier = 4;
 
@@ -348,8 +342,7 @@ void MapDiskManager::save_map_thumbnail(Matrix<MapNode> fullMap, std::string map
         }
     }
 
-    std::filesystem::path path (_mapsThumbnailsPath);
-    path /= (mapName+".jpg");
+    std::filesystem::path path = _mapsThumbnailsPath / (mapName+".jpg");
 
     std::cout << "Saving thumbnail to: "+path.generic_string() << std::endl;
 

@@ -28,19 +28,13 @@ int main(int argc,char *argv[]) {
 
     int currentIndex = 0;
 
-    std::string mapNamePrefix = mapDiskManager.get_map_name_prefix(mapBiome, mapSize);
-    std::string mapPath = mapDiskManager.get_map_path(mapBiome, mapSize);
-
-
-    if(!MapDiskManager::get_path_exists(mapDiskManager.get_base_map_path())) {
-        std::cerr << std::format("Path does not exist: {}",mapPath) << std::endl;
-        return 1;
-    }
-
-    std::cout << std::format("Starting map creation: {}", std::to_string(currentIndex)) << std::endl;
+    std::cout << std::format(
+        "Starting map creation: {}",
+        std::to_string(currentIndex)) << std::endl;
 
     MapConstructor mapConstructor(levelValues);
     auto mapPair = mapConstructor.construct_random_map();
+
     MapObject mapObject = mapPair.first;
     bool success = mapPair.second;
 
@@ -49,15 +43,22 @@ int main(int argc,char *argv[]) {
         return 1;
     }
 
-    std::string mapName = mapNamePrefix+"_"+std::to_string(currentIndex);
+    std::string mapNamePrefix = mapDiskManager.get_map_name_prefix(
+        mapBiome, mapSize);
+    std::string mapName = std::format(
+        "{0}_{1}", mapNamePrefix, std::to_string(currentIndex));
+    std::string mapPath = mapDiskManager.get_map_path(mapBiome, mapSize);
 
     std::filesystem::path finalPath(mapPath);
-    finalPath /= (mapName+".txt");
 
-    std::cout << "Saving map to path: "+finalPath.generic_string() << std::endl;
+    std::cout << std::format(
+        "Saving map {0} to path: {1}",
+        mapName, finalPath.generic_string()) << std::endl;
 
-    mapDiskManager.save_map(mapObject.map, finalPath);
-    std::cout << "Save completed! map: "+std::to_string(currentIndex) << std::endl;
+    mapDiskManager.save_map(mapObject.map, finalPath, mapName);
+    std::cout << std::format(
+        "Save completed! Map: {0}",
+        std::to_string(currentIndex)) << std::endl;
 
     // Saving thumbnail.
     mapDiskManager.save_map_thumbnail(mapObject.map, mapName);

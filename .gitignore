@@ -2,7 +2,6 @@
 *.DS_Store
 *.DSYM
 map_generator
-*output
-
-
-
+output/
+build/
+.vscode/
