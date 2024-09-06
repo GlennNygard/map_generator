@@ -3,7 +3,7 @@
 #include <vector>
 #include <unordered_map>
 
-#include "foliage/foliage.h"
+#include "foliage.h"
 #include "biome_foliage_info.h"
 
 

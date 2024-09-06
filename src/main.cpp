@@ -7,61 +7,48 @@
 #include <string_view>
 #include <algorithm>
 
-#include "foliage/foliage.h"
-#include "map_constructor.h"
-#include "mapdisk_manager.h"
+#include "foliage.h"
+#include "map/map_constructor.h"
+#include "disk_manager.h"
 #include "gmath.h"
+#include "argparse.h"
 
 
-int main(int argc,char *argv[]) {
+int main(int argc, char *argv[]) {
 
-    std::copy(argv, argv + argc, std::ostream_iterator<char *>(std::cout, "\n"));
-
+    auto argValuesOpt = parse_args(argc, argv);
+    if(!argValuesOpt) {
+        return 0;
+    }
+    ArgValues argValues = *argValuesOpt;
     std::cout << "Starting up..." << std::endl;
 
-    auto mapDiskManager = MapDiskManager();
-    LevelBiome mapBiome = LevelBiome::Grass;
-    MapSize mapSize = MapSize::MapSize_Small;
+    // Create level setup values.
+    LevelValues levelValues = MapDefinitions::create_level_values(argValues.mapSize);
+    MapConstructor mapConstructor(levelValues, argValues.verboseLogging);
+    auto mapDiskManager = DiskManager();
 
-    Vector2Int sectionCount = MapDefinitions::mapSizeMappings.at(mapSize);
-    LevelValues levelValues = LevelValues::create_values(sectionCount, mapBiome);
+    // Create map name prefix.
+    std::string mapNamePrefix = mapDiskManager.get_map_prefix(
+        argValues, levelValues.biome);
+    for(int currentIndex = 0; currentIndex < argValues.mapCount; currentIndex++) {
+        
+        // Create map name.
+        std::string mapName = mapDiskManager.get_map_name(
+            mapNamePrefix, currentIndex);
+        
+        // Create map.
+        auto mapObjectOpt = mapConstructor.create_map(currentIndex);
+        if(!mapObjectOpt) {
+            return 1;
+        }
+        MapObject mapObject = *mapObjectOpt;
 
-    int currentIndex = 0;
-
-    std::cout << std::format(
-        "Starting map creation: {}",
-        std::to_string(currentIndex)) << std::endl;
-
-    MapConstructor mapConstructor(levelValues);
-    auto mapPair = mapConstructor.construct_random_map();
-
-    MapObject mapObject = mapPair.first;
-    bool success = mapPair.second;
-
-    if(!success) {
-        std::cerr << "Failed. Map: "+std::to_string(currentIndex) << std::endl;
-        return 1;
+        // Save map.
+        mapDiskManager.save_map(mapObject, mapName, mapNamePrefix, currentIndex);
+        // Save thumbnail.
+        mapDiskManager.save_map_thumbnail(mapObject.map, mapName, mapNamePrefix);
     }
-
-    std::string mapNamePrefix = mapDiskManager.get_map_name_prefix(
-        mapBiome, mapSize);
-    std::string mapName = std::format(
-        "{0}_{1}", mapNamePrefix, std::to_string(currentIndex));
-    std::string mapPath = mapDiskManager.get_map_path(mapBiome, mapSize);
-
-    std::filesystem::path finalPath(mapPath);
-
-    std::cout << std::format(
-        "Saving map {0} to path: {1}",
-        mapName, finalPath.generic_string()) << std::endl;
-
-    mapDiskManager.save_map(mapObject.map, finalPath, mapName);
-    std::cout << std::format(
-        "Save completed! Map: {0}",
-        std::to_string(currentIndex)) << std::endl;
-
-    // Saving thumbnail.
-    mapDiskManager.save_map_thumbnail(mapObject.map, mapName);
 
     return 0;
 }

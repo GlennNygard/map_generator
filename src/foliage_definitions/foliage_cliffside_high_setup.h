@@ -2,9 +2,9 @@
 
 #include <vector>
 
-#include "../foliage/foliage.h"
-#include "../foliage_info.h"
-#include "../map_definitions.h"
+#include "foliage.h"
+#include "foliage_info.h"
+#include "map_definitions.h"
 
 
 class FoliageCliffsideHighSetup {

@@ -5,9 +5,9 @@
 #include <format>
 #include <string>
 
-#include "../foliage/foliage.h"
-#include "../foliage_info.h"
-#include "../map_definitions.h"
+#include "foliage.h"
+#include "foliage_info.h"
+#include "map_definitions.h"
 
 
 class FoliageCommonSetup {

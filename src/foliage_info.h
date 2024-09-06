@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "foliage/foliage.h"
+#include "foliage.h"
 
 class FoliageInfo {
 

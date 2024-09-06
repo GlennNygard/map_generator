@@ -3,8 +3,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "foliage/foliage.h"
-#include "mapdisk_manager.h"
+#include "foliage.h"
+#include "disk_manager.h"
 
 
 class BiomeFoliageInfo {

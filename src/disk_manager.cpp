@@ -1,13 +1,5 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
-#ifndef RESOURCE_PATH
-#define RESOURCE_PATH "../resources/"
-#endif
-
-#ifndef OUTPUT_PATH
-#define OUTPUT_PATH "../output/"
-#endif
-
 #include <iostream>
 #include <filesystem>
 #include <fstream>
@@ -19,20 +11,21 @@
 
 #include "stb_image_write.h"
 
-#include "mapdisk_manager.h"
-#include "foliage/foliage.h"
+#include "disk_manager.h"
+#include "foliage.h"
 #include "foliage_definitions/foliage_definitions.h"
+#include "argparse.h"
 
 
-const std::string MapDiskManager::SEPARATOR = ",";
-const std::string MapDiskManager::CONTENT_SEPARATOR = "-";
+const std::string DiskManager::SEPARATOR = ",";
+const std::string DiskManager::CONTENT_SEPARATOR = "-";
 
 
-MapDiskManager::MapDiskManager() {
+DiskManager::DiskManager() {
 
     _relationalMapPath = std::filesystem::path (RESOURCE_PATH);
-    _mapsPath = std::filesystem::path (OUTPUT_PATH) / "maps" / "final";
-    _mapsThumbnailsPath = std::filesystem::path (OUTPUT_PATH) / "maps" / "thumbnails" / "survival";
+    _mapsPath = std::filesystem::path (OUTPUT_PATH) / "maps";
+    _mapsThumbnailsPath = std::filesystem::path (OUTPUT_PATH) / "thumbnails";
 
     // Create reverse dict.
     _foliageMapMapping = std::unordered_map<FoliageType, int>();
@@ -49,7 +42,26 @@ MapDiskManager::MapDiskManager() {
 }
 
 
-void MapDiskManager::save_map(
+void DiskManager::save_map(
+        MapObject mapObject,
+        std::string mapName,
+        std::string mapNamePrefix,
+        int currentIndex) {
+    std::string mapPath = get_map_path(mapNamePrefix);
+
+    std::filesystem::path finalPath(mapPath);
+
+    std::cout << std::format(
+        "Saving map {0} to path: {1}",
+        mapName, finalPath.generic_string()) << std::endl;
+
+    perform_map_save(mapObject.map, finalPath, mapName);
+    std::cout << std::format(
+        "Save completed! Map: {0}",
+        std::to_string(currentIndex)) << std::endl;
+}
+
+void DiskManager::perform_map_save(
         Matrix<MapNode> map,
         std::filesystem::path directoryPath,
         std::string mapName) {
@@ -61,7 +73,7 @@ void MapDiskManager::save_map(
     std::filesystem::path finalPath = directoryPath /= (mapName+".txt");
 
     std::vector<std::string> content (
-        map.dim_a() * map.dim_b() + MapDiskManager::INITIAL_OFFSET);
+        map.dim_a() * map.dim_b() + DiskManager::INITIAL_OFFSET);
     content[0] = std::to_string(map.dim_a());
     content[1] = std::to_string(map.dim_b());
 
@@ -75,26 +87,32 @@ void MapDiskManager::save_map(
                 std::to_string(node_data_to_map_type(
                     mapNode.nodeType,
                     mapNode.nodeBiome)) +
-                MapDiskManager::CONTENT_SEPARATOR +
+                DiskManager::CONTENT_SEPARATOR +
                 "f" + std::to_string(get_foliage_map_mapping()[mapNode.foliageType]) +
                 std::format(
-                    "{0}{1}{2}", MapDiskManager::CONTENT_SEPARATOR,
+                    "{0}{1}{2}", DiskManager::CONTENT_SEPARATOR,
                     "b", static_cast<int>(mapNode.nodeBiome));
 
             if(x == map.dim_a()-1) {
                 nodeData += "\n";
             }
 
-            content[i+MapDiskManager::INITIAL_OFFSET] = nodeData;
+            content[i+DiskManager::INITIAL_OFFSET] = nodeData;
             i++;
         }
     }
 
-    std::string saveString = join(content, MapDiskManager::SEPARATOR);
+    std::string saveString = join(content, DiskManager::SEPARATOR);
     write_to_file(saveString, finalPath);
 }
 
-int MapDiskManager::node_data_to_map_type(int nodeType, LevelBiome nodeBiome) {
+void DiskManager::write_to_file(std::string data, std::string path) {
+    std::ofstream out(path);
+    out << data;
+    out.close();
+}
+
+int DiskManager::node_data_to_map_type(int nodeType, LevelBiome nodeBiome) {
     if(nodeType == FoliageHelpers::FLOOR_NODE_TYPE && nodeBiome == LevelBiome::None) {
         return FLOOR_GENERIC_TYPE;
     }
@@ -121,16 +139,27 @@ int MapDiskManager::node_data_to_map_type(int nodeType, LevelBiome nodeBiome) {
         return LOW_DESERT_TYPE;
     }
 
-    return MapDiskManager::FLOOR_GENERIC_TYPE;
+    return DiskManager::FLOOR_GENERIC_TYPE;
 }
 
-void MapDiskManager::write_to_file(std::string data, std::string path) {
-    std::ofstream out(path);
-    out << data;
-    out.close();
+std::string DiskManager::get_map_name(std::string mapNamePrefix, int currentIndex) {
+    std::string mapName = std::format(
+        "{}_{:03}", mapNamePrefix, currentIndex);
+    return mapName;
 }
 
-std::string MapDiskManager::join(const std::vector<std::string> &lst, const std::string &delim) {
+std::string DiskManager::get_map_prefix(
+        ArgValues argValues,
+        LevelBiome mapBiome) {
+    std::string mapNamePrefix = argValues.mapNamePrefix;
+    if(mapNamePrefix.empty()) {
+        mapNamePrefix = get_map_name_prefix(
+            mapBiome, argValues.mapSize);
+    }
+    return mapNamePrefix;
+}
+
+std::string DiskManager::join(const std::vector<std::string> &lst, const std::string &delim) {
     std::string ret;
     for(const auto &s : lst) {
         if(!ret.empty())
@@ -140,7 +169,7 @@ std::string MapDiskManager::join(const std::vector<std::string> &lst, const std:
     return ret;
 }
 
-std::vector<std::string> MapDiskManager::split(std::string str, std::string delimiter) {
+std::vector<std::string> DiskManager::split(std::string str, std::string delimiter) {
     size_t pos_start = 0, pos_end, delim_len = delimiter.length();
     std::string token;
     std::vector<std::string> res;
@@ -155,7 +184,7 @@ std::vector<std::string> MapDiskManager::split(std::string str, std::string deli
     return res;
 }
 
-Matrix<MapNode> MapDiskManager::load_map(
+Matrix<MapNode> DiskManager::load_map(
         std::filesystem::path mapPath) {
 
     if(!get_path_exists(mapPath)) {
@@ -185,36 +214,36 @@ Matrix<MapNode> MapDiskManager::load_map(
     return convert_string_to_map(loadText);
 }
 
-std::string MapDiskManager::get_base_map_path() {
+std::string DiskManager::get_base_map_path() {
     return _mapsPath;
 }
 
-std::string MapDiskManager::get_map_path(std::string mapName) {
+std::string DiskManager::get_map_path(std::string mapName) {
     std::filesystem::path path (_mapsPath);
     path /= (mapName);
     return path.generic_string();
 }
 
-std::string MapDiskManager::get_map_path(LevelBiome biome, MapSize size) {
+std::string DiskManager::get_map_path(LevelBiome biome, MapSize size) {
     std::string mapName = get_map_name_prefix(biome, size);
     std::filesystem::path path (_mapsPath);
     path /= (mapName);
     return path.generic_string();
 }
 
-std::string MapDiskManager::get_relational_map_path(std::string mapName) {
+std::string DiskManager::get_relational_map_path(std::string mapName) {
     std::filesystem::path path (_relationalMapPath);
     path /= (mapName);
     return path.generic_string();
 }
 
-std::string MapDiskManager::get_map_name_prefix(LevelBiome biome, MapSize size) {
+std::string DiskManager::get_map_name_prefix(LevelBiome biome, MapSize size) {
     std::string mapNamePrefix = std::format(
         "{}-{}", BIOME_MAPNAME_DICT.at(biome), MAP_SIZE_NAME_DICT.at(size));
     return mapNamePrefix;
 }
 
-Matrix<MapNode> MapDiskManager::convert_string_to_map(std::string loadText) {
+Matrix<MapNode> DiskManager::convert_string_to_map(std::string loadText) {
 
     // Example formatting:
     // 512,512,1-10,0-22,1-4
@@ -225,7 +254,7 @@ Matrix<MapNode> MapDiskManager::convert_string_to_map(std::string loadText) {
     int lengthY = std::stoi(content[1]);
 
     std::cout << std::format(
-        "Loading map of size {0}x{1}", lengthX, lengthY) << std::endl;
+        "Loading map of size {0}x{1}.", lengthX, lengthY) << std::endl;
 
     Matrix<MapNode> map (lengthX, lengthY);
 
@@ -236,8 +265,8 @@ Matrix<MapNode> MapDiskManager::convert_string_to_map(std::string loadText) {
             auto mapNode = MapNode();
 
             auto nodeData = split(
-                content[i + MapDiskManager::INITIAL_OFFSET],
-                MapDiskManager::CONTENT_SEPARATOR);
+                content[i + DiskManager::INITIAL_OFFSET],
+                DiskManager::CONTENT_SEPARATOR);
 
             if(x == lengthX) {
                 // nodeData[1].Replace("\n", "");
@@ -286,7 +315,7 @@ Matrix<MapNode> MapDiskManager::convert_string_to_map(std::string loadText) {
     return map;
 }
 
-std::optional<MapObject> MapDiskManager::load_map_object(std::string resourcePath) {
+std::optional<MapObject> DiskManager::load_map_object(std::string resourcePath) {
     
     auto map = load_map(resourcePath);
     if(map.empty()) {
@@ -296,11 +325,13 @@ std::optional<MapObject> MapDiskManager::load_map_object(std::string resourcePat
     return mapObject;
 }
 
-void MapDiskManager::save_map_thumbnail(
-        Matrix<MapNode> fullMap, std::string mapName) {
+void DiskManager::save_map_thumbnail(
+        Matrix<MapNode> fullMap, std::string mapName, std::string mapNamePrefix) {
 
-    if(!get_path_exists(_mapsThumbnailsPath)) {
-        std::filesystem::create_directories(_mapsThumbnailsPath);
+    std::filesystem::path directoryPath = _mapsThumbnailsPath / mapNamePrefix;
+
+    if(!get_path_exists(directoryPath)) {
+        std::filesystem::create_directories(directoryPath);
     }
 
     const int thumbnailSizeMultiplier = 4;
@@ -342,13 +373,13 @@ void MapDiskManager::save_map_thumbnail(
         }
     }
 
-    std::filesystem::path path = _mapsThumbnailsPath / (mapName+".jpg");
+    std::filesystem::path finalPath = directoryPath / (mapName+".jpg");
 
-    std::cout << "Saving thumbnail to: "+path.generic_string() << std::endl;
+    std::cout << "Saving thumbnail to: "+finalPath.generic_string() << std::endl;
 
     // Write the image to a file (RGB).
     int result = stbi_write_jpg(
-        path.c_str(),
+        finalPath.c_str(),
         fullSizeX, fullSizeY, channelNum, &mapColours[0],
         fullSizeX*channelNum);
 

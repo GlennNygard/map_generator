@@ -3,8 +3,8 @@
 #include <expected>
 
 #include "biome_foliage_info.h"
-#include "foliage/foliage.h"
-#include "mapdisk_manager.h"
+#include "foliage.h"
+#include "disk_manager.h"
 
 
 
@@ -19,11 +19,11 @@ void BiomeFoliageInfo::Setup(
         std::unordered_map<FoliageType, int> walkableAllowedTypes,
         std::string relationsFile) {
 
-    // We set up a set for easy access later.
+    // We set up a vector for easy access later.
     defaultSet = std::vector<FoliageType>(static_cast<size_t>(FoliageType::Foliage_MAX));
     walkableDefaultSet = std::vector<FoliageType>(static_cast<size_t>(FoliageType::Foliage_MAX));
 
-    MapDiskManager mdm = MapDiskManager();
+    DiskManager mdm = DiskManager();
     auto relationsPath = mdm.get_relational_map_path(relationsFile);
     auto mapObjectOptional = mdm.load_map_object(relationsPath);
     if(!mapObjectOptional) {
@@ -164,22 +164,11 @@ void BiomeFoliageInfo::Setup(
         }
     }
 
-    // Array.Resize(ref defaultSet, defaultIndex);
-    // Array.Resize(ref walkableDefaultSet, walkableDefaultIndex);
-
     defaultSet.resize(defaultIndex);
     walkableDefaultSet.resize(walkableDefaultIndex);
 
     const int foliageLength = static_cast<int>(FoliageType::Foliage_MAX);
-    // UpRelations.clear();
-    // DownRelations.clear();
-    // LeftRelations.clear();
-    // RightRelations.clear();
 
-    // UpLeftRelations.clear();
-    // UpRightRelations.clear();
-    // DownLeftRelations.clear();
-    // DownRightRelations.clear();
     UpRelations = std::array<std::vector<FoliageType>, foliageLength>();
     DownRelations = std::array<std::vector<FoliageType>, foliageLength>();
     LeftRelations = std::array<std::vector<FoliageType>, foliageLength>();
@@ -228,16 +217,6 @@ std::vector<T> BiomeFoliageInfo::keysFromMap(std::unordered_map<T, V> map) {
     }
     return keys;
 }
-
-// template<typename T>
-// T arr[] resize(T arr[], int newSize) {
-//     T newArr[newSize];
-
-//     memcpy(newArr, arr, newSize * sizeof(int));
-
-//     delete [] arr;
-//     arr = newArr;
-// }
 
 std::array<int,static_cast<size_t>(FoliageType::Foliage_MAX)> BiomeFoliageInfo::GetNewDefaultData() {
     std::array<int,static_cast<size_t>(FoliageType::Foliage_MAX)> remainingPossibleTypes = {};

@@ -6,8 +6,9 @@
 #include <unordered_set>
 
 #include "matrix.h"
-#include "foliage/foliage.h"
-#include "map_definitions.h"
+#include "foliage.h"
+#include "map/map_definitions.h"
+#include "argparse.h"
 
 
 struct MapNode {
@@ -78,7 +79,7 @@ class MapObject {
     }
 };
 
-class MapDiskManager {
+class DiskManager {
     public:
 
     static const int FLOOR_GENERIC_TYPE = 0;
@@ -164,30 +165,38 @@ class MapDiskManager {
     Matrix<MapNode> load_map(std::filesystem::path mapPath);
     std::optional<MapObject> load_map_object(std::string resourcePath);
 
-    
-    /**
-     * Save a map to disk. Can only be run in the editor as
-     * Android / iOS doesn't support file access to the Asset
-     * folder.
-     */
-    void save_map(Matrix<MapNode> map, std::filesystem::path directoryPath, std::string mapName);
-    void write_to_file(std::string data, std::string path);
-
     std::vector<std::string> split(std::string str, std::string delimiter);
 
     static const bool get_path_exists(std::string loadPath) {
         return std::filesystem::exists(loadPath);
     }
 
-    MapDiskManager();
+    DiskManager();
 
     std::string get_base_map_path();
     std::string get_map_path(std::string mapName);
     std::string get_map_path(LevelBiome biome, MapSize mapSize);
     std::string get_relational_map_path(std::string mapName);
-    std::string get_map_name_prefix(LevelBiome biome, MapSize mapSize);
 
-    void save_map_thumbnail(Matrix<MapNode> fullMap, std::string mapName);
+    std::string get_map_name(
+        std::string mapNamePrefix, int currentIndex);
+
+    std::string get_map_prefix(
+        ArgValues argValues,
+        LevelBiome mapBiome);
+
+    /**
+     * Save a map to disk. Can only be run in the editor as
+     * Android / iOS doesn't support file access to the Asset
+     * folder.
+     */
+    void save_map(
+        MapObject mapObject,
+        std::string mapName,
+        std::string mapNamePrefix,
+        int currentIndex);
+    void save_map_thumbnail(
+        Matrix<MapNode> fullMap, std::string mapName, std::string mapNamePrefix);
 
     std::unordered_map<FoliageType, int> get_foliage_map_mapping() {
         return _foliageMapMapping;
@@ -233,7 +242,13 @@ class MapDiskManager {
         {LOW_DESERT_TYPE, LevelBiome::Desert},
     };
 
+    void perform_map_save(
+        Matrix<MapNode> map,
+        std::filesystem::path directoryPath,
+        std::string mapName);
+    void write_to_file(std::string data, std::string path);
     int node_data_to_map_type(int nodeType, LevelBiome nodeBiome);
+    std::string get_map_name_prefix(LevelBiome biome, MapSize mapSize);
 
     Matrix<MapNode> convert_string_to_map(std::string loadText);
 };

@@ -9,39 +9,13 @@
 #include "foliage_definitions/foliage_definitions.h"
 
 
-struct LevelValues {
-    LevelBiome biome;
-
-    int gridCountX;
-    int gridCountY;
-
-    Vector2Int gridBoundsX;
-    Vector2Int gridBoundsY;
-
-    LevelValues() {}
-
-    static const LevelValues create_values(Vector2Int sectionCount, LevelBiome biome) {
-        auto lv = LevelValues();
-        lv.biome = biome;
-
-        lv.gridCountX = MapDefinitions::SUBSECTION_SIDE_COUNT_X * sectionCount.x;
-        lv.gridCountY = MapDefinitions::SUBSECTION_SIDE_COUNT_Y * sectionCount.y;
-
-        lv.gridBoundsX = Vector2Int(0,lv.gridCountX);
-        lv.gridBoundsY = Vector2Int(0,lv.gridCountY);
-
-        return lv;
-    }
-};
-
-
 class MapConstructor {
 
     public:
 
     // MapConstructor() {}
 
-    MapConstructor(LevelValues levelValues) {
+    MapConstructor(LevelValues levelValues, bool verboseLogging) {
         _levelValues = levelValues;
         BiomeFoliageInfo biomeFoliageInfo;
         if(levelValues.biome == LevelBiome::Grass) {
@@ -57,7 +31,26 @@ class MapConstructor {
         else {
             biomeFoliageInfo = GrassFoliageInfo();
         }
-        _foliageProcessor = std::make_unique<FoliageProcessor>(biomeFoliageInfo);
+        _foliageProcessor = std::make_unique<
+            FoliageProcessor>(biomeFoliageInfo, verboseLogging);
+    }
+
+    std::optional<MapObject> create_map(int currentIndex) {
+        std::cout << std::format(
+            "Starting map creation: {}",
+            std::to_string(currentIndex)) << std::endl;
+
+        auto mapPair = construct_random_map();
+
+        MapObject mapObject = mapPair.first;
+        bool success = mapPair.second;
+
+        if(!success) {
+            std::cerr << "Failed. Map: "+std::to_string(currentIndex) << std::endl;
+            return std::nullopt;
+        }
+
+        return mapObject;
     }
 
     std::pair<MapObject, bool> construct_random_map(int levelSeed=-1) {
