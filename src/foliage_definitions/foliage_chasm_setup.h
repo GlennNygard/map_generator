@@ -10,12 +10,10 @@
 #include "map_definitions.h"
 
 
-class FoliageChasmSetup {
-
-    public:
+namespace chasm {
 
     template<size_t foliageSize>
-    static void Setup(std::array<FoliageInfo, foliageSize> &mainFoliageArray, int mapIndexStart) {
+    static void setup(std::array<FoliageInfo, foliageSize> &mainFoliageArray, int mapIndexStart) {
 
         Colour colour (0.05, 0.05, 0.05);
         float foliageHeight = 0;

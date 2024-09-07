@@ -13,7 +13,8 @@ class GrassFoliageInfo : public BiomeFoliageInfo {
     GrassFoliageInfo() {
 
 		Setup(_allowedTypes, _walkableAllowedTypes, "GrassRelationsMap.txt");
-		StartPossibleTypes[static_cast<int>(FoliageType::Foliage_NoFoliage)] = PossibleTypes[static_cast<int>(FoliageType::Foliage_NoFoliage)];
+		StartPossibleTypes[static_cast<int>(FoliageType::Foliage_NoFoliage)] =
+			PossibleTypes[static_cast<int>(FoliageType::Foliage_NoFoliage)];
 
 		NeighbourBonus[static_cast<int>(FoliageType::Foliage_NoFoliage)] = {
 			std::pair<FoliageType, int>(FoliageType::Foliage_NoFoliage, 120),
@@ -273,12 +274,4 @@ class GrassFoliageInfo : public BiomeFoliageInfo {
 		{FoliageType::Foliage_VeryThrottenGround, 10},
 		{FoliageType::Foliage_CompletelyThrottenGround, 10},
 	};
-
-    // public override int[] GetPossibleBiomeTypes() {
-
-	// 	// var possibleTypes = new Dictionary<FoliageType, int>(PossibleTypes);
-	// 	// return possibleTypes;
-
-	// 	return PossibleTypes;
-	// }
 };

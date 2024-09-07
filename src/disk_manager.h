@@ -23,7 +23,7 @@ enum class load_error {
 
 class MapObject {
 
-    public:
+public:
     Matrix<MapNode> map;
 
     /// @brief Map array size X.
@@ -49,19 +49,10 @@ class MapObject {
         lengthX = map.dim_a();
         lengthY = map.dim_b();
 
-        // LengthX = MapDefinitions::FULL_GRID_COUNT_X;
-        // LengthY = MapDefinitions::FULL_GRID_COUNT_Y;
-
         sectionCountX = lengthX / MapDefinitions::SUBSECTION_SIDE_COUNT_X;
         sectionCountY = lengthY / MapDefinitions::SUBSECTION_SIDE_COUNT_Y;
     }
 
-    /// <summary>
-    /// Construct a new map object from a type map and foliage map.
-    /// This does not assume any specific node biomes.
-    /// </summary>
-    /// <param name="nodeTypeMap"></param>
-    /// <param name="foliageMap"></param>
     MapObject(Matrix<int> nodeTypeMap, Matrix<FoliageType> foliageMap) {
         lengthX = nodeTypeMap.dim_a();
         lengthY = nodeTypeMap.dim_b();
@@ -80,7 +71,8 @@ class MapObject {
 };
 
 class DiskManager {
-    public:
+
+public:
 
     static const int FLOOR_GENERIC_TYPE = 0;
     static const int HIGH_GENERIC_TYPE = 1;
@@ -103,6 +95,7 @@ class DiskManager {
     static const int LOW_SNOW_TYPE = 303;
 
 
+    DiskManager();
 
     static const std::string getAssetPath() {
         std::filesystem::path path ("./");
@@ -171,8 +164,6 @@ class DiskManager {
         return std::filesystem::exists(loadPath);
     }
 
-    DiskManager();
-
     std::string get_base_map_path();
     std::string get_map_path(std::string mapName);
     std::string get_map_path(LevelBiome biome, MapSize mapSize);
@@ -206,7 +197,7 @@ class DiskManager {
         return _mapNodeTypeMapping;
     }
 
-    private:
+private:
 
     static const int INITIAL_OFFSET = 2;
     static const std::string SEPARATOR;

@@ -7,12 +7,10 @@
 #include "map_definitions.h"
 
 
-class FoliageBorderTreeSetup {
-
-    public:
+namespace bordertree {
 
     template<size_t foliageSize>
-    static void Setup(std::array<FoliageInfo, foliageSize> &mainFoliageArray, int mapIndexStart) {
+    static void setup(std::array<FoliageInfo, foliageSize> &mainFoliageArray, int mapIndexStart) {
 
         Colour colour (0.08, 0.24, 0.08);
         float foliageHeight = 0;

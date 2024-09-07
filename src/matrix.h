@@ -1,3 +1,4 @@
+#pragma once
 //
 // Matrix class source: https://stackoverflow.com/a/2287034/9214516
 //

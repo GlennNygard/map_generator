@@ -7,12 +7,10 @@
 #include "map_definitions.h"
 
 
-class FoliageWallHigherSetup {
-
-    public:
+namespace wallhigher {
 
     template<size_t foliageSize>
-    static void Setup(std::array<FoliageInfo, foliageSize> &mainFoliageArray, int mapIndexStart) {
+    static void setup(std::array<FoliageInfo, foliageSize> &mainFoliageArray, int mapIndexStart) {
 
         Colour colour (0.2, 0.05, 0.05);
 

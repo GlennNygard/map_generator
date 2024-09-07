@@ -1,7 +1,9 @@
 #pragma once
 
 #include <vector>
+
 #include "foliage.h"
+
 
 class FoliageInfo {
 
@@ -14,41 +16,32 @@ class FoliageInfo {
 	bool randomRotation;
 	int mapIndex;
     LevelBiome nodeBiome;
-	FoliageFloor FloorType;
+	FoliageFloor floorType;
 
     const std::vector<FoliageType> *directionSet;
 
     Direction direction;
 
 	Colour nodeColour;
-
-
-
 	bool containsResourceData;
 
-
-	// std::vector<ResourceType> resources;
-	// std::vector<ResourceType> biomeResources;
 	std::vector<float> possibleRotations;
 	float height;
 
-    ThrottenAmount ThrottenValue;
+    ThrottenAmount throttenValue;
 
 	FoliageInfo() {
-		this->containsResourceData = false;
-		this->foliageType = FoliageType::Foliage_NoSelection;
-		// this->resources = new ResourceType[0];
-		// this->possibleRotations = new float[0];
-		this->randomRotation = false;
-		this->height = 0;
-		// this->biomeResources = new ResourceType[Enum.GetValues(typeof(LevelBiome)).Length][];
-		this->FloorType = FoliageFloor::Normal;
-		this->nodeType = FoliageHelpers::FLOOR_NODE_TYPE;
-		this->walkable = true;
-		this->buildable = true;
+		containsResourceData = false;
+		foliageType = FoliageType::Foliage_NoSelection;
+		randomRotation = false;
+		height = 0;
+		floorType = FoliageFloor::Normal;
+		nodeType = FoliageHelpers::FLOOR_NODE_TYPE;
+		walkable = true;
+		buildable = true;
 
-		this->nodeBiome = LevelBiome::None;
-        this->ThrottenValue = ThrottenAmount::None;
+		nodeBiome = LevelBiome::None;
+        throttenValue = ThrottenAmount::None;
 	}
 
     FoliageInfo(
@@ -58,10 +51,8 @@ class FoliageInfo {
 			bool buildable,
 			int mapIndex,
 			LevelBiome nodeBiome=LevelBiome::None,
-			Direction direction=Direction::DirectionNone
-			// std::vector<FoliageType> directionSet={}
-			// Color nodeColour=default(Color)
-            ) {
+			Direction direction=Direction::DirectionNone) {
+
 		this->containsResourceData = true;
         this->foliageType = foliageType;
         this->nodeType = nodeType;
@@ -69,13 +60,11 @@ class FoliageInfo {
 		this->buildable = buildable;
 		this->mapIndex = mapIndex;
         this->nodeBiome = nodeBiome;
-		// directionSet = directionSet;
         this->direction = direction;
 
 		this->nodeColour = Colour();
-		this->FloorType = FoliageFloor::Normal;
+		this->floorType = FoliageFloor::Normal;
 
-		// possibleRotations = new float[0];
 		this->randomRotation = false;
 		this->height = 0;
     }
@@ -111,7 +100,7 @@ class FoliageInfo {
 	}
 
 	FoliageInfo& SetFloorType(FoliageFloor value) {
-		this->FloorType = value;
+		this->floorType = value;
 		containsResourceData = true;
 		return *this;
 	}
@@ -147,7 +136,7 @@ class FoliageInfo {
 	}
 
     FoliageInfo& SetThrotten(ThrottenAmount value) {
-		this->ThrottenValue = value;
+		this->throttenValue = value;
 		containsResourceData = true;
 		return *this;
 	}

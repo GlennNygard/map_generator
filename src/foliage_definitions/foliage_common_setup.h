@@ -10,12 +10,10 @@
 #include "map_definitions.h"
 
 
-class FoliageCommonSetup {
-
-    public:
+namespace foliagecommon {
 
     template<size_t foliageSize>
-    static void Setup(std::array<FoliageInfo, foliageSize> &mainFoliageArray, int mapIndexStart) {
+    static void setup(std::array<FoliageInfo, foliageSize> &mainFoliageArray, int mapIndexStart) {
 
 		std::vector<FoliageInfo> foliageList = {};
 

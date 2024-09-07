@@ -367,7 +367,6 @@ void DiskManager::save_map_thumbnail(
                     mapColours[index] = static_cast<unsigned char>(finalCol.r);
                     mapColours[index+1] = static_cast<unsigned char>(finalCol.g);
                     mapColours[index+2] = static_cast<unsigned char>(finalCol.b);
-                    // mapColours[index] = finalCol;
                 }
             }
         }

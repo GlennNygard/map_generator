@@ -17,24 +17,7 @@
 class FoliageDefinitions {
 
     public:
-
-    static const std::array<FoliageInfo, static_cast<size_t>(FoliageType::Foliage_MAX)> get_foliage_definitions() {
-        if(FoliageDefinitions::_foliageDict) {
-            return *FoliageDefinitions::_foliageDict;
-        }
-
-        std::array<FoliageInfo, static_cast<size_t>(FoliageType::Foliage_MAX)> foliageDict = {};
-
-        FoliageCommonSetup::Setup(foliageDict, 0);
-        FoliageChasmSetup::Setup(foliageDict, 1400);
-        FoliageWallHigherSetup::Setup(foliageDict, 1500);
-        FoliageWallSetup::Setup(foliageDict, 1600);
-        FoliageBorderTreeSetup::Setup(foliageDict, 1700);
-        FoliageCliffsideHighSetup::Setup(foliageDict, 1800);
-
-        FoliageDefinitions::_foliageDict = foliageDict;
-        return foliageDict;
-    }
+    static const std::array<FoliageInfo, static_cast<size_t>(FoliageType::Foliage_MAX)> get_foliage_definitions();
 
     private:
     static std::optional<std::array<FoliageInfo, static_cast<size_t>(FoliageType::Foliage_MAX)>> _foliageDict;
