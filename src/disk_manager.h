@@ -7,7 +7,7 @@
 
 #include "matrix.h"
 #include "foliage.h"
-#include "map/map_definitions.h"
+#include "map_definitions.h"
 #include "argparse.h"
 
 
@@ -32,16 +32,16 @@ public:
     /// @brief Map array size Y.
     int lengthY;
 
-    int sectionCountX;
-    int sectionCountY;
+    // int sectionCountX;
+    // int sectionCountY;
 
     MapObject(int lengthX, int lengthY) {
         lengthX = lengthX;
         lengthY = lengthY;
         map = Matrix<MapNode>(lengthX, lengthY);
 
-        sectionCountX = lengthX / MapDefinitions::SUBSECTION_SIDE_COUNT_X;
-        sectionCountY = lengthY / MapDefinitions::SUBSECTION_SIDE_COUNT_Y;
+        // sectionCountX = lengthX / MapDefinitions::SUBSECTION_SIDE_COUNT_X;
+        // sectionCountY = lengthY / MapDefinitions::SUBSECTION_SIDE_COUNT_Y;
     }
 
     MapObject(Matrix<MapNode> map) {
@@ -49,8 +49,8 @@ public:
         lengthX = map.dim_a();
         lengthY = map.dim_b();
 
-        sectionCountX = lengthX / MapDefinitions::SUBSECTION_SIDE_COUNT_X;
-        sectionCountY = lengthY / MapDefinitions::SUBSECTION_SIDE_COUNT_Y;
+        // sectionCountX = lengthX / MapDefinitions::SUBSECTION_SIDE_COUNT_X;
+        // sectionCountY = lengthY / MapDefinitions::SUBSECTION_SIDE_COUNT_Y;
     }
 
     MapObject(Matrix<int> nodeTypeMap, Matrix<FoliageType> foliageMap) {

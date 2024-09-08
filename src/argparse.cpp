@@ -32,7 +32,6 @@ std::optional<ArgValues> parse_args(int argc, char *argv[]) {
         argValues.mapNamePrefix = result["filename"].as<std::string>();
     }
 
-    argValues.mapSize = MapSize::MapSize_Small;
     if(result.count("size")) {
         std::string sizeString = result["size"].as<std::string>();
         auto itr = MapDefinitions::stringSizeMappings.find(sizeString);

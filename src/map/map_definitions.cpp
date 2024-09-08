@@ -4,7 +4,6 @@
 #include "map_definitions.h"
 #include "foliage.h"
 #include "gmath.h"
-#include "argparse.h"
 
 const std::unordered_map<std::string, MapSize> MapDefinitions::stringSizeMappings = {
     {"small", MapSize::MapSize_Small},
@@ -33,8 +32,8 @@ const LevelValues LevelValues::create_values(Vector2Int sectionCount, LevelBiome
     auto lv = LevelValues();
     lv.biome = biome;
 
-    lv.gridCountX = MapDefinitions::SUBSECTION_SIDE_COUNT_X * sectionCount.x;
-    lv.gridCountY = MapDefinitions::SUBSECTION_SIDE_COUNT_Y * sectionCount.y;
+    lv.gridCountX = MapDefinitions::SECTION_NODE_COUNT * sectionCount.x;
+    lv.gridCountY = MapDefinitions::SECTION_NODE_COUNT * sectionCount.y;
 
     lv.gridBoundsX = Vector2Int(0,lv.gridCountX);
     lv.gridBoundsY = Vector2Int(0,lv.gridCountY);

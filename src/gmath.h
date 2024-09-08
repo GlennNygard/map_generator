@@ -1,6 +1,8 @@
 #pragma once
 
 #include <string>
+#include <cmath>
+
 
 template <class T>
 inline void hash_combine(std::size_t & s, const T & v)
@@ -25,10 +27,6 @@ struct Vector2Int {
 
     auto operator<=>(const Vector2Int&) const = default;
 
-    // bool operator==(const vector2Int& other) const {
-    // 	return x == other.x && y == other.y;
-    // }
-
     Vector2Int operator-(const Vector2Int& other) {
         x -= other.x;
         y -= other.y;
@@ -39,10 +37,6 @@ struct Vector2Int {
     std::string to_string() const {
         return std::to_string(x) + std::to_string(y);
     }
-
-    // size_t hash() const {
-    //     return std::hash<std::string>()(toString());
-    // }
 };
 
 template <class T>
@@ -57,3 +51,26 @@ struct std::hash<Vector2Int> {
         return res;
     }
 };
+
+template<size_t size>
+static int get_sum(std::array<int, size> arr) {
+    int sum = 0;
+    for(int val : arr) {
+        sum += val;
+    }
+    return sum;
+}
+
+static float square_dist(Vector2Int vec) {
+    return (vec.x*vec.x* + vec.y*vec.y);
+}
+
+static float dist(Vector2Int vec) {
+    return std::sqrt(vec.x*vec.x* + vec.y*vec.y);
+}
+
+static float ease_out_cubic(float t) {
+    // Fast then slow.
+    float tMinus = t-1;
+    return tMinus*t*t+1;
+}

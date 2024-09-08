@@ -8,7 +8,7 @@
 #include <algorithm>
 
 #include "foliage.h"
-#include "map/map_constructor.h"
+#include "map_constructor.h"
 #include "disk_manager.h"
 #include "gmath.h"
 #include "argparse.h"
@@ -31,7 +31,8 @@ int main(int argc, char *argv[]) {
     // Create map name prefix.
     std::string mapNamePrefix = mapDiskManager.get_map_prefix(
         argValues, levelValues.biome);
-    for(int currentIndex = 0; currentIndex < argValues.mapCount; currentIndex++) {
+    int currentIndex = 0;
+    while(currentIndex < argValues.mapCount) {
         
         // Create map name.
         std::string mapName = mapDiskManager.get_map_name(
@@ -40,7 +41,7 @@ int main(int argc, char *argv[]) {
         // Create map.
         auto mapObjectOpt = mapConstructor.create_map(currentIndex);
         if(!mapObjectOpt) {
-            return 1;
+            continue;
         }
         MapObject mapObject = *mapObjectOpt;
 
@@ -48,6 +49,7 @@ int main(int argc, char *argv[]) {
         mapDiskManager.save_map(mapObject, mapName, mapNamePrefix, currentIndex);
         // Save thumbnail.
         mapDiskManager.save_map_thumbnail(mapObject.map, mapName, mapNamePrefix);
+        currentIndex++;
     }
 
     return 0;

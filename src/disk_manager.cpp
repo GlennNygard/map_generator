@@ -13,8 +13,8 @@
 
 #include "disk_manager.h"
 #include "foliage.h"
-#include "foliage_definitions/foliage_definitions.h"
-#include "argparse.h"
+#include "foliage_definitions.h"
+#include "logger.h"
 
 
 const std::string DiskManager::SEPARATOR = ",";
@@ -253,8 +253,8 @@ Matrix<MapNode> DiskManager::convert_string_to_map(std::string loadText) {
     int lengthX = std::stoi(content[0]);
     int lengthY = std::stoi(content[1]);
 
-    std::cout << std::format(
-        "Loading map of size {0}x{1}.", lengthX, lengthY) << std::endl;
+    logger::log(std::format(
+        "Loading map of size {0}x{1}.", lengthX, lengthY));
 
     Matrix<MapNode> map (lengthX, lengthY);
 

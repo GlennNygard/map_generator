@@ -142,8 +142,8 @@ void BiomeFoliageInfo::Setup(
                     auto allowedTypesIter = allowedTypes.find(currentFoliageType);
                     if(allowedTypesIter != allowedTypes.end()) {
                         int priority = allowedTypesIter->second;
-                        if(PossibleTypes[static_cast<int>(currentFoliageType)] <= 0) {
-                            PossibleTypes[static_cast<int>(currentFoliageType)] = priority;
+                        if(possibleTypes[static_cast<int>(currentFoliageType)] <= 0) {
+                            possibleTypes[static_cast<int>(currentFoliageType)] = priority;
                             defaultSet[defaultIndex] = currentFoliageType;
                             defaultIndex++;
                         }
@@ -153,8 +153,8 @@ void BiomeFoliageInfo::Setup(
                     auto walkableAllowedTypesIter = walkableAllowedTypes.find(currentFoliageType);
                     if(walkableAllowedTypesIter != walkableAllowedTypes.end()) {
                         int priority = walkableAllowedTypesIter->second;
-                        if(WalkablePossibleTypes[static_cast<int>(currentFoliageType)] <= 0) {
-                            WalkablePossibleTypes[static_cast<int>(currentFoliageType)] = priority;
+                        if(walkablePossibleTypes[static_cast<int>(currentFoliageType)] <= 0) {
+                            walkablePossibleTypes[static_cast<int>(currentFoliageType)] = priority;
                             walkableDefaultSet[walkableDefaultIndex] = currentFoliageType;
                             walkableDefaultIndex++;
                         }
@@ -169,41 +169,41 @@ void BiomeFoliageInfo::Setup(
 
     const int foliageLength = static_cast<int>(FoliageType::Foliage_MAX);
 
-    UpRelations = std::array<std::vector<FoliageType>, foliageLength>();
-    DownRelations = std::array<std::vector<FoliageType>, foliageLength>();
-    LeftRelations = std::array<std::vector<FoliageType>, foliageLength>();
-    RightRelations = std::array<std::vector<FoliageType>, foliageLength>();
+    upRelations = std::vector<std::vector<FoliageType>> (foliageLength);
+    downRelations = std::vector<std::vector<FoliageType>> (foliageLength);
+    leftRelations = std::vector<std::vector<FoliageType>> (foliageLength);
+    rightRelations = std::vector<std::vector<FoliageType>> (foliageLength);
 
-    UpLeftRelations = std::array<std::vector<FoliageType>, foliageLength>();
-    UpRightRelations = std::array<std::vector<FoliageType>, foliageLength>();
-    DownLeftRelations = std::array<std::vector<FoliageType>, foliageLength>();
-    DownRightRelations = std::array<std::vector<FoliageType>, foliageLength>();
+    upLeftRelations = std::vector<std::vector<FoliageType>> (foliageLength);
+    upRightRelations = std::vector<std::vector<FoliageType>> (foliageLength);
+    downLeftRelations = std::vector<std::vector<FoliageType>> (foliageLength);
+    downRightRelations = std::vector<std::vector<FoliageType>> (foliageLength);
 
 
     for(auto kvp : upRelationsDict) {
-        UpRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
+        upRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
     }
     for(auto kvp : downRelationsDict) {
-        DownRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
+        downRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
     }
     for(auto kvp : leftRelationsDict) {
-        LeftRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
+        leftRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
     }
     for(auto kvp : rightRelationsDict) {
-        RightRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
+        rightRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
     }
 
     for(auto kvp : upLeftRelationsDict) {
-        UpLeftRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
+        upLeftRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
     }
     for(auto kvp : upRightRelationsDict) {
-        UpRightRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
+        upRightRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
     }
     for(auto kvp : downLeftRelationsDict) {
-        DownLeftRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
+        downLeftRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
     }
     for(auto kvp : downRightRelationsDict) {
-        DownRightRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
+        downRightRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
     }
 }
 
@@ -221,7 +221,7 @@ std::vector<T> BiomeFoliageInfo::keysFromMap(std::unordered_map<T, V> map) {
 std::array<int,static_cast<size_t>(FoliageType::Foliage_MAX)> BiomeFoliageInfo::GetNewDefaultData() {
     std::array<int,static_cast<size_t>(FoliageType::Foliage_MAX)> remainingPossibleTypes = {};
     for(FoliageType foliageType : defaultSet) {
-        remainingPossibleTypes[(int)foliageType] = PossibleTypes[(int)foliageType];
+        remainingPossibleTypes[(int)foliageType] = possibleTypes[(int)foliageType];
     }
 
     return remainingPossibleTypes;
@@ -230,7 +230,7 @@ std::array<int,static_cast<size_t>(FoliageType::Foliage_MAX)> BiomeFoliageInfo::
 std::array<int,static_cast<size_t>(FoliageType::Foliage_MAX)> BiomeFoliageInfo::GetNewWalkableData() {
     std::array<int,static_cast<size_t>(FoliageType::Foliage_MAX)> remainingPossibleTypes = {};
     for(FoliageType foliageType : walkableDefaultSet) {
-        remainingPossibleTypes[(int)foliageType] = WalkablePossibleTypes[(int)foliageType];
+        remainingPossibleTypes[(int)foliageType] = walkablePossibleTypes[(int)foliageType];
     }
 
     return remainingPossibleTypes;

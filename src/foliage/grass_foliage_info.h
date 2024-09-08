@@ -12,40 +12,40 @@ class GrassFoliageInfo : public BiomeFoliageInfo {
 	public:
     GrassFoliageInfo() {
 
-		Setup(_allowedTypes, _walkableAllowedTypes, "GrassRelationsMap.txt");
-		StartPossibleTypes[static_cast<int>(FoliageType::Foliage_NoFoliage)] =
-			PossibleTypes[static_cast<int>(FoliageType::Foliage_NoFoliage)];
+		Setup(m_allowedTypes, m_walkableAllowedTypes, "GrassRelationsMap.txt");
+		startPossibleTypes[static_cast<int>(FoliageType::Foliage_NoFoliage)] =
+			possibleTypes[static_cast<int>(FoliageType::Foliage_NoFoliage)];
 
-		NeighbourBonus[static_cast<int>(FoliageType::Foliage_NoFoliage)] = {
+		neighbourBonus[static_cast<int>(FoliageType::Foliage_NoFoliage)] = {
 			std::pair<FoliageType, int>(FoliageType::Foliage_NoFoliage, 120),
 			std::pair<FoliageType, int>(FoliageType::Foliage_ThrottenGround, 40),
 		};
-		NeighbourBonus[static_cast<int>(FoliageType::Foliage_TreeFoliage)] = {
+		neighbourBonus[static_cast<int>(FoliageType::Foliage_TreeFoliage)] = {
 			std::pair<FoliageType, int>(FoliageType::Foliage_TreeFoliage, 80),
 			std::pair<FoliageType, int>(FoliageType::Foliage_FlowerClusterFoliage, 20),
 			// (FoliageType::Foliage_RoundBoulder, 20),
 		};
-		NeighbourBonus[static_cast<int>(FoliageType::Foliage_FlowerClusterFoliage)] = {
+		neighbourBonus[static_cast<int>(FoliageType::Foliage_FlowerClusterFoliage)] = {
 			std::pair<FoliageType, int>(FoliageType::Foliage_FlowerClusterFoliage, 20)
 		};
-		NeighbourBonus[static_cast<int>(FoliageType::Foliage_ThrottenGround)] = {
+		neighbourBonus[static_cast<int>(FoliageType::Foliage_ThrottenGround)] = {
 			std::pair<FoliageType, int>(FoliageType::Foliage_ThrottenGround, 20),
 			std::pair<FoliageType, int>(FoliageType::Foliage_VeryThrottenGround, 10),
 		};
 
-		NeighbourBonus[static_cast<int>(FoliageType::Foliage_VeryThrottenGround)] = {
+		neighbourBonus[static_cast<int>(FoliageType::Foliage_VeryThrottenGround)] = {
 			std::pair<FoliageType, int>(FoliageType::Foliage_ThrottenGround, 20),
 			std::pair<FoliageType, int>(FoliageType::Foliage_VeryThrottenGround, 40),
 			std::pair<FoliageType, int>(FoliageType::Foliage_CompletelyThrottenGround, 10),
 		};
 
-		NeighbourBonus[static_cast<int>(FoliageType::Foliage_CompletelyThrottenGround)] = {
+		neighbourBonus[static_cast<int>(FoliageType::Foliage_CompletelyThrottenGround)] = {
 			std::pair<FoliageType, int>(FoliageType::Foliage_VeryThrottenGround, 10),
 			std::pair<FoliageType, int>(FoliageType::Foliage_CompletelyThrottenGround, 20),
 		};
 
 		int treeCliffedgeToWallBonus = 4000;
-		NeighbourBonus[static_cast<int>(FoliageType::Foliage_TreeCliffedge)] = {
+		neighbourBonus[static_cast<int>(FoliageType::Foliage_TreeCliffedge)] = {
 			// (FoliageType::Foliage_TreeCliffedge, 100),
 			std::pair<FoliageType, int>(FoliageType::Foliage_WallUp, treeCliffedgeToWallBonus),
 			std::pair<FoliageType, int>(FoliageType::Foliage_WallDown, treeCliffedgeToWallBonus),
@@ -77,34 +77,34 @@ class GrassFoliageInfo : public BiomeFoliageInfo {
 		// };
 
 		int borderTreeToTreeBonus = 40;
-		NeighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeUp)] = {
+		neighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeUp)] = {
 			std::pair<FoliageType, int>(FoliageType::Foliage_TreeFoliage, borderTreeToTreeBonus)
 		};
-		NeighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeDown)] = {
+		neighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeDown)] = {
 			std::pair<FoliageType, int>(FoliageType::Foliage_TreeFoliage, borderTreeToTreeBonus)
 		};
-		NeighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeLeft)] = {
+		neighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeLeft)] = {
 			std::pair<FoliageType, int>(FoliageType::Foliage_TreeFoliage, borderTreeToTreeBonus)
 		};
-		NeighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeRight)] = {
+		neighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeRight)] = {
 			std::pair<FoliageType, int>(FoliageType::Foliage_TreeFoliage, borderTreeToTreeBonus)
 		};
 
-		NeighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeUpLeft)] = {
+		neighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeUpLeft)] = {
 			std::pair<FoliageType, int>(FoliageType::Foliage_TreeFoliage, borderTreeToTreeBonus)
 		};
-		NeighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeUpRight)] = {
+		neighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeUpRight)] = {
 			std::pair<FoliageType, int>(FoliageType::Foliage_TreeFoliage, borderTreeToTreeBonus)
 		};
-		NeighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeDownLeft)] = {
+		neighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeDownLeft)] = {
 			std::pair<FoliageType, int>(FoliageType::Foliage_TreeFoliage, borderTreeToTreeBonus)
 		};
-		NeighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeDownRight)] = {
+		neighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeDownRight)] = {
 			std::pair<FoliageType, int>(FoliageType::Foliage_TreeFoliage, borderTreeToTreeBonus)
 		};
     }
 
-	std::unordered_map<FoliageType, int> _allowedTypes = {
+	std::unordered_map<FoliageType, int> m_allowedTypes = {
 		{FoliageType::Foliage_RockClusterFoliage, 40},
 		{FoliageType::Foliage_TreeFoliage, 90},
 		{FoliageType::Foliage_TreeSmallFoliage, 10},
@@ -259,7 +259,7 @@ class GrassFoliageInfo : public BiomeFoliageInfo {
 		{FoliageType::Foliage_WallHigherMiddle, 80},
 	};
 
-	std::unordered_map<FoliageType, int> _walkableAllowedTypes = {
+	std::unordered_map<FoliageType, int> m_walkableAllowedTypes = {
 		{FoliageType::Foliage_TreeFoliage, 10},
 		{FoliageType::Foliage_TreeSmallFoliage, 2},
 		{FoliageType::Foliage_FlowerClusterFoliage, 2},
