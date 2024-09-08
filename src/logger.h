@@ -10,9 +10,8 @@
 
 namespace logger {
 
-
-    static bool RUN_PRINTS = true;
-    static bool RUN_GRID_PRINTS = false;
+    static const bool RUN_PRINTS = true;
+    static const bool RUN_GRID_PRINTS = false;
 
     static void log(std::string message) {
         if(!RUN_PRINTS) {
@@ -29,8 +28,9 @@ namespace logger {
     }
 
     template<size_t foliageSize>
-    static void log_grid(Matrix<FoliageData>& grid,
-            std::array<int, foliageSize> &walkablePossibleTypes) {
+    static void log_grid(
+            const Matrix<FoliageData>& grid,
+            const std::array<int, foliageSize> &walkablePossibleTypes) {
 
         if(!RUN_PRINTS) {
             return;
@@ -89,7 +89,8 @@ namespace logger {
         std::cout << fullStringPossible << std::endl;
     }
 
-    static void log_grid(Matrix<FoliageType>& grid) {
+    static void log_grid(
+            const Matrix<FoliageType>& grid) {
         if(!RUN_PRINTS) {
             return;
         }

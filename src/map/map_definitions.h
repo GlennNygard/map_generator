@@ -12,6 +12,11 @@ struct LevelValues {
     int gridCountX;
     int gridCountY;
 
+    int subsectionCountX;
+    int subsectionCountY;
+    int subsectionBorderedSideCountX;
+    int subsectionBorderedSideCountY;
+
     Vector2Int gridBoundsX;
     Vector2Int gridBoundsY;
 

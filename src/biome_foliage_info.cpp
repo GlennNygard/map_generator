@@ -14,14 +14,10 @@ BiomeFoliageInfo::BiomeFoliageInfo() {
     relationsDict = std::unordered_map<FoliageType, std::unordered_map<FoliageType, int>>();
 }
 
-void BiomeFoliageInfo::Setup(
+const void BiomeFoliageInfo::setup(
         std::unordered_map<FoliageType, int> allowedTypes,
         std::unordered_map<FoliageType, int> walkableAllowedTypes,
         std::string relationsFile) {
-
-    // We set up a vector for easy access later.
-    defaultSet = std::vector<FoliageType>(static_cast<size_t>(FoliageType::Foliage_MAX));
-    walkableDefaultSet = std::vector<FoliageType>(static_cast<size_t>(FoliageType::Foliage_MAX));
 
     DiskManager mdm = DiskManager();
     auto relationsPath = mdm.get_relational_map_path(relationsFile);
@@ -181,34 +177,90 @@ void BiomeFoliageInfo::Setup(
 
 
     for(auto kvp : upRelationsDict) {
-        upRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
+        upRelations[static_cast<int>(kvp.first)] = keys_from_map(kvp.second);
     }
     for(auto kvp : downRelationsDict) {
-        downRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
+        downRelations[static_cast<int>(kvp.first)] = keys_from_map(kvp.second);
     }
     for(auto kvp : leftRelationsDict) {
-        leftRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
+        leftRelations[static_cast<int>(kvp.first)] = keys_from_map(kvp.second);
     }
     for(auto kvp : rightRelationsDict) {
-        rightRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
+        rightRelations[static_cast<int>(kvp.first)] = keys_from_map(kvp.second);
     }
 
     for(auto kvp : upLeftRelationsDict) {
-        upLeftRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
+        upLeftRelations[static_cast<int>(kvp.first)] = keys_from_map(kvp.second);
     }
     for(auto kvp : upRightRelationsDict) {
-        upRightRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
+        upRightRelations[static_cast<int>(kvp.first)] = keys_from_map(kvp.second);
     }
     for(auto kvp : downLeftRelationsDict) {
-        downLeftRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
+        downLeftRelations[static_cast<int>(kvp.first)] = keys_from_map(kvp.second);
     }
     for(auto kvp : downRightRelationsDict) {
-        downRightRelations[static_cast<int>(kvp.first)] = keysFromMap(kvp.second);
+        downRightRelations[static_cast<int>(kvp.first)] = keys_from_map(kvp.second);
     }
 }
 
+std::pair<std::vector<std::vector<FoliageType>>*, Direction> BiomeFoliageInfo::get_relations_from_nodes(
+        Vector2Int lastNodePos, Vector2Int currentNodePos) {
+    // Check for up relations.
+    if(currentNodePos.x == lastNodePos.x && currentNodePos.y > lastNodePos.y) {
+        return std::make_pair(&upRelations, Direction::DirectionUp);
+        // lastNodeDirectionalRelations = &foliageInfo.upRelations;
+        // direction = Direction::DirectionUp;
+    }
+    // Check for down relations.
+    else if(currentNodePos.x == lastNodePos.x && currentNodePos.y < lastNodePos.y) {
+        return std::make_pair(&downRelations, Direction::DirectionDown);
+        // lastNodeDirectionalRelations = &foliageInfo.downRelations;
+        // direction = Direction::DirectionDown;
+    }
+    // We have moved right-wise.
+    // Check for left relations.
+    else if(currentNodePos.x < lastNodePos.x && currentNodePos.y == lastNodePos.y) {
+        return std::make_pair(&leftRelations, Direction::DirectionLeft);
+        // lastNodeDirectionalRelations = &foliageInfo.leftRelations;
+        // direction = Direction::DirectionLeft;
+    }
+    // Check for right relations.
+    else if(currentNodePos.x > lastNodePos.x && currentNodePos.y == lastNodePos.y) {
+        return std::make_pair(&rightRelations, Direction::DirectionRight);
+        // lastNodeDirectionalRelations = &foliageInfo.rightRelations;
+        // direction = Direction::DirectionRight;
+    }
+
+    // Check for down left relations.
+    else if(currentNodePos.x < lastNodePos.x && currentNodePos.y < lastNodePos.y) {
+        return std::make_pair(&downLeftRelations, Direction::DirectionDownLeft);
+        // lastNodeDirectionalRelations = &foliageInfo.downLeftRelations;
+        // direction = Direction::DirectionDownLeft;
+    }
+    // Check for down right relations.
+    else if(currentNodePos.x > lastNodePos.x && currentNodePos.y < lastNodePos.y) {
+        return std::make_pair(&downRightRelations, Direction::DirectionDownRight);
+        // lastNodeDirectionalRelations = &foliageInfo.downRightRelations;
+        // direction = Direction::DirectionDownRight;
+    }
+    // Check for up left relations.
+    else if(currentNodePos.x < lastNodePos.x && currentNodePos.y > lastNodePos.y) {
+        return std::make_pair(&upLeftRelations, Direction::DirectionUpLeft);
+        // lastNodeDirectionalRelations = &foliageInfo.upLeftRelations;
+        // direction = Direction::DirectionUpLeft;
+    }
+    // Check for up right relations.
+    else if(currentNodePos.x > lastNodePos.x && currentNodePos.y > lastNodePos.y) {
+        return std::make_pair(&upRightRelations, Direction::DirectionUpRight);
+        // lastNodeDirectionalRelations = &foliageInfo.upRightRelations;
+        // direction = Direction::DirectionUpRight;
+    }
+
+    return std::make_pair(nullptr, Direction::DirectionNone);
+}
+
 template<typename T, typename V>
-std::vector<T> BiomeFoliageInfo::keysFromMap(std::unordered_map<T, V> map) {
+std::vector<T> BiomeFoliageInfo::keys_from_map(std::unordered_map<T, V> map) {
     std::vector<T> keys;
     keys.reserve(map.size());
 
@@ -216,27 +268,4 @@ std::vector<T> BiomeFoliageInfo::keysFromMap(std::unordered_map<T, V> map) {
         keys.push_back(kv.first);
     }
     return keys;
-}
-
-std::array<int,static_cast<size_t>(FoliageType::Foliage_MAX)> BiomeFoliageInfo::GetNewDefaultData() {
-    std::array<int,static_cast<size_t>(FoliageType::Foliage_MAX)> remainingPossibleTypes = {};
-    for(FoliageType foliageType : defaultSet) {
-        remainingPossibleTypes[(int)foliageType] = possibleTypes[(int)foliageType];
-    }
-
-    return remainingPossibleTypes;
-}
-
-std::array<int,static_cast<size_t>(FoliageType::Foliage_MAX)> BiomeFoliageInfo::GetNewWalkableData() {
-    std::array<int,static_cast<size_t>(FoliageType::Foliage_MAX)> remainingPossibleTypes = {};
-    for(FoliageType foliageType : walkableDefaultSet) {
-        remainingPossibleTypes[(int)foliageType] = walkablePossibleTypes[(int)foliageType];
-    }
-
-    return remainingPossibleTypes;
-}
-
-std::array<int,static_cast<size_t>(FoliageType::Foliage_MAX)> BiomeFoliageInfo::GetNewEmptyData() {
-    std::array<int,static_cast<size_t>(FoliageType::Foliage_MAX)> remainingPossibleTypes = {};
-    return remainingPossibleTypes;
 }

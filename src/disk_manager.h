@@ -17,10 +17,6 @@ struct MapNode {
 	LevelBiome nodeBiome;
 };
 
-enum class load_error {
-    no_such_file,
-};
-
 class MapObject {
 
 public:
@@ -32,25 +28,16 @@ public:
     /// @brief Map array size Y.
     int lengthY;
 
-    // int sectionCountX;
-    // int sectionCountY;
-
     MapObject(int lengthX, int lengthY) {
         lengthX = lengthX;
         lengthY = lengthY;
         map = Matrix<MapNode>(lengthX, lengthY);
-
-        // sectionCountX = lengthX / MapDefinitions::SUBSECTION_SIDE_COUNT_X;
-        // sectionCountY = lengthY / MapDefinitions::SUBSECTION_SIDE_COUNT_Y;
     }
 
     MapObject(Matrix<MapNode> map) {
         this->map = map;
         lengthX = map.dim_a();
         lengthY = map.dim_b();
-
-        // sectionCountX = lengthX / MapDefinitions::SUBSECTION_SIDE_COUNT_X;
-        // sectionCountY = lengthY / MapDefinitions::SUBSECTION_SIDE_COUNT_Y;
     }
 
     MapObject(Matrix<int> nodeTypeMap, Matrix<FoliageType> foliageMap) {

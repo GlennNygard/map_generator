@@ -12,7 +12,11 @@ class GrassFoliageInfo : public BiomeFoliageInfo {
 	public:
     GrassFoliageInfo() {
 
-		Setup(m_allowedTypes, m_walkableAllowedTypes, "GrassRelationsMap.txt");
+		// We set up a vector for easy access later.
+    	defaultSet = std::vector<FoliageType>(static_cast<size_t>(FoliageType::Foliage_MAX));
+    	walkableDefaultSet = std::vector<FoliageType>(static_cast<size_t>(FoliageType::Foliage_MAX));
+
+		setup(m_allowedTypes, m_walkableAllowedTypes, "GrassRelationsMap.txt");
 		startPossibleTypes[static_cast<int>(FoliageType::Foliage_NoFoliage)] =
 			possibleTypes[static_cast<int>(FoliageType::Foliage_NoFoliage)];
 
