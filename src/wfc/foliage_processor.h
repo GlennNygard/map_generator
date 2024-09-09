@@ -39,19 +39,16 @@ private:
 	void prepare_section_data(
         Matrix<FoliageType> &foliageMap,
         Matrix<FoliageData> &foliageDataMap,
-        Matrix<int> &requiresPropagationMap,
+        Matrix<char> &requiresPropagationMap,
         const Matrix<FoliageData> &fullFoliageDataMap,
         const Vector2Int currentSectionPos);
 
 	void write_to_full_map(
-        const Matrix<FoliageType> &resultsFoliageMap, Matrix<FoliageData> &resultsFoliageDataMap,
-        Matrix<FoliageType> &fullFoliageMap, Matrix<FoliageData> &fullFoliageDataMap,
+        const Matrix<FoliageType> &resultsFoliageMap,
+		Matrix<FoliageData> &resultsFoliageDataMap,
+        Matrix<FoliageType> &fullFoliageMap,
+		Matrix<FoliageData> &fullFoliageDataMap,
         Vector2Int sectionPos);
-
-	void clear_subsection_from_full_grid(
-        Matrix<FoliageType>& fullFoliageMap,
-        Vector2Int sectionPos,
-        LevelValues levelValues);
 
 	void clear_subsection_from_full_grid(
 		Matrix<FoliageType>& fullFoliageMap,

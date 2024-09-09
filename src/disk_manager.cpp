@@ -21,6 +21,74 @@ const std::string DiskManager::SEPARATOR = ",";
 const std::string DiskManager::CONTENT_SEPARATOR = "-";
 
 
+/**
+ * These are use for map names when storing/getting maps to/from disk.
+ */
+const std::unordered_map<MapSize, std::string> DiskManager::MAP_SIZE_NAME_DICT = {
+    {MapSize::MapSize_Small, "Small"},
+    {MapSize::MapSize_Medium, "Medium"},
+    {MapSize::MapSize_Large, "Large"},
+    {MapSize::MapSize_VeryLarge, "VeryLarge"},
+    {MapSize::MapSize_IncrediblyLarge, "IncrediblyLarge"},
+};
+
+const std::unordered_map<MapSize, std::string> DiskManager::MAP_SIZE_ADDRESSABLE_NAME_DICT = {
+    {MapSize::MapSize_Small, "small"},
+    {MapSize::MapSize_Medium, "medium"},
+    {MapSize::MapSize_Large, "large"},
+    {MapSize::MapSize_VeryLarge, "very_large"},
+    {MapSize::MapSize_IncrediblyLarge, "incredibly_large"},
+};
+
+const std::unordered_map<MapSize, Vector2Int> DiskManager::MAP_SIZE_NODE_COUNT_DICT = {
+    {MapSize::MapSize_Small, {100,100}},
+    {MapSize::MapSize_Medium, {140,140}},
+    {MapSize::MapSize_Large, {180,180}},
+    {MapSize::MapSize_VeryLarge, {220,220}},
+    {MapSize::MapSize_IncrediblyLarge, {260,260}},
+};
+
+const std::unordered_map<LevelBiome, std::string> DiskManager::BIOME_MAPNAME_DICT = {
+    {LevelBiome::Grass, "RandomGrassMap"},
+    {LevelBiome::Snow, "RandomSnowMap"},
+};
+
+const std::unordered_map<LevelBiome, std::string> DiskManager::BIOME_ADDRESSABLE_LABEL_DICT = {
+    {LevelBiome::Grass, "map_grass"},
+    {LevelBiome::Snow, "map_snow"},
+};
+
+const std::unordered_map<LevelBiome, int> DiskManager::BIOME_MAPCOUNT_DICT = {
+    {LevelBiome::Grass, 10},
+    {LevelBiome::Snow, 100},
+};
+
+
+const std::unordered_map<int,int> DiskManager::m_mapNodeTypeMapping = std::unordered_map<int,int> {
+    {DiskManager::FLOOR_GENERIC_TYPE, FoliageHelpers::FLOOR_NODE_TYPE},
+    {DiskManager::HIGH_GENERIC_TYPE, FoliageHelpers::HIGH_GROUND_NODE_TYPE},
+    {DiskManager::BORDER_GENERIC_TYPE, FoliageHelpers::BORDER_NODE_TYPE},
+    {DiskManager::LOW_GENERIC_TYPE, FoliageHelpers::LOW_GROUND_NODE_TYPE},
+
+    {DiskManager::FLOOR_DESERT_TYPE, FoliageHelpers::FLOOR_NODE_TYPE},
+    {DiskManager::HIGH_DESERT_TYPE, FoliageHelpers::HIGH_GROUND_NODE_TYPE},
+    {DiskManager::BORDER_DESERT_TYPE, FoliageHelpers::BORDER_NODE_TYPE},
+    {DiskManager::LOW_DESERT_TYPE, FoliageHelpers::LOW_GROUND_NODE_TYPE},
+};
+
+const std::unordered_map<int, LevelBiome> DiskManager::m_mapNodeBiomeMapping = std::unordered_map<int,LevelBiome> {
+    {DiskManager::FLOOR_GENERIC_TYPE, LevelBiome::None},
+    {DiskManager::HIGH_GENERIC_TYPE, LevelBiome::None},
+    {DiskManager::BORDER_GENERIC_TYPE, LevelBiome::None},
+    {DiskManager::LOW_GENERIC_TYPE, LevelBiome::None},
+
+    {DiskManager::FLOOR_DESERT_TYPE, LevelBiome::Desert},
+    {DiskManager::HIGH_DESERT_TYPE, LevelBiome::Desert},
+    {DiskManager::BORDER_DESERT_TYPE, LevelBiome::Desert},
+    {DiskManager::LOW_DESERT_TYPE, LevelBiome::Desert},
+};
+
+
 DiskManager::DiskManager() {
 
     _relationalMapPath = std::filesystem::path (RESOURCE_PATH);
@@ -28,25 +96,25 @@ DiskManager::DiskManager() {
     _mapsThumbnailsPath = std::filesystem::path (OUTPUT_PATH) / "thumbnails";
 
     // Create reverse dict.
-    _foliageMapMapping = std::unordered_map<FoliageType, int>();
-    _mapFoliageMapping = std::unordered_map<int, FoliageType>();
+    m_foliageMapMapping = std::unordered_map<FoliageType, int>();
+    m_mapFoliageMapping = std::unordered_map<int, FoliageType>();
     auto foliageDefs = FoliageDefinitions::get_foliage_definitions();
     for(int i = 0; i < foliageDefs.size(); i++) {
         auto foliageInfo = foliageDefs[i];
         if(!foliageInfo.containsResourceData) {
             continue;
         }
-        _foliageMapMapping[static_cast<FoliageType>(i)] = foliageInfo.mapIndex;
-        _mapFoliageMapping[foliageInfo.mapIndex] = static_cast<FoliageType>(i);
+        m_foliageMapMapping[static_cast<FoliageType>(i)] = foliageInfo.mapIndex;
+        m_mapFoliageMapping[foliageInfo.mapIndex] = static_cast<FoliageType>(i);
     }
 }
 
 
 void DiskManager::save_map(
-        MapObject mapObject,
-        std::string mapName,
-        std::string mapNamePrefix,
-        int currentIndex) {
+        const MapObject &mapObject,
+        const std::string mapName,
+        const std::string mapNamePrefix,
+        const int currentIndex) {
     std::string mapPath = get_map_path(mapNamePrefix);
 
     std::filesystem::path finalPath(mapPath);
@@ -62,15 +130,15 @@ void DiskManager::save_map(
 }
 
 void DiskManager::perform_map_save(
-        Matrix<MapNode> map,
-        std::filesystem::path directoryPath,
-        std::string mapName) {
+        const Matrix<MapNode>& map,
+        const std::filesystem::path directoryPath,
+        const std::string mapName) {
 
     if(!get_path_exists(directoryPath)) {
         std::filesystem::create_directories(directoryPath);
     }
 
-    std::filesystem::path finalPath = directoryPath /= (mapName+".txt");
+    std::filesystem::path finalPath = directoryPath / (mapName+".txt");
 
     std::vector<std::string> content (
         map.dim_a() * map.dim_b() + DiskManager::INITIAL_OFFSET);
@@ -269,21 +337,18 @@ Matrix<MapNode> DiskManager::convert_string_to_map(std::string loadText) {
                 DiskManager::CONTENT_SEPARATOR);
 
             if(x == lengthX) {
-                // nodeData[1].Replace("\n", "");
                 nodeData[1] = std::regex_replace(nodeData[1], std::regex("\\n"), "");
             }
 
-            // std::string foliageString = nodeData[1].Replace("f", "");
             std::string foliageString = std::regex_replace(nodeData[1], std::regex("f"), "");
-            int mapType = std::stoi(nodeData[0]);
+            const int mapType = std::stoi(nodeData[0]);
             auto _mapNodeTypeMapping = get_map_node_type_mapping();
             mapNode.nodeType = _mapNodeTypeMapping.at(mapType);
             if(nodeData.size() == 2) {
-                mapNode.nodeBiome = _mapNodeBiomeMapping[mapType];
+                mapNode.nodeBiome = m_mapNodeBiomeMapping.at(mapType);
             }
 
             else if(nodeData.size() == 3) {
-                // std::string biomeString = nodeData[2].Replace("b", "");
                 std::string biomeString = std::regex_replace(nodeData[2], std::regex("b"), "");
                 mapNode.nodeBiome = (LevelBiome)std::stoi(biomeString);
             }
@@ -291,19 +356,18 @@ Matrix<MapNode> DiskManager::convert_string_to_map(std::string loadText) {
             try {
                 int foliageIndex = std::stoi(foliageString);
 
-                auto iter = _mapFoliageMapping.find(foliageIndex);
-                // if(_mapFoliageMapping.TryGetValue(int.Parse(foliageString), out FoliageType ft)) {
-                if(iter != _mapFoliageMapping.end()) {
+                auto iter = m_mapFoliageMapping.find(foliageIndex);
+                if(iter != m_mapFoliageMapping.end()) {
                     FoliageType ft = iter->second;
                     mapNode.foliageType = ft;
                 }
                 else {
-                    std::cout <<
-                        "_mapFoliageMapping is missing the map key: "+foliageString << std::endl;
+                    logger::log(
+                        "m_mapFoliageMapping is missing the map key: "+foliageString);
                 }
             }
             catch(const std::invalid_argument& ia) {
-                std::cerr << "Cannot convert the following value to int: "+foliageString << std::endl;
+                logger::log_error("Cannot convert the following value to int: "+foliageString);
                 mapNode.foliageType = FoliageType::Foliage_NoFoliage;
             }
 
@@ -326,7 +390,9 @@ std::optional<MapObject> DiskManager::load_map_object(std::string resourcePath) 
 }
 
 void DiskManager::save_map_thumbnail(
-        Matrix<MapNode> fullMap, std::string mapName, std::string mapNamePrefix) {
+        const Matrix<MapNode>& fullMap,
+        const std::string mapName,
+        const std::string mapNamePrefix) {
 
     std::filesystem::path directoryPath = _mapsThumbnailsPath / mapNamePrefix;
 

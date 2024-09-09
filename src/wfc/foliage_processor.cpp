@@ -61,7 +61,7 @@ std::pair<Matrix<FoliageType>, bool> FoliageProcessor::mark_foliage_nodes(
         subsectionBorderedSideCountX,
         subsectionBorderedSideCountY);
 
-    Matrix<int> requiresPropagationMap (
+    Matrix<char> requiresPropagationMap (
         subsectionBorderedSideCountX,
         subsectionBorderedSideCountY);
 
@@ -295,14 +295,6 @@ std::pair<Matrix<FoliageType>, bool> FoliageProcessor::mark_foliage_nodes(
     // If generation failed, we mark the remaining nodes as NoFoliage.
     // This is to help with debugging.
     if(failed) {
-        while(sectionStack.size() > 0) {
-
-            Vector2Int currentSectionPos = sectionStack.top();
-            sectionStack.pop();
-
-            clear_subsection_from_full_grid(
-                fullFoliageMap, currentSectionPos, levelValues);
-        }
         logger::log("GENERATION FAILED.");
     }
 
@@ -397,7 +389,7 @@ void FoliageProcessor::prepare_full_data(
 void FoliageProcessor::prepare_section_data(
         Matrix<FoliageType> &foliageMap,
         Matrix<FoliageData> &foliageDataMap,
-        Matrix<int> &requiresPropagationMap,
+        Matrix<char> &requiresPropagationMap,
         const Matrix<FoliageData> &fullFoliageDataMap,
         const Vector2Int currentSectionPos) {
 
@@ -502,35 +494,6 @@ void FoliageProcessor::write_to_full_map(
                 fullFoliageDataMap[fullX][fullY].set_remaining_from_array(
                     resultsFoliageDataMap[x][y].get_remaining_possible_types());
             }
-        }
-    }
-}
-
-void FoliageProcessor::clear_subsection_from_full_grid(
-        Matrix<FoliageType>& fullFoliageMap,
-        Vector2Int sectionPos,
-        LevelValues levelValues) {
-
-    int secX = sectionPos.x;
-    int secY = sectionPos.y;
-
-    for(int x = 0; x < levelValues.subsectionBorderedSideCountX; x++) {
-        for(int y = 0; y < levelValues.subsectionBorderedSideCountY; y++) {
-            Vector2Int fullCoord = relations::convert_to_global(secX, secY, x, y);
-            int fullX = fullCoord.x;
-            int fullY = fullCoord.y;
-
-            if(fullX < 0 || fullY < 0 ||
-                    fullX >= fullFoliageMap.dim_a() ||
-                    fullY >= fullFoliageMap.dim_b()) {
-                continue;
-            }
-
-            if(fullFoliageMap[fullX][fullY] != FoliageType::Foliage_NoSelection) {
-                continue;
-            }
-
-            fullFoliageMap[fullX][fullY] = FoliageType::Foliage_CompletelyThrottenGround;
         }
     }
 }

@@ -93,44 +93,17 @@ public:
     /**
      * These are use for map names when storing/getting maps to/from disk.
      */
-    const std::unordered_map<MapSize, std::string> MAP_SIZE_NAME_DICT = {
-        {MapSize::MapSize_Small, "Small"},
-        {MapSize::MapSize_Medium, "Medium"},
-        {MapSize::MapSize_Large, "Large"},
-        {MapSize::MapSize_VeryLarge, "VeryLarge"},
-        {MapSize::MapSize_IncrediblyLarge, "IncrediblyLarge"},
-    };
+    static const std::unordered_map<MapSize, std::string> MAP_SIZE_NAME_DICT;
 
-    const std::unordered_map<MapSize, std::string> MAP_SIZE_ADDRESSABLE_NAME_DICT = {
-        {MapSize::MapSize_Small, "small"},
-        {MapSize::MapSize_Medium, "medium"},
-        {MapSize::MapSize_Large, "large"},
-        {MapSize::MapSize_VeryLarge, "very_large"},
-        {MapSize::MapSize_IncrediblyLarge, "incredibly_large"},
-    };
+    static const std::unordered_map<MapSize, std::string> MAP_SIZE_ADDRESSABLE_NAME_DICT;
 
-    const std::unordered_map<MapSize, std::array<int, 2>> MAP_SIZE_NODE_COUNT_DICT = {
-        {MapSize::MapSize_Small, {100,100}},
-        {MapSize::MapSize_Medium, {140,140}},
-        {MapSize::MapSize_Large, {180,180}},
-        {MapSize::MapSize_VeryLarge, {220,220}},
-        {MapSize::MapSize_IncrediblyLarge, {260,260}},
-    };
+    static const std::unordered_map<MapSize, Vector2Int> MAP_SIZE_NODE_COUNT_DICT;
 
-    const std::unordered_map<LevelBiome, std::string> BIOME_MAPNAME_DICT = {
-        {LevelBiome::Grass, "RandomGrassMap"},
-        {LevelBiome::Snow, "RandomSnowMap"},
-    };
+    static const std::unordered_map<LevelBiome, std::string> BIOME_MAPNAME_DICT;
 
-    const std::unordered_map<LevelBiome, std::string> BIOME_ADDRESSABLE_LABEL_DICT = {
-        {LevelBiome::Grass, "map_grass"},
-        {LevelBiome::Snow, "map_snow"},
-    };
+    static const std::unordered_map<LevelBiome, std::string> BIOME_ADDRESSABLE_LABEL_DICT;
 
-    const std::unordered_map<LevelBiome, int> BIOME_MAPCOUNT_DICT = {
-        {LevelBiome::Grass, 10},
-        {LevelBiome::Snow, 100},
-    };
+    static const std::unordered_map<LevelBiome, int> BIOME_MAPCOUNT_DICT;
 
 
     /**
@@ -138,7 +111,7 @@ public:
      * These integers are written to map files and should
      * never be changed.
      */
-    std::unordered_map<int, FoliageType> _mapFoliageMapping;
+    std::unordered_map<int, FoliageType> m_mapFoliageMapping;
     static std::string join(const std::vector<std::string> &lst, const std::string &delim);
 
 
@@ -169,20 +142,14 @@ public:
      * folder.
      */
     void save_map(
-        MapObject mapObject,
-        std::string mapName,
-        std::string mapNamePrefix,
-        int currentIndex);
+        const MapObject& mapObject,
+        const std::string mapName,
+        const std::string mapNamePrefix,
+        const int currentIndex);
     void save_map_thumbnail(
-        Matrix<MapNode> fullMap, std::string mapName, std::string mapNamePrefix);
-
-    std::unordered_map<FoliageType, int> get_foliage_map_mapping() {
-        return _foliageMapMapping;
-    }
-
-    std::unordered_map<int, int> get_map_node_type_mapping() {
-        return _mapNodeTypeMapping;
-    }
+        const Matrix<MapNode>& fullMap,
+        const std::string mapName,
+        const std::string mapNamePrefix);
 
 private:
 
@@ -195,38 +162,26 @@ private:
 
     std::filesystem::path _relationalMapPath;
 
-    std::unordered_map<FoliageType, int> _foliageMapMapping;
-    std::unordered_map<int, int> _mapNodeTypeMapping = std::unordered_map<int,int> {
-        {FLOOR_GENERIC_TYPE, FoliageHelpers::FLOOR_NODE_TYPE},
-        {HIGH_GENERIC_TYPE, FoliageHelpers::HIGH_GROUND_NODE_TYPE},
-        {BORDER_GENERIC_TYPE, FoliageHelpers::BORDER_NODE_TYPE},
-        {LOW_GENERIC_TYPE, FoliageHelpers::LOW_GROUND_NODE_TYPE},
+    std::unordered_map<FoliageType, int> m_foliageMapMapping;
 
-        {FLOOR_DESERT_TYPE, FoliageHelpers::FLOOR_NODE_TYPE},
-        {HIGH_DESERT_TYPE, FoliageHelpers::HIGH_GROUND_NODE_TYPE},
-        {BORDER_DESERT_TYPE, FoliageHelpers::BORDER_NODE_TYPE},
-        {LOW_DESERT_TYPE, FoliageHelpers::LOW_GROUND_NODE_TYPE},
-    };
-
-    std::unordered_map<int, LevelBiome> _mapNodeBiomeMapping = std::unordered_map<int,LevelBiome> {
-        {FLOOR_GENERIC_TYPE, LevelBiome::None},
-        {HIGH_GENERIC_TYPE, LevelBiome::None},
-        {BORDER_GENERIC_TYPE, LevelBiome::None},
-        {LOW_GENERIC_TYPE, LevelBiome::None},
-
-        {FLOOR_DESERT_TYPE, LevelBiome::Desert},
-        {HIGH_DESERT_TYPE, LevelBiome::Desert},
-        {BORDER_DESERT_TYPE, LevelBiome::Desert},
-        {LOW_DESERT_TYPE, LevelBiome::Desert},
-    };
+    static const std::unordered_map<int, int> m_mapNodeTypeMapping;
+    static const std::unordered_map<int, LevelBiome> m_mapNodeBiomeMapping;
 
     void perform_map_save(
-        Matrix<MapNode> map,
-        std::filesystem::path directoryPath,
-        std::string mapName);
+        const Matrix<MapNode>& map,
+        const std::filesystem::path directoryPath,
+        const std::string mapName);
     void write_to_file(std::string data, std::string path);
     int node_data_to_map_type(int nodeType, LevelBiome nodeBiome);
     std::string get_map_name_prefix(LevelBiome biome, MapSize mapSize);
 
     Matrix<MapNode> convert_string_to_map(std::string loadText);
+
+    std::unordered_map<FoliageType, int> get_foliage_map_mapping() {
+        return m_foliageMapMapping;
+    }
+
+    std::unordered_map<int, int> get_map_node_type_mapping() {
+        return m_mapNodeTypeMapping;
+    }
 };
