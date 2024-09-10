@@ -15,6 +15,12 @@ FoliageProcessor::FoliageProcessor(BiomeFoliageInfo biomeFoliageInfo, bool verbo
     m_issuesFound = false;
     m_biomeFoliageInfo = biomeFoliageInfo;
     m_verboseLogging = verboseLogging;
+
+    m_recursionCount = 0;
+	m_emptyRecursionCount = 0;
+	m_emptyRecursionEarlyCount = 0;
+
+	m_stillPossibleBuffer = {};
 }
 
 std::chrono::milliseconds FoliageProcessor::get_time() {
@@ -27,7 +33,7 @@ float FoliageProcessor::format_time(long count) {
     return static_cast<float>(count) / 1000;
 }
 
-std::pair<Matrix<FoliageType>, bool> FoliageProcessor::mark_foliage_nodes(
+std::pair<Matrix<int>, bool> FoliageProcessor::mark_foliage_nodes(
         const LevelValues levelValues) {
 
     const int fullMapSideCountX = levelValues.gridCountX;
@@ -41,7 +47,7 @@ std::pair<Matrix<FoliageType>, bool> FoliageProcessor::mark_foliage_nodes(
 
     const int maxAttempts = subsectionCountX*subsectionCountY * 3;
 
-    Matrix<FoliageType> fullFoliageMap(
+    Matrix<int> fullFoliageMap(
         fullMapSideCountX, fullMapSideCountY);
     Matrix<FoliageData> fullFoliageDataMap(
         fullMapSideCountX, fullMapSideCountY);
@@ -54,7 +60,7 @@ std::pair<Matrix<FoliageType>, bool> FoliageProcessor::mark_foliage_nodes(
     Vector2Int furthestSectionPos = {};
 
     // Local foliage maps.
-    Matrix<FoliageType> foliageMap (
+    Matrix<int> foliageMap (
         subsectionBorderedSideCountX,
         subsectionBorderedSideCountY);
     Matrix<FoliageData> foliageDataMap (
@@ -317,8 +323,8 @@ std::pair<Matrix<FoliageType>, bool> FoliageProcessor::mark_foliage_nodes(
 };
 
 void FoliageProcessor::prepare_full_data(
-        Matrix<FoliageData> &fullFoliageDataMap,
-        const LevelValues levelValues) {
+        Matrix<FoliageData>& fullFoliageDataMap,
+        const LevelValues& levelValues) {
     std::vector<Vector2Int> forcedWalkableSubsections = {};
 
     int halfX = (levelValues.subsectionCountX/2);
@@ -387,10 +393,10 @@ void FoliageProcessor::prepare_full_data(
 }
 
 void FoliageProcessor::prepare_section_data(
-        Matrix<FoliageType> &foliageMap,
-        Matrix<FoliageData> &foliageDataMap,
-        Matrix<char> &requiresPropagationMap,
-        const Matrix<FoliageData> &fullFoliageDataMap,
+        Matrix<int>& foliageMap,
+        Matrix<FoliageData>& foliageDataMap,
+        Matrix<char>& requiresPropagationMap,
+        const Matrix<FoliageData>& fullFoliageDataMap,
         const Vector2Int currentSectionPos) {
 
     for(int x = 0; x < foliageMap.dim_a(); x++) {
@@ -401,7 +407,7 @@ void FoliageProcessor::prepare_section_data(
             int fullY = fullCoord.y;
 
             // Reset main array.
-            foliageMap[x][y] = FoliageType::Foliage_NoSelection;
+            foliageMap[x][y] = FoliageHelpers::NO_SELECTION_INDEX;
 
             FoliageData foliageData = foliageDataMap[x][y];
 
@@ -409,7 +415,7 @@ void FoliageProcessor::prepare_section_data(
             if(fullX < 0 || fullY < 0 ||
                     fullX >= fullFoliageDataMap.dim_a() ||
                     fullY >= fullFoliageDataMap.dim_b()) {
-                foliageData.set_remaining_from_array(
+                foliageData.set_remaining_from_list(
                     m_biomeFoliageInfo.get_walkable_possible_types());
                 foliageDataMap[x][y] = foliageData;
                 requiresPropagationMap[x][y] = true;
@@ -429,7 +435,7 @@ void FoliageProcessor::prepare_section_data(
             // Node has previous data.
             if(fullNodeFoliageData.hasData && fullNodeFoliageData.hasData) {
                 if(x < 1 || y < 1 || x >= foliageMap.dim_a()-1 || y >= foliageMap.dim_b()-1) {
-                    foliageData.set_remaining_from_array(
+                    foliageData.set_remaining_from_list(
                         fullNodeFoliageData.get_remaining_possible_types());
                     foliageDataMap[x][y] = foliageData;
                     requiresPropagationMap[x][y] = true;
@@ -444,7 +450,7 @@ void FoliageProcessor::prepare_section_data(
                         y < MapDefinitions::SUBSECTION_BORDER ||
                         x >= foliageMap.dim_a()-MapDefinitions::SUBSECTION_BORDER ||
                         y >= foliageMap.dim_b()-MapDefinitions::SUBSECTION_BORDER) {
-                    foliageData.set_remaining_from_array(
+                    foliageData.set_remaining_from_list(
                         m_biomeFoliageInfo.get_walkable_possible_types());
                     requiresPropagationMap[x][y] = true;
 
@@ -456,11 +462,11 @@ void FoliageProcessor::prepare_section_data(
             requiresPropagationMap[x][y] = forcedWalkable;
 
             if(forcedWalkable) {
-                foliageData.set_remaining_from_array(
+                foliageData.set_remaining_from_list(
                     m_biomeFoliageInfo.get_walkable_possible_types());
             }
             else {
-                foliageData.set_remaining_from_array(
+                foliageData.set_remaining_from_list(
                     m_biomeFoliageInfo.get_possible_types());
             }
             foliageDataMap[x][y] = foliageData;
@@ -469,9 +475,9 @@ void FoliageProcessor::prepare_section_data(
 }
 
 void FoliageProcessor::write_to_full_map(
-        const Matrix<FoliageType> &resultsFoliageMap,
+        const Matrix<int> &resultsFoliageMap,
         Matrix<FoliageData> &resultsFoliageDataMap,
-        Matrix<FoliageType> &fullFoliageMap,
+        Matrix<int> &fullFoliageMap,
         Matrix<FoliageData> &fullFoliageDataMap,
         Vector2Int sectionPos) {
     // Write back to full map without borders.
@@ -491,7 +497,7 @@ void FoliageProcessor::write_to_full_map(
             if(x >= 1 && y >= 1 &&
                     x < resultsFoliageMap.dim_a()-1 &&
                     y < resultsFoliageMap.dim_b()-1) {
-                fullFoliageDataMap[fullX][fullY].set_remaining_from_array(
+                fullFoliageDataMap[fullX][fullY].set_remaining_from_list(
                     resultsFoliageDataMap[x][y].get_remaining_possible_types());
             }
         }
@@ -499,7 +505,7 @@ void FoliageProcessor::write_to_full_map(
 }
 
 void FoliageProcessor::clear_subsection_from_full_grid(
-        Matrix<FoliageType>& fullFoliageMap,
+        Matrix<int>& fullFoliageMap,
         Matrix<FoliageData>& fullFoliageDataMap,
         const Vector2Int sectionPos) {
 
@@ -513,7 +519,7 @@ void FoliageProcessor::clear_subsection_from_full_grid(
                 continue;
             }
 
-            fullFoliageMap[fullX][fullY] = FoliageType::Foliage_NoSelection;
+            fullFoliageMap[fullX][fullY] = FoliageHelpers::NO_SELECTION_INDEX;
 
             if(x >= 1 && y >= 1 &&
                     x < MapDefinitions::SUBSECTION_FULL_SIZE-1 &&
@@ -527,11 +533,11 @@ void FoliageProcessor::clear_subsection_from_full_grid(
                     // If we are within a 1 tile border, but not within the proper border
                     // (right side border excluded).
                     if(fullFoliageDataMap[fullX][fullY].isWalkableOnly) {
-                        fullFoliageDataMap[fullX][fullY].set_remaining_from_array(
+                        fullFoliageDataMap[fullX][fullY].set_remaining_from_list(
                             m_biomeFoliageInfo.get_walkable_possible_types());
                     }
                     else {
-                        fullFoliageDataMap[fullX][fullY].set_remaining_from_array(
+                        fullFoliageDataMap[fullX][fullY].set_remaining_from_list(
                             m_biomeFoliageInfo.get_possible_types());
                     }
                 }
@@ -547,8 +553,8 @@ void FoliageProcessor::clear_subsection_from_full_grid(
     }
 }
 
-std::optional<std::pair<Matrix<FoliageType>, Matrix<FoliageData>>> FoliageProcessor::process_subsection(
-        Matrix<FoliageType>& foliageMap,
+std::optional<std::pair<Matrix<int>, Matrix<FoliageData>>> FoliageProcessor::process_subsection(
+        Matrix<int>& foliageMap,
         Matrix<FoliageData>& foliageDataMap) {
 
     m_issuesFound = false;
@@ -585,7 +591,7 @@ std::optional<std::pair<Matrix<FoliageType>, Matrix<FoliageData>>> FoliageProces
 }
 
 Vector2Int FoliageProcessor::get_next_best_node(
-        std::unordered_set<Vector2Int> remainingNodes,
+        const std::unordered_set<Vector2Int>& remainingNodes,
         Matrix<FoliageData>& foliageDataGrid) {
     float bestEntropy = std::numeric_limits<float>::max();
     Vector2Int bestNode = (*remainingNodes.begin());
@@ -610,20 +616,20 @@ Vector2Int FoliageProcessor::get_next_best_node(
 
 bool FoliageProcessor::assign_foliage(
         const Vector2Int currentNodePos,
-        const FoliageType newType,
+        const int newType,
         BiomeFoliageInfo& foliageInfo,
-        Matrix<FoliageType>& foliageMap,
+        Matrix<int>& foliageMap,
         Matrix<FoliageData>& foliageDataMap) {
 
     FoliageData nodeData = foliageDataMap[currentNodePos.x][currentNodePos.y];
 
-    FoliageType currentFoliageType = newType;
-    if(currentFoliageType == FoliageType::Foliage_NoSelection) {
+    int currentFoliageType = newType;
+    if(currentFoliageType == FoliageHelpers::NO_SELECTION_INDEX) {
 
         currentFoliageType = make_selection(
             nodeData.get_remaining_possible_types(),
             foliageInfo.get_possible_types());
-        if(currentFoliageType == FoliageType::Foliage_NoSelection) {
+        if(currentFoliageType == FoliageHelpers::NO_SELECTION_INDEX) {
             // Something went wrong selecting the next type.
             // Most likely there are no avilable foliage types left.
             // Generation will have to be re-done.
@@ -641,7 +647,7 @@ bool FoliageProcessor::assign_foliage(
             currentNodePos, MapDefinitions::SUBSECTION_FULL_SIZE);
         for(auto neighbourPos : neighbours) {
             auto selectedFoliageType = foliageMap[neighbourPos.x][neighbourPos.y];
-            if(selectedFoliageType != FoliageType::Foliage_NoSelection) {
+            if(selectedFoliageType != FoliageHelpers::NO_SELECTION_INDEX) {
                 continue;
             }
             auto neighbourData = foliageDataMap[neighbourPos.x][neighbourPos.y];
@@ -664,7 +670,7 @@ bool FoliageProcessor::assign_foliage(
 
     foliageMap[currentNodePos.x][currentNodePos.y] = currentFoliageType;
 
-    std::array<int, static_cast<size_t>(FoliageType::Foliage_MAX)> newRemainingPossibleTypes = {};
+    std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT> newRemainingPossibleTypes = {};
     newRemainingPossibleTypes[static_cast<int>(currentFoliageType)] = 1;
 
     bool success = update_possible_types(
@@ -675,12 +681,12 @@ bool FoliageProcessor::assign_foliage(
     return success;
 }
 
-template<size_t size>
+template<size_t foliageCount>
 bool FoliageProcessor::update_possible_types(
         const Vector2Int initialCurrentNodePos,
-        const std::array<int, size>& remainingPossibleTypes,
+        const std::array<int, foliageCount>& remainingPossibleTypes,
         BiomeFoliageInfo& foliageInfo,
-        Matrix<FoliageType>& foliageMap,
+        Matrix<int>& foliageMap,
         Matrix<FoliageData>& foliageDataMap){
 
     Matrix<int> propagatedNodes (
@@ -701,7 +707,7 @@ bool FoliageProcessor::update_possible_types(
 
         for(Vector2Int nnp : unfilteredNeighbours) {
 
-            if(foliageMap[nnp.x][nnp.y] != FoliageType::Foliage_NoSelection) {
+            if(foliageMap[nnp.x][nnp.y] != FoliageHelpers::NO_SELECTION_INDEX) {
                 continue;
             }
 
@@ -741,13 +747,13 @@ bool FoliageProcessor::update_possible_types(
     return true;
 }
 
-template<size_t size>
+template<size_t foliageCount>
 bool FoliageProcessor::update_possible_types_recursively(
         const Vector2Int lastNodePos,
         const Vector2Int currentNodePos,
         BiomeFoliageInfo& foliageInfo,
-        const std::array<int, size>& lastNodePossibleTypes,
-        Matrix<FoliageType>& foliageMap,
+        const std::array<int, foliageCount>& lastNodePossibleTypes,
+        Matrix<int>& foliageMap,
         Matrix<FoliageData>& foliageDataMap,
         Matrix<int>& propagatedNodes,
         std::queue<std::pair<Vector2Int,Vector2Int>>& actionQueue) {
@@ -762,10 +768,10 @@ bool FoliageProcessor::update_possible_types_recursively(
     // remaining possible types all have in common.
     // These are no longer viable as possible neighbours.
     if(!lastNodeDirectionalRelations) {
-        std::cout << "Directional WFC array does not exist, or could not be found." << std::endl;
+        logger::log("Directional WFC array does not exist, or could not be found.");
     }
 
-    std::array<int, size> stillPossibleItems = {};
+    m_stillPossibleBuffer.fill(0);
 
     for(int foliageIndex = 0; foliageIndex < lastNodePossibleTypes.size(); foliageIndex++) {
         // This foliage was not possible from the last node.
@@ -777,12 +783,11 @@ bool FoliageProcessor::update_possible_types_recursively(
             continue;
         }
         for(auto foliageType : relationFoliageTypes) {
-
-            stillPossibleItems[static_cast<int>(foliageType)] = 1;
+            m_stillPossibleBuffer[foliageType] = 1;
         }
     }
 
-    FoliageData nodeData = foliageDataMap[currentNodePos.x][currentNodePos.y];
+    FoliageData& nodeData = foliageDataMap[currentNodePos.x][currentNodePos.y];
     auto remainingPossibleTypes = nodeData.get_remaining_possible_types();
 
     int remainingCount = 0;
@@ -794,7 +799,7 @@ bool FoliageProcessor::update_possible_types_recursively(
             continue;
         }
 
-        if(stillPossibleItems[foliageIndex] <= 0) {
+        if(m_stillPossibleBuffer[foliageIndex] <= 0) {
             remainingPossibleTypes[foliageIndex] = 0;
             newlyRemovedCount++;
             continue;
@@ -809,7 +814,6 @@ bool FoliageProcessor::update_possible_types_recursively(
     }
 
     nodeData.set_remaining_possible_types(remainingPossibleTypes);
-    foliageDataMap[currentNodePos.x][currentNodePos.y] = nodeData;
 
     if(remainingCount == 0) {
         if(m_verboseLogging) {
@@ -880,7 +884,7 @@ bool FoliageProcessor::update_possible_types_recursively(
         if(propagatedNodes[nnp.x][nnp.y]) {
             continue;
         }
-        if(foliageMap[nnp.x][nnp.y] != FoliageType::Foliage_NoSelection) {
+        if(foliageMap[nnp.x][nnp.y] != FoliageHelpers::NO_SELECTION_INDEX) {
             continue;
         }
 
@@ -893,10 +897,10 @@ bool FoliageProcessor::update_possible_types_recursively(
     return true;
 }
 
-template<size_t size>
-FoliageType FoliageProcessor::make_selection(
-        const std::array<int, size>& possibleTypes,
-        const std::array<int, size>& mainWeights) {
+template<size_t foliageCount>
+int FoliageProcessor::make_selection(
+        const std::array<int, foliageCount>& possibleTypes,
+        const std::array<int, foliageCount>& mainWeights) {
 
     // Tally total score.
     int total = 0;
@@ -910,7 +914,7 @@ FoliageType FoliageProcessor::make_selection(
     }
 
     if(total == 0) {
-        return FoliageType::Foliage_NoSelection;
+        return FoliageHelpers::NO_SELECTION_INDEX;
     }
 
     // We do this to have the value scale together with the node size.
@@ -923,8 +927,8 @@ FoliageType FoliageProcessor::make_selection(
         }
         currentVal += mainWeights[foliageIndex] + typeWeight;
         if(randomVal < currentVal) {
-            return static_cast<FoliageType>(foliageIndex);
+            return static_cast<int>(foliageIndex);
         }
     }
-    return FoliageType::Foliage_NoSelection;
+    return FoliageHelpers::NO_SELECTION_INDEX;
 }

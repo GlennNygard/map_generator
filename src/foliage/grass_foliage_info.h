@@ -5,6 +5,7 @@
 
 #include "foliage.h"
 #include "biome_foliage_info.h"
+#include "foliage_definitions.h"
 
 
 class GrassFoliageInfo : public BiomeFoliageInfo {
@@ -12,270 +13,252 @@ class GrassFoliageInfo : public BiomeFoliageInfo {
 	public:
     GrassFoliageInfo() {
 
+		const size_t foliageCount = foliagedef::get_foliage_definitions().get_foliage_count();
+
+		m_allowedTypes = {
+			{toFI("RockClusterFoliage"), 40},
+			{toFI("TreeFoliage"), 90},
+			{toFI("TreeSmallFoliage"), 10},
+			{toFI("TreeCliffedge"), 400},
+			{toFI("FlowerClusterFoliage"), 30},
+			{toFI("MonumentCluster"), 1},
+			{toFI("RoundBoulder"), 1},
+			{toFI("FlatStone"), 3},
+			// Requires ground +3.
+			{toFI("FlatStoneDesert"), 5},
+			{toFI("StoneCircle"), 3},
+			{toFI("NoFoliage"), 120},
+
+			{toFI("ThrottenGround"), 10},
+			{toFI("VeryThrottenGround"), 10},
+			{toFI("CompletelyThrottenGround"), 10},
+
+			{toFI("BorderTreeUp"), 30},
+			{toFI("BorderTreeDown"), 30},
+			{toFI("BorderTreeLeft"), 30},
+			{toFI("BorderTreeRight"), 30},
+
+			{toFI("BorderTreeUpLeft"), 4},
+			{toFI("BorderTreeUpRight"), 4},
+			{toFI("BorderTreeDownLeft"), 4},
+			{toFI("BorderTreeDownRight"), 4},
+
+			{toFI("BorderTreeMiddle"), 6},
+
+			{toFI("ChasmWallUp"), 500},
+			{toFI("ChasmWallDown"), 500},
+			{toFI("ChasmWallLeft"), 500},
+			{toFI("ChasmWallRight"), 500},
+
+			{toFI("ChasmWallUpLeft"), 4},
+			{toFI("ChasmWallUpRight"), 4},
+			{toFI("ChasmWallDownLeft"), 4},
+			{toFI("ChasmWallDownRight"), 4},
+
+			{toFI("ChasmWallCenterUpLeft"), 4},
+			{toFI("ChasmWallCenterUpRight"), 4},
+			{toFI("ChasmWallCenterDownLeft"), 4},
+			{toFI("ChasmWallCenterDownRight"), 4},
+
+
+
+			{toFI("ChasmWallInsideUp"), 100},
+			{toFI("ChasmWallInsideDown"), 100},
+			{toFI("ChasmWallInsideLeft"), 100},
+			{toFI("ChasmWallInsideRight"), 100},
+
+
+			{toFI("ChasmWallCenterInsideUpLeft"), 4},
+			{toFI("ChasmWallCenterInsideUpRight"), 4},
+			{toFI("ChasmWallCenterInsideDownLeft"), 4},
+			{toFI("ChasmWallCenterInsideDownRight"), 4},
+
+			{toFI("ChasmWallInsideUpLeft"), 2},
+			{toFI("ChasmWallInsideUpRight"), 2},
+			{toFI("ChasmWallInsideDownLeft"), 2},
+			{toFI("ChasmWallInsideDownRight"), 2},
+
+			{toFI("ChasmWallDiagonalUpLeft"), 10},
+			{toFI("ChasmWallDiagonalUpRight"), 10},
+			{toFI("ChasmWallDiagonalDownLeft"), 10},
+			{toFI("ChasmWallDiagonalDownRight"), 10},
+
+			{toFI("ChasmWallFrontBackUp"), 30},
+			{toFI("ChasmWallFrontBackLeft"), 30},
+
+			{toFI("ChasmMiddle"), 20},
+
+
+
+			{toFI("WallUp"), 20},
+			{toFI("WallDown"), 20},
+			{toFI("WallLeft"), 20},
+			{toFI("WallRight"), 10},
+
+			{toFI("WallUpLeft"), 10},
+			{toFI("WallUpRight"), 10},
+			{toFI("WallDownLeft"), 10},
+			{toFI("WallDownRight"), 10},
+
+			{toFI("WallCenterInsideUpLeft"), 20},
+			{toFI("WallCenterInsideUpRight"), 20},
+			{toFI("WallCenterInsideDownLeft"), 20},
+			{toFI("WallCenterInsideDownRight"), 20},
+
+			{toFI("WallThreeUp"), 2},
+			{toFI("WallThreeDown"), 2},
+			{toFI("WallThreeLeft"), 2},
+			{toFI("WallThreeRight"), 2},
+
+			{toFI("WallFrontBackUp"), 2},
+			{toFI("WallFrontBackLeft"), 2},
+
+			{toFI("WallAll"), 4},
+
+			{toFI("WallMiddle"), 200},
+
+
+			{toFI("WallDiagonalUpLeft"), 10},
+			{toFI("WallDiagonalUpRight"), 10},
+			{toFI("WallDiagonalDownLeft"), 10},
+			{toFI("WallDiagonalDownRight"), 10},
+
+
+
+			{toFI("WallHigherUp"), 200},
+			{toFI("WallHigherDown"), 200},
+			{toFI("WallHigherLeft"), 200},
+			{toFI("WallHigherRight"), 200},
+
+			{toFI("WallHigherUpLeft"), 4},
+			{toFI("WallHigherUpRight"), 4},
+			{toFI("WallHigherDownLeft"), 4},
+			{toFI("WallHigherDownRight"), 4},
+
+			{toFI("WallHigherThreeUp"), 4},
+			{toFI("WallHigherThreeDown"), 4},
+			{toFI("WallHigherThreeLeft"), 4},
+			{toFI("WallHigherThreeRight"), 4},
+
+			{toFI("WallHigherFrontBackUp"), 4},
+			{toFI("WallHigherFrontBackLeft"), 4},
+
+			// {WallHigherAll, 10},
+
+			{toFI("WallHigherMiddle"), 80},
+		};
+
+		m_walkableAllowedTypes = {
+			{toFI("TreeFoliage"), 10},
+			{toFI("TreeSmallFoliage"), 2},
+			{toFI("FlowerClusterFoliage"), 2},
+			{toFI("PlantClusterFoliage"), 1},
+			// {MonumentCluster, 1},
+			// {RoundBoulder, 1},
+			{toFI("FlatStone"), 3},
+			{toFI("StoneCircle"), 6},
+			{toFI("NoFoliage"), 220},
+
+			{toFI("ThrottenGround"), 10},
+			{toFI("VeryThrottenGround"), 10},
+			{toFI("CompletelyThrottenGround"), 10},
+		};
+
 		// We set up a vector for easy access later.
-    	defaultSet = std::vector<FoliageType>(static_cast<size_t>(FoliageType::Foliage_MAX));
-    	walkableDefaultSet = std::vector<FoliageType>(static_cast<size_t>(FoliageType::Foliage_MAX));
 
 		setup(m_allowedTypes, m_walkableAllowedTypes, "GrassRelationsMap.txt");
-		startPossibleTypes[static_cast<int>(FoliageType::Foliage_NoFoliage)] =
-			possibleTypes[static_cast<int>(FoliageType::Foliage_NoFoliage)];
+		startPossibleTypes[static_cast<int>(toFI("NoFoliage"))] =
+			possibleTypes[static_cast<int>(toFI("NoFoliage"))];
 
-		neighbourBonus[static_cast<int>(FoliageType::Foliage_NoFoliage)] = {
-			std::pair<FoliageType, int>(FoliageType::Foliage_NoFoliage, 120),
-			std::pair<FoliageType, int>(FoliageType::Foliage_ThrottenGround, 40),
+		neighbourBonus[static_cast<int>(toFI("NoFoliage"))] = {
+			std::pair<int, int>(toFI("NoFoliage"), 120),
+			std::pair<int, int>(toFI("ThrottenGround"), 40),
 		};
-		neighbourBonus[static_cast<int>(FoliageType::Foliage_TreeFoliage)] = {
-			std::pair<FoliageType, int>(FoliageType::Foliage_TreeFoliage, 80),
-			std::pair<FoliageType, int>(FoliageType::Foliage_FlowerClusterFoliage, 20),
-			// (FoliageType::Foliage_RoundBoulder, 20),
+		neighbourBonus[static_cast<int>(toFI("TreeFoliage"))] = {
+			std::pair<int, int>(toFI("TreeFoliage"), 80),
+			std::pair<int, int>(toFI("FlowerClusterFoliage"), 20),
+			// (RoundBoulder, 20),
 		};
-		neighbourBonus[static_cast<int>(FoliageType::Foliage_FlowerClusterFoliage)] = {
-			std::pair<FoliageType, int>(FoliageType::Foliage_FlowerClusterFoliage, 20)
+		neighbourBonus[static_cast<int>(toFI("FlowerClusterFoliage"))] = {
+			std::pair<int, int>(toFI("FlowerClusterFoliage"), 20)
 		};
-		neighbourBonus[static_cast<int>(FoliageType::Foliage_ThrottenGround)] = {
-			std::pair<FoliageType, int>(FoliageType::Foliage_ThrottenGround, 20),
-			std::pair<FoliageType, int>(FoliageType::Foliage_VeryThrottenGround, 10),
-		};
-
-		neighbourBonus[static_cast<int>(FoliageType::Foliage_VeryThrottenGround)] = {
-			std::pair<FoliageType, int>(FoliageType::Foliage_ThrottenGround, 20),
-			std::pair<FoliageType, int>(FoliageType::Foliage_VeryThrottenGround, 40),
-			std::pair<FoliageType, int>(FoliageType::Foliage_CompletelyThrottenGround, 10),
+		neighbourBonus[static_cast<int>(toFI("ThrottenGround"))] = {
+			std::pair<int, int>(toFI("ThrottenGround"), 20),
+			std::pair<int, int>(toFI("VeryThrottenGround"), 10),
 		};
 
-		neighbourBonus[static_cast<int>(FoliageType::Foliage_CompletelyThrottenGround)] = {
-			std::pair<FoliageType, int>(FoliageType::Foliage_VeryThrottenGround, 10),
-			std::pair<FoliageType, int>(FoliageType::Foliage_CompletelyThrottenGround, 20),
+		neighbourBonus[static_cast<int>(toFI("VeryThrottenGround"))] = {
+			std::pair<int, int>(toFI("ThrottenGround"), 20),
+			std::pair<int, int>(toFI("VeryThrottenGround"), 40),
+			std::pair<int, int>(toFI("CompletelyThrottenGround"), 10),
+		};
+
+		neighbourBonus[static_cast<int>(toFI("CompletelyThrottenGround"))] = {
+			std::pair<int, int>(toFI("VeryThrottenGround"), 10),
+			std::pair<int, int>(toFI("CompletelyThrottenGround"), 20),
 		};
 
 		int treeCliffedgeToWallBonus = 4000;
-		neighbourBonus[static_cast<int>(FoliageType::Foliage_TreeCliffedge)] = {
-			// (FoliageType::Foliage_TreeCliffedge, 100),
-			std::pair<FoliageType, int>(FoliageType::Foliage_WallUp, treeCliffedgeToWallBonus),
-			std::pair<FoliageType, int>(FoliageType::Foliage_WallDown, treeCliffedgeToWallBonus),
-			std::pair<FoliageType, int>(FoliageType::Foliage_WallLeft, treeCliffedgeToWallBonus),
-			std::pair<FoliageType, int>(FoliageType::Foliage_WallRight, treeCliffedgeToWallBonus),
+		neighbourBonus[static_cast<int>(toFI("TreeCliffedge"))] = {
+			// (TreeCliffedge, 100),
+			std::pair<int, int>(toFI("WallUp"), treeCliffedgeToWallBonus),
+			std::pair<int, int>(toFI("WallDown"), treeCliffedgeToWallBonus),
+			std::pair<int, int>(toFI("WallLeft"), treeCliffedgeToWallBonus),
+			std::pair<int, int>(toFI("WallRight"), treeCliffedgeToWallBonus),
 
-			std::pair<FoliageType, int>(FoliageType::Foliage_WallUpLeft, treeCliffedgeToWallBonus),
-			std::pair<FoliageType, int>(FoliageType::Foliage_WallUpRight, treeCliffedgeToWallBonus),
-			std::pair<FoliageType, int>(FoliageType::Foliage_WallDownLeft, treeCliffedgeToWallBonus),
-			std::pair<FoliageType, int>(FoliageType::Foliage_WallDownRight, treeCliffedgeToWallBonus),
+			std::pair<int, int>(toFI("WallUpLeft"), treeCliffedgeToWallBonus),
+			std::pair<int, int>(toFI("WallUpRight"), treeCliffedgeToWallBonus),
+			std::pair<int, int>(toFI("WallDownLeft"), treeCliffedgeToWallBonus),
+			std::pair<int, int>(toFI("WallDownRight"), treeCliffedgeToWallBonus),
 
-			// (FoliageType::Foliage_WallCenterInsideUpLeft, treeCliffedgeToWallBonus),
-			// (FoliageType::Foliage_WallCenterInsideUpRight, treeCliffedgeToWallBonus),
-			// (FoliageType::Foliage_WallCenterInsideDownLeft, treeCliffedgeToWallBonus),
-			// (FoliageType::Foliage_WallCenterInsideDownRight, treeCliffedgeToWallBonus),
+			// (WallCenterInsideUpLeft, treeCliffedgeToWallBonus),
+			// (WallCenterInsideUpRight, treeCliffedgeToWallBonus),
+			// (WallCenterInsideDownLeft, treeCliffedgeToWallBonus),
+			// (WallCenterInsideDownRight, treeCliffedgeToWallBonus),
 		};
 
-		// NeighbourBonus[static_cast<int>(FoliageType::Foliage_WallUp] = new (FoliageType, int)[] {
-		// 	(FoliageType::Foliage_TreeCliffedge, treeCliffedgeToWallBonus)
+		// NeighbourBonus[static_cast<int>(WallUp] = new (int, int)[] {
+		// 	(TreeCliffedge, treeCliffedgeToWallBonus)
 		// };
-		// NeighbourBonus[static_cast<int>(FoliageType::Foliage_WallDown] = new (FoliageType, int)[] {
-		// 	(FoliageType::Foliage_TreeCliffedge, treeCliffedgeToWallBonus)
+		// NeighbourBonus[static_cast<int>(WallDown] = new (int, int)[] {
+		// 	(TreeCliffedge, treeCliffedgeToWallBonus)
 		// };
-		// NeighbourBonus[static_cast<int>(FoliageType::Foliage_WallLeft] = new (FoliageType, int)[] {
-		// 	(FoliageType::Foliage_TreeCliffedge, treeCliffedgeToWallBonus)
+		// NeighbourBonus[static_cast<int>(WallLeft] = new (int, int)[] {
+		// 	(TreeCliffedge, treeCliffedgeToWallBonus)
 		// };
-		// NeighbourBonus[static_cast<int>(FoliageType::Foliage_WallRight] = new (FoliageType, int)[] {
-		// 	(FoliageType::Foliage_TreeCliffedge, treeCliffedgeToWallBonus)
+		// NeighbourBonus[static_cast<int>(WallRight] = new (int, int)[] {
+		// 	(TreeCliffedge, treeCliffedgeToWallBonus)
 		// };
 
 		int borderTreeToTreeBonus = 40;
-		neighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeUp)] = {
-			std::pair<FoliageType, int>(FoliageType::Foliage_TreeFoliage, borderTreeToTreeBonus)
+		neighbourBonus[static_cast<int>(toFI("BorderTreeUp"))] = {
+			std::pair<int, int>(toFI("TreeFoliage"), borderTreeToTreeBonus)
 		};
-		neighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeDown)] = {
-			std::pair<FoliageType, int>(FoliageType::Foliage_TreeFoliage, borderTreeToTreeBonus)
+		neighbourBonus[static_cast<int>(toFI("BorderTreeDown"))] = {
+			std::pair<int, int>(toFI("TreeFoliage"), borderTreeToTreeBonus)
 		};
-		neighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeLeft)] = {
-			std::pair<FoliageType, int>(FoliageType::Foliage_TreeFoliage, borderTreeToTreeBonus)
+		neighbourBonus[static_cast<int>(toFI("BorderTreeLeft"))] = {
+			std::pair<int, int>(toFI("TreeFoliage"), borderTreeToTreeBonus)
 		};
-		neighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeRight)] = {
-			std::pair<FoliageType, int>(FoliageType::Foliage_TreeFoliage, borderTreeToTreeBonus)
+		neighbourBonus[static_cast<int>(toFI("BorderTreeRight"))] = {
+			std::pair<int, int>(toFI("TreeFoliage"), borderTreeToTreeBonus)
 		};
 
-		neighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeUpLeft)] = {
-			std::pair<FoliageType, int>(FoliageType::Foliage_TreeFoliage, borderTreeToTreeBonus)
+		neighbourBonus[static_cast<int>(toFI("BorderTreeUpLeft"))] = {
+			std::pair<int, int>(toFI("TreeFoliage"), borderTreeToTreeBonus)
 		};
-		neighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeUpRight)] = {
-			std::pair<FoliageType, int>(FoliageType::Foliage_TreeFoliage, borderTreeToTreeBonus)
+		neighbourBonus[static_cast<int>(toFI("BorderTreeUpRight"))] = {
+			std::pair<int, int>(toFI("TreeFoliage"), borderTreeToTreeBonus)
 		};
-		neighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeDownLeft)] = {
-			std::pair<FoliageType, int>(FoliageType::Foliage_TreeFoliage, borderTreeToTreeBonus)
+		neighbourBonus[static_cast<int>(toFI("BorderTreeDownLeft"))] = {
+			std::pair<int, int>(toFI("TreeFoliage"), borderTreeToTreeBonus)
 		};
-		neighbourBonus[static_cast<int>(FoliageType::Foliage_BorderTreeDownRight)] = {
-			std::pair<FoliageType, int>(FoliageType::Foliage_TreeFoliage, borderTreeToTreeBonus)
+		neighbourBonus[static_cast<int>(toFI("BorderTreeDownRight"))] = {
+			std::pair<int, int>(toFI("TreeFoliage"), borderTreeToTreeBonus)
 		};
     }
 
-	std::unordered_map<FoliageType, int> m_allowedTypes = {
-		{FoliageType::Foliage_RockClusterFoliage, 40},
-		{FoliageType::Foliage_TreeFoliage, 90},
-		{FoliageType::Foliage_TreeSmallFoliage, 10},
-		{FoliageType::Foliage_TreeCliffedge, 400},
-		{FoliageType::Foliage_FlowerClusterFoliage, 30},
-		{FoliageType::Foliage_MonumentCluster, 1},
-		{FoliageType::Foliage_RoundBoulder, 1},
-		{FoliageType::Foliage_FlatStone, 3},
-		// Requires ground +3.
-		{FoliageType::Foliage_FlatStoneDesert, 5},
-		{FoliageType::Foliage_StoneCircle, 3},
-		{FoliageType::Foliage_NoFoliage, 120},
+	std::unordered_map<int, int> m_allowedTypes;
 
-		{FoliageType::Foliage_ThrottenGround, 10},
-		{FoliageType::Foliage_VeryThrottenGround, 10},
-		{FoliageType::Foliage_CompletelyThrottenGround, 10},
-
-		{FoliageType::Foliage_BorderTreeUp, 30},
-		{FoliageType::Foliage_BorderTreeDown, 30},
-		{FoliageType::Foliage_BorderTreeLeft, 30},
-		{FoliageType::Foliage_BorderTreeRight, 30},
-
-		{FoliageType::Foliage_BorderTreeUpLeft, 4},
-		{FoliageType::Foliage_BorderTreeUpRight, 4},
-		{FoliageType::Foliage_BorderTreeDownLeft, 4},
-		{FoliageType::Foliage_BorderTreeDownRight, 4},
-
-		{FoliageType::Foliage_BorderTreeMiddle, 6},
-
-		// {FoliageType::Foliage_CliffsideDesertUp, 1},
-		// {FoliageType::Foliage_CliffsideDesertDown, 1},
-		// {FoliageType::Foliage_CliffsideDesertLeft, 1},
-		// {FoliageType::Foliage_CliffsideDesertRight, 1},
-
-		// {FoliageType::Foliage_CliffsideDesertUpLeft, 1},
-		// {FoliageType::Foliage_CliffsideDesertUpRight, 1},
-		// {FoliageType::Foliage_CliffsideDesertDownLeft, 1},
-		// {FoliageType::Foliage_CliffsideDesertDownRight, 1},
-
-		// {FoliageType::Foliage_CliffsideDesertMiddle, 10},
-
-
-
-		{FoliageType::Foliage_ChasmWallUp, 500},
-		{FoliageType::Foliage_ChasmWallDown, 500},
-		{FoliageType::Foliage_ChasmWallLeft, 500},
-		{FoliageType::Foliage_ChasmWallRight, 500},
-
-		{FoliageType::Foliage_ChasmWallUpLeft, 4},
-		{FoliageType::Foliage_ChasmWallUpRight, 4},
-		{FoliageType::Foliage_ChasmWallDownLeft, 4},
-		{FoliageType::Foliage_ChasmWallDownRight, 4},
-
-		{FoliageType::Foliage_ChasmWallCenterUpLeft, 4},
-		{FoliageType::Foliage_ChasmWallCenterUpRight, 4},
-		{FoliageType::Foliage_ChasmWallCenterDownLeft, 4},
-		{FoliageType::Foliage_ChasmWallCenterDownRight, 4},
-
-
-
-		{FoliageType::Foliage_ChasmWallInsideUp, 100},
-		{FoliageType::Foliage_ChasmWallInsideDown, 100},
-		{FoliageType::Foliage_ChasmWallInsideLeft, 100},
-		{FoliageType::Foliage_ChasmWallInsideRight, 100},
-
-
-		{FoliageType::Foliage_ChasmWallCenterInsideUpLeft, 4},
-		{FoliageType::Foliage_ChasmWallCenterInsideUpRight, 4},
-		{FoliageType::Foliage_ChasmWallCenterInsideDownLeft, 4},
-		{FoliageType::Foliage_ChasmWallCenterInsideDownRight, 4},
-
-		{FoliageType::Foliage_ChasmWallInsideUpLeft, 2},
-		{FoliageType::Foliage_ChasmWallInsideUpRight, 2},
-		{FoliageType::Foliage_ChasmWallInsideDownLeft, 2},
-		{FoliageType::Foliage_ChasmWallInsideDownRight, 2},
-
-		{FoliageType::Foliage_ChasmWallDiagonalUpLeft, 10},
-		{FoliageType::Foliage_ChasmWallDiagonalUpRight, 10},
-		{FoliageType::Foliage_ChasmWallDiagonalDownLeft, 10},
-		{FoliageType::Foliage_ChasmWallDiagonalDownRight, 10},
-
-
-		// {FoliageType::Foliage_ChasmWallThreeUp, 2},
-		// {FoliageType::Foliage_ChasmWallThreeDown, 2},
-		// {FoliageType::Foliage_ChasmWallThreeLeft, 2},
-		// {FoliageType::Foliage_ChasmWallThreeRight, 2},
-
-		{FoliageType::Foliage_ChasmWallFrontBackUp, 30},
-		{FoliageType::Foliage_ChasmWallFrontBackLeft, 30},
-
-		// {FoliageType::Foliage_ChasmWallAll, 1},
-
-		{FoliageType::Foliage_ChasmMiddle, 20},
-
-
-
-		{FoliageType::Foliage_WallUp, 20},
-		{FoliageType::Foliage_WallDown, 20},
-		{FoliageType::Foliage_WallLeft, 20},
-		{FoliageType::Foliage_WallRight, 10},
-
-		{FoliageType::Foliage_WallUpLeft, 10},
-		{FoliageType::Foliage_WallUpRight, 10},
-		{FoliageType::Foliage_WallDownLeft, 10},
-		{FoliageType::Foliage_WallDownRight, 10},
-
-		{FoliageType::Foliage_WallCenterInsideUpLeft, 20},
-		{FoliageType::Foliage_WallCenterInsideUpRight, 20},
-		{FoliageType::Foliage_WallCenterInsideDownLeft, 20},
-		{FoliageType::Foliage_WallCenterInsideDownRight, 20},
-
-		{FoliageType::Foliage_WallThreeUp, 2},
-		{FoliageType::Foliage_WallThreeDown, 2},
-		{FoliageType::Foliage_WallThreeLeft, 2},
-		{FoliageType::Foliage_WallThreeRight, 2},
-
-		{FoliageType::Foliage_WallFrontBackUp, 2},
-		{FoliageType::Foliage_WallFrontBackLeft, 2},
-
-		{FoliageType::Foliage_WallAll, 4},
-
-		{FoliageType::Foliage_WallMiddle, 200},
-
-
-		{FoliageType::Foliage_WallDiagonalUpLeft, 10},
-		{FoliageType::Foliage_WallDiagonalUpRight, 10},
-		{FoliageType::Foliage_WallDiagonalDownLeft, 10},
-		{FoliageType::Foliage_WallDiagonalDownRight, 10},
-
-
-
-		{FoliageType::Foliage_WallHigherUp, 200},
-		{FoliageType::Foliage_WallHigherDown, 200},
-		{FoliageType::Foliage_WallHigherLeft, 200},
-		{FoliageType::Foliage_WallHigherRight, 200},
-
-		{FoliageType::Foliage_WallHigherUpLeft, 4},
-		{FoliageType::Foliage_WallHigherUpRight, 4},
-		{FoliageType::Foliage_WallHigherDownLeft, 4},
-		{FoliageType::Foliage_WallHigherDownRight, 4},
-
-		{FoliageType::Foliage_WallHigherThreeUp, 4},
-		{FoliageType::Foliage_WallHigherThreeDown, 4},
-		{FoliageType::Foliage_WallHigherThreeLeft, 4},
-		{FoliageType::Foliage_WallHigherThreeRight, 4},
-
-		{FoliageType::Foliage_WallHigherFrontBackUp, 4},
-		{FoliageType::Foliage_WallHigherFrontBackLeft, 4},
-
-		// {FoliageType::Foliage_WallHigherAll, 10},
-
-		{FoliageType::Foliage_WallHigherMiddle, 80},
-	};
-
-	std::unordered_map<FoliageType, int> m_walkableAllowedTypes = {
-		{FoliageType::Foliage_TreeFoliage, 10},
-		{FoliageType::Foliage_TreeSmallFoliage, 2},
-		{FoliageType::Foliage_FlowerClusterFoliage, 2},
-		{FoliageType::Foliage_PlantClusterFoliage, 1},
-		// {FoliageType::Foliage_MonumentCluster, 1},
-		// {FoliageType::Foliage_RoundBoulder, 1},
-		{FoliageType::Foliage_FlatStone, 3},
-		{FoliageType::Foliage_StoneCircle, 6},
-		{FoliageType::Foliage_NoFoliage, 220},
-
-		{FoliageType::Foliage_ThrottenGround, 10},
-		{FoliageType::Foliage_VeryThrottenGround, 10},
-		{FoliageType::Foliage_CompletelyThrottenGround, 10},
-	};
+	std::unordered_map<int, int> m_walkableAllowedTypes;
 };

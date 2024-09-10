@@ -5,59 +5,71 @@
 
 #include "foliage.h"
 #include "disk_manager.h"
+#include "foliage_definitions.h"
+#include "logger.h"
 
 
 class BiomeFoliageInfo {
 public:
 
-    std::vector<std::vector<FoliageType>> upRelations;
-    std::vector<std::vector<FoliageType>> downRelations;
-    std::vector<std::vector<FoliageType>> leftRelations;
-    std::vector<std::vector<FoliageType>> rightRelations;
+    std::vector<std::vector<int>> upRelations;
+    std::vector<std::vector<int>> downRelations;
+    std::vector<std::vector<int>> leftRelations;
+    std::vector<std::vector<int>> rightRelations;
 
-    std::vector<std::vector<FoliageType>> upLeftRelations;
-    std::vector<std::vector<FoliageType>> upRightRelations;
-    std::vector<std::vector<FoliageType>> downLeftRelations;
-    std::vector<std::vector<FoliageType>> downRightRelations;
+    std::vector<std::vector<int>> upLeftRelations;
+    std::vector<std::vector<int>> upRightRelations;
+    std::vector<std::vector<int>> downLeftRelations;
+    std::vector<std::vector<int>> downRightRelations;
 
     template<typename T, typename V>
     std::vector<T> keys_from_map(std::unordered_map<T, V> map);
 
-    const std::vector<FoliageType> get_default_set()& {return defaultSet;}
-    const std::vector<FoliageType> get_default_walkable_set()& {return walkableDefaultSet;}
-
-    const std::array<int, static_cast<size_t>(FoliageType::Foliage_MAX)>& get_possible_types() {
+    /**
+     * All types available with the current biome. Use this when resetting
+     * a tracker to the default values.
+     */
+    const std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT>& get_possible_types() {
         return possibleTypes;}
 
-    const std::array<int, static_cast<size_t>(FoliageType::Foliage_MAX)>& get_walkable_possible_types() {
+    /**
+     * All types walkable available with the current biome.
+     * Use this when resetting a tracker to the default values.
+     */
+    const std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT>& get_walkable_possible_types() {
         return walkablePossibleTypes;}
 
-    const std::array<int, static_cast<size_t>(FoliageType::Foliage_MAX)>& get_start_possible_types() {
+    const std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT>& get_start_possible_types() {
         return startPossibleTypes;}
 
     BiomeFoliageInfo();
 
-    std::unordered_map<FoliageType, std::unordered_set<FoliageType>> impossibleTypesDict;
+    std::unordered_map<int, std::unordered_set<int>> impossibleTypesDict;
 
-    std::unordered_set<FoliageType> defaultHigherSet;
+    std::unordered_set<int> defaultHigherSet;
 
-    std::unordered_map<FoliageType, std::unordered_map<FoliageType, int>> relationsDict;
-	std::array<std::vector<std::pair<FoliageType, int>>, static_cast<size_t>(
-        FoliageType::Foliage_MAX)> neighbourBonus;
+    std::unordered_map<int, std::unordered_map<int, int>> relationsDict;
+	std::vector<std::vector<std::pair<int, int>>> neighbourBonus;
 
-    std::pair<std::vector<std::vector<FoliageType>>*, Direction> get_relations_from_nodes(
+    std::pair<std::vector<std::vector<int>>*, Direction> get_relations_from_nodes(
         Vector2Int lastNodePos, Vector2Int currentNodePos);
 
 protected:
-    std::array<int, static_cast<size_t>(FoliageType::Foliage_MAX)> possibleTypes = {};
-    std::array<int, static_cast<size_t>(FoliageType::Foliage_MAX)> walkablePossibleTypes = {};
-	std::array<int, static_cast<size_t>(FoliageType::Foliage_MAX)> startPossibleTypes = {};
-
-    std::vector<FoliageType> defaultSet;
-    std::vector<FoliageType> walkableDefaultSet;
+    std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT> possibleTypes;
+    std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT> walkablePossibleTypes;
+	std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT> startPossibleTypes;
 
     const void setup(
-			std::unordered_map<FoliageType, int> allowedTypes,
-			std::unordered_map<FoliageType, int> walkableAllowedTypes,
+			std::unordered_map<int, int> allowedTypes,
+			std::unordered_map<int, int> walkableAllowedTypes,
 			std::string relationsFile);
+
+    const int toFI(std::string foliageName) {
+        auto nameToFoliageIndex = foliagedef::get_foliage_definitions().get_name_to_foliage_index_map();
+        auto itr = nameToFoliageIndex.find(foliageName);
+        if(itr == nameToFoliageIndex.end()) {
+            logger::log_error("Could not find entry for foliage: "+foliageName);
+        }
+        return itr->second;
+    }
 };

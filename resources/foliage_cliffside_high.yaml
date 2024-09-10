@@ -1,0 +1,176 @@
+---
+
+DirectionSets:
+    directionSet:
+        CliffsideHighUp: 1
+        CliffsideHighDown: 2
+        CliffsideHighLeft: 3
+        CliffsideHighRight: 4
+
+        CliffsideHighUpLeft: 5
+        CliffsideHighUpRight: 6
+        CliffsideHighDownLeft: 7
+        CliffsideHighDownRight: 8
+
+        CliffsideHighMiddle: 9
+
+        NoSelection: 0
+        NoSelection: 0
+        NoSelection: 0
+        NoSelection: 0
+
+        NoSelection: 0
+        NoSelection: 0
+        NoSelection: 0
+
+        CliffsideHighCenterUpLeft: 17
+        CliffsideHighCenterUpRight: 18
+        CliffsideHighCenterDownLeft: 19
+        CliffsideHighCenterDownRight: 20
+
+Foliage:
+    CliffsideHighUp:
+        mapIndex: 1
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.6, 0.55, 0.5]
+        direction: Up
+        directionSet: directionSet
+        possibleRotations: [0]
+
+    CliffsideHighDown:
+        mapIndex: 2
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.6, 0.55, 0.5]
+        direction: Down
+        directionSet: directionSet
+        possibleRotations: [180]
+
+    CliffsideHighLeft:
+        mapIndex: 3
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.6, 0.55, 0.5]
+        direction: Left
+        directionSet: directionSet
+        possibleRotations: [270]
+
+    CliffsideHighRight:
+        mapIndex: 4
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.6, 0.55, 0.5]
+        direction: Right
+        directionSet: directionSet
+        possibleRotations: [90]
+
+
+    CliffsideHighUpLeft:
+        mapIndex: 5
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.6, 0.55, 0.5]
+        direction: UpLeft
+        directionSet: directionSet
+        possibleRotations: [0]
+
+    CliffsideHighUpRight:
+        mapIndex: 6
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.6, 0.55, 0.5]
+        direction: UpRight
+        directionSet: directionSet
+        possibleRotations: [90]
+
+    CliffsideHighDownLeft:
+        mapIndex: 7
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.6, 0.55, 0.5]
+        direction: DownLeft
+        directionSet: directionSet
+        possibleRotations: [270]
+
+    CliffsideHighDownRight:
+        mapIndex: 8
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.6, 0.55, 0.5]
+        direction: DownRight
+        directionSet: directionSet
+        possibleRotations: [180]
+
+
+    CliffsideHighMiddle:
+        mapIndex: 9
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.6, 0.55, 0.5]
+        direction: None
+        directionSet: directionSet
+        possibleRotations: [0,90,180,270]
+
+
+    CliffsideHighCenterUpLeft:
+        mapIndex: 10
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.6, 0.55, 0.5]
+        direction: UpLeft
+        directionSet: directionSet
+        possibleRotations: [0,90,180,270]
+
+    CliffsideHighCenterUpRight:
+        mapIndex: 11
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.6, 0.55, 0.5]
+        direction: UpRight
+        directionSet: directionSet
+        possibleRotations: [0,90,180,270]
+
+    CliffsideHighCenterDownLeft:
+        mapIndex: 12
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.6, 0.55, 0.5]
+        direction: DownLeft
+        directionSet: directionSet
+        possibleRotations: [0,90,180,270]
+
+    CliffsideHighCenterDownRight:
+        mapIndex: 13
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.6, 0.55, 0.5]
+        direction: DownRight
+        directionSet: directionSet
+        possibleRotations: [0,90,180,270]

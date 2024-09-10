@@ -9,14 +9,18 @@
 
 
 BiomeFoliageInfo::BiomeFoliageInfo() {
-    impossibleTypesDict = std::unordered_map<FoliageType, std::unordered_set<FoliageType>>();
-    defaultHigherSet = std::unordered_set<FoliageType>();
-    relationsDict = std::unordered_map<FoliageType, std::unordered_map<FoliageType, int>>();
+    impossibleTypesDict = std::unordered_map<int, std::unordered_set<int>>();
+    defaultHigherSet = std::unordered_set<int>();
+    relationsDict = std::unordered_map<int, std::unordered_map<int, int>>();
+
+    walkablePossibleTypes = {};
+    startPossibleTypes = {};
+    possibleTypes = {};
 }
 
 const void BiomeFoliageInfo::setup(
-        std::unordered_map<FoliageType, int> allowedTypes,
-        std::unordered_map<FoliageType, int> walkableAllowedTypes,
+        std::unordered_map<int, int> allowedTypes,
+        std::unordered_map<int, int> walkableAllowedTypes,
         std::string relationsFile) {
 
     DiskManager mdm = DiskManager();
@@ -28,15 +32,21 @@ const void BiomeFoliageInfo::setup(
     }
     auto mapObject = *mapObjectOptional;
 
-    std::unordered_map<FoliageType, std::unordered_map<FoliageType, int>> upRelationsDict = {};
-    std::unordered_map<FoliageType, std::unordered_map<FoliageType, int>> downRelationsDict = {};
-    std::unordered_map<FoliageType, std::unordered_map<FoliageType, int>> leftRelationsDict = {};
-    std::unordered_map<FoliageType, std::unordered_map<FoliageType, int>> rightRelationsDict = {};
+    const size_t foliageCount = foliagedef::get_foliage_definitions().get_foliage_count();
 
-    std::unordered_map<FoliageType, std::unordered_map<FoliageType, int>> upLeftRelationsDict = {};
-    std::unordered_map<FoliageType, std::unordered_map<FoliageType, int>> upRightRelationsDict = {};
-    std::unordered_map<FoliageType, std::unordered_map<FoliageType, int>> downLeftRelationsDict = {};
-    std::unordered_map<FoliageType, std::unordered_map<FoliageType, int>> downRightRelationsDict = {};
+    neighbourBonus = std::vector<std::vector<std::pair<int, int>>>(foliageCount);
+    std::vector<int> defaultSet (foliageCount);
+    std::vector<int> walkableDefaultSet (foliageCount);
+
+    std::unordered_map<int, std::unordered_map<int, int>> upRelationsDict = {};
+    std::unordered_map<int, std::unordered_map<int, int>> downRelationsDict = {};
+    std::unordered_map<int, std::unordered_map<int, int>> leftRelationsDict = {};
+    std::unordered_map<int, std::unordered_map<int, int>> rightRelationsDict = {};
+
+    std::unordered_map<int, std::unordered_map<int, int>> upLeftRelationsDict = {};
+    std::unordered_map<int, std::unordered_map<int, int>> upRightRelationsDict = {};
+    std::unordered_map<int, std::unordered_map<int, int>> downLeftRelationsDict = {};
+    std::unordered_map<int, std::unordered_map<int, int>> downRightRelationsDict = {};
 
 
     int defaultIndex = 0;
@@ -48,9 +58,9 @@ const void BiomeFoliageInfo::setup(
             
             auto map = mapObject.map;
             auto mapNode = map[x][y];
-            FoliageType currentFoliageType = mapNode.foliageType;
+            int currentFoliageType = mapNode.foliageType;
 
-            if(currentFoliageType == FoliageType::Foliage_NoSelection) {
+            if(currentFoliageType == FoliageHelpers::NO_SELECTION_INDEX) {
                 continue;
             }
 
@@ -70,17 +80,17 @@ const void BiomeFoliageInfo::setup(
                         continue;
                     }
 
-                    FoliageType neighbourFoliageType =
+                    int neighbourFoliageType =
                         mapObject.map[realNX][realNY].foliageType;
 
-                    if(neighbourFoliageType == FoliageType::Foliage_NoSelection) {
+                    if(neighbourFoliageType == FoliageHelpers::NO_SELECTION_INDEX) {
                         continue;
                     }
 
 
-                    // Dictionary<FoliageType, Dictionary<FoliageType, int>> relationsDict = null;
+                    // Dictionary<int, Dictionary<int, int>> relationsDict = null;
                     std::unordered_map<
-                        FoliageType, std::unordered_map<FoliageType, int>>* relationsDict;
+                        int, std::unordered_map<int, int>>* relationsDict;
                     Direction direction = Direction::DirectionNone;
                     if(nx == 0 && ny == 1) {
                         relationsDict = &upRelationsDict;
@@ -122,7 +132,7 @@ const void BiomeFoliageInfo::setup(
                         direction = Direction::DirectionDownRight;
                     }
 
-                    std::unordered_map<FoliageType, int> valueDict = {};
+                    std::unordered_map<int, int> valueDict = {};
                     auto valueDictIter = relationsDict->find(currentFoliageType);
                     if(valueDictIter != relationsDict->end()) {
                         valueDict = valueDictIter->second;
@@ -134,7 +144,6 @@ const void BiomeFoliageInfo::setup(
                     valueDict[neighbourFoliageType] = 1;
                     (*relationsDict)[currentFoliageType] = valueDict;
 
-                    // if(allowedTypes.TryGetValue(currentFoliageType, out int priority)) {
                     auto allowedTypesIter = allowedTypes.find(currentFoliageType);
                     if(allowedTypesIter != allowedTypes.end()) {
                         int priority = allowedTypesIter->second;
@@ -163,17 +172,17 @@ const void BiomeFoliageInfo::setup(
     defaultSet.resize(defaultIndex);
     walkableDefaultSet.resize(walkableDefaultIndex);
 
-    const int foliageLength = static_cast<int>(FoliageType::Foliage_MAX);
+    // const int foliageLength = static_cast<int>(FoliageHelpers::MAX_FOLIAGE_COUNT);
 
-    upRelations = std::vector<std::vector<FoliageType>> (foliageLength);
-    downRelations = std::vector<std::vector<FoliageType>> (foliageLength);
-    leftRelations = std::vector<std::vector<FoliageType>> (foliageLength);
-    rightRelations = std::vector<std::vector<FoliageType>> (foliageLength);
+    upRelations = std::vector<std::vector<int>> (foliageCount);
+    downRelations = std::vector<std::vector<int>> (foliageCount);
+    leftRelations = std::vector<std::vector<int>> (foliageCount);
+    rightRelations = std::vector<std::vector<int>> (foliageCount);
 
-    upLeftRelations = std::vector<std::vector<FoliageType>> (foliageLength);
-    upRightRelations = std::vector<std::vector<FoliageType>> (foliageLength);
-    downLeftRelations = std::vector<std::vector<FoliageType>> (foliageLength);
-    downRightRelations = std::vector<std::vector<FoliageType>> (foliageLength);
+    upLeftRelations = std::vector<std::vector<int>> (foliageCount);
+    upRightRelations = std::vector<std::vector<int>> (foliageCount);
+    downLeftRelations = std::vector<std::vector<int>> (foliageCount);
+    downRightRelations = std::vector<std::vector<int>> (foliageCount);
 
 
     for(auto kvp : upRelationsDict) {
@@ -203,7 +212,7 @@ const void BiomeFoliageInfo::setup(
     }
 }
 
-std::pair<std::vector<std::vector<FoliageType>>*, Direction> BiomeFoliageInfo::get_relations_from_nodes(
+std::pair<std::vector<std::vector<int>>*, Direction> BiomeFoliageInfo::get_relations_from_nodes(
         Vector2Int lastNodePos, Vector2Int currentNodePos) {
     // Check for up relations.
     if(currentNodePos.x == lastNodePos.x && currentNodePos.y > lastNodePos.y) {

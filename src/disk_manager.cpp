@@ -96,16 +96,16 @@ DiskManager::DiskManager() {
     _mapsThumbnailsPath = std::filesystem::path (OUTPUT_PATH) / "thumbnails";
 
     // Create reverse dict.
-    m_foliageMapMapping = std::unordered_map<FoliageType, int>();
-    m_mapFoliageMapping = std::unordered_map<int, FoliageType>();
-    auto foliageDefs = FoliageDefinitions::get_foliage_definitions();
+    m_foliageMapMapping = std::unordered_map<int, int>();
+    mapFoliageMapping = std::unordered_map<int, int>();
+    auto foliageDefs = foliagedef::get_foliage_definitions().foliageInfoElements;
     for(int i = 0; i < foliageDefs.size(); i++) {
         auto foliageInfo = foliageDefs[i];
         if(!foliageInfo.containsResourceData) {
             continue;
         }
-        m_foliageMapMapping[static_cast<FoliageType>(i)] = foliageInfo.mapIndex;
-        m_mapFoliageMapping[foliageInfo.mapIndex] = static_cast<FoliageType>(i);
+        m_foliageMapMapping[foliageInfo.foliageType] = foliageInfo.mapIndex;
+        mapFoliageMapping[foliageInfo.mapIndex] = foliageInfo.foliageType;
     }
 }
 
@@ -264,8 +264,8 @@ Matrix<MapNode> DiskManager::load_map(
 
     // Confirm file opening.
     if(!file.is_open()) {
-        // print error message and return
-        std::cerr << "Failed to open file: " << mapPath << std::endl;
+        // Print error message and return
+        logger::log_error("Failed to open file: " + mapPath.generic_string());
         return Matrix<MapNode>();
     }
 
@@ -273,7 +273,6 @@ Matrix<MapNode> DiskManager::load_map(
     std::string loadText = "";
     std::string line;
     while(getline(file, line)) {
-        // std::cout << line << std::endl;
         loadText += line;
     }
 
@@ -356,9 +355,9 @@ Matrix<MapNode> DiskManager::convert_string_to_map(std::string loadText) {
             try {
                 int foliageIndex = std::stoi(foliageString);
 
-                auto iter = m_mapFoliageMapping.find(foliageIndex);
-                if(iter != m_mapFoliageMapping.end()) {
-                    FoliageType ft = iter->second;
+                auto iter = mapFoliageMapping.find(foliageIndex);
+                if(iter != mapFoliageMapping.end()) {
+                    int ft = iter->second;
                     mapNode.foliageType = ft;
                 }
                 else {
@@ -368,7 +367,7 @@ Matrix<MapNode> DiskManager::convert_string_to_map(std::string loadText) {
             }
             catch(const std::invalid_argument& ia) {
                 logger::log_error("Cannot convert the following value to int: "+foliageString);
-                mapNode.foliageType = FoliageType::Foliage_NoFoliage;
+                mapNode.foliageType = FoliageHelpers::NO_FOLIAGE_INDEX;
             }
 
             map[x][y] = mapNode;
@@ -418,8 +417,8 @@ void DiskManager::save_map_thumbnail(
 
             FoliageInfo foliageInfo;
             // We only filter here for speed.
-            if(mapNode.foliageType != FoliageType::Foliage_NoFoliage && mapNode.foliageType != FoliageType::Foliage_NoSelection) {
-                foliageInfo = FoliageDefinitions::get_foliage_definitions()[(int)mapNode.foliageType];
+            if(mapNode.foliageType != FoliageHelpers::NO_FOLIAGE_INDEX && mapNode.foliageType != FoliageHelpers::NO_SELECTION_INDEX) {
+                foliageInfo = foliagedef::get_foliage_definitions().foliageInfoElements[mapNode.foliageType];
             }
 
             Colour finalCol = foliageInfo.nodeColour;

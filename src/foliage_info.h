@@ -9,7 +9,8 @@ class FoliageInfo {
 
     public:
 
-    FoliageType foliageType;
+	std::string foliageName;
+    int foliageType;
     int nodeType;
 	bool walkable;
 	bool buildable;
@@ -18,7 +19,7 @@ class FoliageInfo {
     LevelBiome nodeBiome;
 	FoliageFloor floorType;
 
-    const std::vector<FoliageType> *directionSet;
+    const std::vector<int> *directionSet;
 
     Direction direction;
 
@@ -32,7 +33,7 @@ class FoliageInfo {
 
 	FoliageInfo() {
 		containsResourceData = false;
-		foliageType = FoliageType::Foliage_NoSelection;
+		foliageType = FoliageHelpers::NO_SELECTION_INDEX;
 		randomRotation = false;
 		height = 0;
 		floorType = FoliageFloor::Normal;
@@ -45,7 +46,7 @@ class FoliageInfo {
 	}
 
     FoliageInfo(
-			FoliageType foliageType,
+			int foliageType,
 			int nodeType,
 			bool walkable,
 			bool buildable,
@@ -69,6 +70,12 @@ class FoliageInfo {
 		this->height = 0;
     }
 
+	FoliageInfo& SetFoliageName(std::string value) {
+		this->foliageName = value;
+		containsResourceData = true;
+		return *this;
+	}
+
 	FoliageInfo& SetPossibleRotations(std::vector<float> values) {
 		this->possibleRotations = values;
 		containsResourceData = true;
@@ -81,7 +88,7 @@ class FoliageInfo {
 		return *this;
 	}
 
-	FoliageInfo& SetFoliageType(FoliageType value) {
+	FoliageInfo& SetFoliageType(int value) {
 		this->foliageType = value;
 		containsResourceData = true;
 		return *this;
@@ -111,7 +118,7 @@ class FoliageInfo {
 		return *this;
 	}
 
-	FoliageInfo& SetDirectionSet(const std::vector<FoliageType> &value) {
+	FoliageInfo& SetDirectionSet(const std::vector<int> &value) {
 		this->directionSet = &value;
 		containsResourceData = true;
 		return *this;

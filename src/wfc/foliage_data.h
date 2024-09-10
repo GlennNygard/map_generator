@@ -17,28 +17,29 @@ struct FoliageData {
 		isWalkableOnly = false;
 		m_dirty = false;
 		m_remainingLength = 0;
+		m_remainingPossibleTypes = {};
 	}
 
-	std::array<int, static_cast<size_t>(FoliageType::Foliage_MAX)> get_remaining_possible_types() {
+	const std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT>& get_remaining_possible_types() {
 		m_dirty = true;
 		return m_remainingPossibleTypes;
 	};
 
-	template<size_t size>
-	void set_remaining_possible_types(std::array<int, size> dataArr) {
-		m_remainingPossibleTypes = dataArr;
+	template<size_t foliageCount>
+	void set_remaining_possible_types(std::array<int, foliageCount> dataList) {
+		m_remainingPossibleTypes = dataList;
 		m_dirty = true;
 		hasData = true;
 	};
 
-	int get_remaining_length() {
+	size_t get_remaining_length() {
 		if(m_dirty) {
 			if(!hasData) {
-				m_remainingLength = static_cast<int>(FoliageType::Foliage_MAX);
+				m_remainingLength = m_remainingPossibleTypes.size();
 			}
 			else {
 				int remCount = 0;
-				for(int i = 0; i < static_cast<int>(FoliageType::Foliage_MAX); i++) {
+				for(int i = 0; i < m_remainingPossibleTypes.size(); i++) {
 					if(m_remainingPossibleTypes[i] <= 0) {
 						continue;
 					}
@@ -51,23 +52,29 @@ struct FoliageData {
 		return m_remainingLength;
 	}
 
-	template<size_t size>
-	void set_remaining_from_array(std::array<int, size> dataArr) {
+	template<size_t foliageCount>
+	void set_remaining_from_list(std::array<int, foliageCount> dataArr) {
 		// if(!m_remainingPossibleTypes) {
 		// 	m_remainingPossibleTypes = std::array<int, size>();
 		// }
 
-		int dataArrLength = size;
-		for(int i = 0; i < dataArrLength; i++) {
-			m_remainingPossibleTypes[i] = dataArr[i];
-		}
+		// if(dataArr.size() != m_remainingPossibleTypes.size()) {
+		// 	m_remainingPossibleTypes = std::vector<int>(dataArr.size());
+		// }
+
+		// for(size_t i = 0; i < dataArr.size(); i++) {
+		// 	m_remainingPossibleTypes[i] = dataArr.at(i);
+		// }
+
+		m_remainingPossibleTypes = dataArr;
+
 		m_dirty = true;
 		hasData = true;
 	}
 
 	private:
 
-	std::array<int, static_cast<size_t>(FoliageType::Foliage_MAX)> m_remainingPossibleTypes;
+	std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT> m_remainingPossibleTypes;
 	int m_remainingLength;
 	bool m_dirty;
 };

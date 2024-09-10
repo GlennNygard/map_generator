@@ -5,8 +5,8 @@
 
 struct ArgValues {
     std::string mapNamePrefix = "";
-    MapSize mapSize = MapSize::MapSize_Small;
-    // MapSize mapSize = MapSize::MapSize_Large;
+    // MapSize mapSize = MapSize::MapSize_Small;
+    MapSize mapSize = MapSize::MapSize_Large;
     int mapCount = 1;
     bool verboseLogging = true;
 };

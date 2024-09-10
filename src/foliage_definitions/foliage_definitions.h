@@ -5,20 +5,42 @@
 #include "foliage.h"
 #include "foliage_info.h"
 #include "map_definitions.h"
-
-#include "foliage_common_setup.h"
-#include "foliage_wall_setup.h"
-#include "foliage_wall_higher_setup.h"
-#include "foliage_chasm_setup.h"
-#include "foliage_cliffside_high_setup.h"
-#include "foliage_border_tree_setup.h"
+#include "logger.h"
 
 
 class FoliageDefinitions {
+public:
 
-    public:
-    static const std::array<FoliageInfo, static_cast<size_t>(FoliageType::Foliage_MAX)> get_foliage_definitions();
+    int foliageNoSelection;
 
-    private:
-    static std::optional<std::array<FoliageInfo, static_cast<size_t>(FoliageType::Foliage_MAX)>> _foliageDict;
+    FoliageDefinitions() {
+        create_foliage_definitions();
+    }
+
+    const size_t get_foliage_count() const {
+        return foliageInfoElements.size();
+    }
+
+    std::unordered_map<std::string, int>& get_name_to_foliage_index_map() {
+        return nameToFoliageIndex;
+    }
+
+    std::unordered_map<std::string, int> nameToFoliageIndex;
+    std::vector<FoliageInfo> foliageInfoElements;
+
+private:
+    void create_foliage_definitions();
 };
+
+namespace foliagedef {
+    static std::optional<FoliageDefinitions> foliageDefinitions;
+
+    static FoliageDefinitions get_foliage_definitions() {
+        if(foliageDefinitions) {
+            return *foliageDefinitions;
+        }
+
+        foliageDefinitions = FoliageDefinitions();
+        return *foliageDefinitions;
+    }
+}

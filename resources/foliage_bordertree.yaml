@@ -1,0 +1,115 @@
+---
+
+DirectionSets:
+    directionSet:
+        BorderTreeUp: 1
+        BorderTreeDown: 2
+        BorderTreeLeft: 3
+        BorderTreeRight: 4
+
+        BorderTreeUpLeft: 5
+        BorderTreeUpRight: 6
+        BorderTreeDownLeft: 7
+        BorderTreeDownRight: 8
+
+        BorderTreeMiddle: 9
+
+Foliage:
+    BorderTreeUp:
+        mapIndex: 1
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: True
+        buildable: True
+        colour: [0.08, 0.24, 0.08]
+        directionSet: directionSet
+        randomRotation: True
+        direction: Up
+
+    BorderTreeDown:
+        mapIndex: 2
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: True
+        buildable: True
+        colour: [0.08, 0.24, 0.08]
+        directionSet: directionSet
+        randomRotation: True
+        direction: Down
+
+    BorderTreeLeft:
+        mapIndex: 3
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: True
+        buildable: True
+        colour: [0.08, 0.24, 0.08]
+        directionSet: directionSet
+        randomRotation: True
+        direction: Left
+
+    BorderTreeRight:
+        mapIndex: 4
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: True
+        buildable: True
+        colour: [0.08, 0.24, 0.08]
+        directionSet: directionSet
+        randomRotation: True
+        direction: Right
+
+    BorderTreeUpLeft:
+        mapIndex: 5
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: True
+        buildable: True
+        colour: [0.08, 0.24, 0.08]
+        directionSet: directionSet
+        randomRotation: True
+        direction: UpLeft
+
+    BorderTreeUpRight:
+        mapIndex: 6
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: True
+        buildable: True
+        colour: [0.08, 0.24, 0.08]
+        directionSet: directionSet
+        randomRotation: True
+        direction: UpRight
+
+    BorderTreeDownLeft:
+        mapIndex: 7
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: True
+        buildable: True
+        colour: [0.08, 0.24, 0.08]
+        directionSet: directionSet
+        randomRotation: True
+        direction: DownLeft
+
+    BorderTreeDownRight:
+        mapIndex: 8
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: True
+        buildable: True
+        colour: [0.08, 0.24, 0.08]
+        directionSet: directionSet
+        randomRotation: True
+        direction: DownRight
+
+    BorderTreeMiddle:
+        mapIndex: 9
+        nodeType: FLOOR_NODE_TYPE
+        nodeBiome: None
+        walkable: True
+        buildable: True
+        colour: [0.08, 0.24, 0.08]
+        directionSet: directionSet
+        randomRotation: True
+        direction: None

@@ -1,0 +1,473 @@
+---
+
+DirectionSets:
+    directionSet:
+        ChasmWallUp: 1
+        ChasmWallDown: 2
+        ChasmWallLeft: 3
+        ChasmWallRight: 4
+        # 4
+
+        ChasmWallUpLeft: 5
+        ChasmWallUpRight: 6
+        ChasmWallDownLeft: 7
+        ChasmWallDownRight: 8
+        ChasmMiddle: 9
+        # 9
+
+        ChasmWallThreeUp: 10
+        ChasmWallThreeDown: 11
+        ChasmWallThreeLeft: 12
+        ChasmWallThreeRight: 13
+
+        ChasmWallFrontBackUp: 14
+        ChasmWallFrontBackLeft: 15
+
+        ChasmWallAll: 16
+        # 16
+
+        ChasmWallCenterUpLeft: 17
+        ChasmWallCenterUpRight: 18
+        ChasmWallCenterDownLeft: 19
+        ChasmWallCenterDownRight: 20
+
+        ChasmWallInsideUp: 21
+        ChasmWallInsideDown: 22
+        ChasmWallInsideLeft: 23
+        ChasmWallInsideRight: 24
+        # 24
+
+        ChasmWallCenterInsideUpLeft: 25
+        ChasmWallCenterInsideUpRight: 26
+        ChasmWallCenterInsideDownLeft: 27
+        ChasmWallCenterInsideDownRight: 28
+
+        ChasmWallInsideUpLeft: 29
+        ChasmWallInsideUpRight: 30
+        ChasmWallInsideDownLeft: 31
+        ChasmWallInsideDownRight: 32
+        # 32
+
+        ChasmWallDiagonalUpLeft: 33
+        ChasmWallDiagonalUpRight: 34
+        ChasmWallDiagonalDownLeft: 35
+        ChasmWallDiagonalDownRight: 36
+        # 36
+
+Foliage:
+    ChasmWallUp:
+        mapIndex: 1
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: Up
+
+    ChasmWallDown:
+        mapIndex: 2
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: Down
+        possibleRotations: [180]
+
+    ChasmWallLeft:
+        mapIndex: 3
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: Left
+        possibleRotations: [270]
+
+    ChasmWallRight:
+        mapIndex: 4
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: Right
+        possibleRotations: [90]
+
+    ChasmWallUpLeft:
+        mapIndex: 5
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: UpLeft
+
+    ChasmWallUpRight:
+        mapIndex: 6
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: UpRight
+        possibleRotations: [90]
+
+    ChasmWallDownLeft:
+        mapIndex: 7
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: DownLeft
+        possibleRotations: [270]
+
+    ChasmWallDownRight:
+        mapIndex: 8
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: DownRight
+        possibleRotations: [180]
+
+    ChasmMiddle:
+        mapIndex: 9
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: None
+
+    ChasmWallThreeUp:
+        mapIndex: 10
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: Up
+
+    ChasmWallThreeDown:
+        mapIndex: 11
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: Down
+        possibleRotations: [180]
+
+    ChasmWallThreeLeft:
+        mapIndex: 12
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: Left
+        possibleRotations: [270]
+
+    ChasmWallThreeRight:
+        mapIndex: 13
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: Right
+        possibleRotations: [90]
+
+    ChasmWallFrontBackUp:
+        mapIndex: 14
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: Up
+        possibleRotations: [90]
+
+    ChasmWallFrontBackLeft:
+        mapIndex: 15
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: Down
+
+    ChasmWallAll:
+        mapIndex: 16
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: Down
+
+    ChasmWallCenterUpLeft:
+        mapIndex: 17
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: UpLeft
+
+    ChasmWallCenterUpRight:
+        mapIndex: 18
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: UpRight
+
+    ChasmWallCenterDownLeft:
+        mapIndex: 19
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: DownLeft
+
+    ChasmWallCenterDownRight:
+        mapIndex: 20
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: DownRight
+
+    ChasmWallInsideUp:
+        mapIndex: 21
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: Up
+
+    ChasmWallInsideDown:
+        mapIndex: 22
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: Down
+        possibleRotations: [180]
+
+    ChasmWallInsideLeft:
+        mapIndex: 23
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: Left
+        possibleRotations: [270]
+
+    ChasmWallInsideRight:
+        mapIndex: 24
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: Right
+        possibleRotations: [90]
+
+    ChasmWallCenterInsideUpLeft:
+        mapIndex: 25
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: UpLeft
+
+    ChasmWallCenterInsideUpRight:
+        mapIndex: 26
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: UpRight
+
+    ChasmWallCenterInsideDownLeft:
+        mapIndex: 27
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: DownLeft
+
+    ChasmWallCenterInsideDownRight:
+        mapIndex: 28
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: DownRight
+
+    ChasmWallInsideUpLeft:
+        mapIndex: 29
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: UpLeft
+        possibleRotations: [0]
+
+    ChasmWallInsideUpRight:
+        mapIndex: 30
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: UpRight
+        possibleRotations: [90]
+
+    ChasmWallInsideDownLeft:
+        mapIndex: 31
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: DownLeft
+        possibleRotations: [270]
+
+    ChasmWallInsideDownRight:
+        mapIndex: 32
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: DownRight
+        possibleRotations: [180]
+
+    ChasmWallDiagonalUpLeft:
+        mapIndex: 33
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: UpLeft
+        possibleRotations: [0]
+
+    ChasmWallDiagonalUpRight:
+        mapIndex: 34
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: UpRight
+        possibleRotations: [90]
+
+    ChasmWallDiagonalDownLeft:
+        mapIndex: 35
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: DownLeft
+        possibleRotations: [270]
+
+    ChasmWallDiagonalDownRight:
+        mapIndex: 36
+        nodeType: LOW_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        colour: [0.05, 0.05, 0.05]
+        height: foliageHeight
+        directionSet: directionSet
+        direction: DownRight
+        possibleRotations: [180]

@@ -13,7 +13,7 @@
 
 struct MapNode {
 	int nodeType;
-	FoliageType foliageType;
+	int foliageType;
 	LevelBiome nodeBiome;
 };
 
@@ -40,7 +40,7 @@ public:
         lengthY = map.dim_b();
     }
 
-    MapObject(Matrix<int> nodeTypeMap, Matrix<FoliageType> foliageMap) {
+    MapObject(Matrix<int> nodeTypeMap, Matrix<int> foliageMap) {
         lengthX = nodeTypeMap.dim_a();
         lengthY = nodeTypeMap.dim_b();
         map = Matrix<MapNode>(lengthX, lengthY);
@@ -111,7 +111,7 @@ public:
      * These integers are written to map files and should
      * never be changed.
      */
-    std::unordered_map<int, FoliageType> m_mapFoliageMapping;
+    std::unordered_map<int, int> mapFoliageMapping;
     static std::string join(const std::vector<std::string> &lst, const std::string &delim);
 
 
@@ -162,7 +162,7 @@ private:
 
     std::filesystem::path _relationalMapPath;
 
-    std::unordered_map<FoliageType, int> m_foliageMapMapping;
+    std::unordered_map<int, int> m_foliageMapMapping;
 
     static const std::unordered_map<int, int> m_mapNodeTypeMapping;
     static const std::unordered_map<int, LevelBiome> m_mapNodeBiomeMapping;
@@ -177,7 +177,7 @@ private:
 
     Matrix<MapNode> convert_string_to_map(std::string loadText);
 
-    std::unordered_map<FoliageType, int> get_foliage_map_mapping() {
+    std::unordered_map<int, int> get_foliage_map_mapping() {
         return m_foliageMapMapping;
     }
 

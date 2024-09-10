@@ -1,0 +1,402 @@
+---
+
+DirectionSets:
+    CliffsideDesertDirections:
+        CliffsideDesertUp: 1201
+        CliffsideDesertDown: 1202
+        CliffsideDesertLeft: 1203
+        CliffsideDesertRight: 1204
+        CliffsideDesertUpLeft: 1205
+        CliffsideDesertUpRight: 1206
+        CliffsideDesertDownLeft: 1207
+        CliffsideDesertDownRight: 1208
+        CliffsideDesertMiddle: 1301
+
+        CliffsideDesertThreeUp: 1210
+        CliffsideDesertThreeDown: 1211
+        CliffsideDesertThreeLeft: 1212
+        CliffsideDesertThreeRight: 1213
+
+        CliffsideDesertFrontBackUp: 1214
+        CliffsideDesertFrontBackLeft: 1215
+
+        CliffsideDesertAll: 1216
+
+Foliage:
+    NoSelection:
+        mapIndex: 0
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        nodeBiome: None
+        colour: [0.05, 0.05, 0.05]
+
+    NoFoliage:
+        mapIndex: 1
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        nodeBiome: None
+        colour: [0.12, 0.125, 0.12]
+
+    CantHaveFoliage:
+        mapIndex: 3
+        nodeType: HIGH_GROUND_NODE_TYPE
+        walkable: True
+        buildable: True
+        nodeBiome: None
+        colour: [0.25, 0.1, 0.1]
+
+
+    # TREES.
+    TreeSmallFoliage:
+        mapIndex: 9
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        nodeBiome: None
+        randomRotation: True
+        colour: [0.10, 0.36, 0.10]
+
+    TreeSmallSnowFoliage:
+        mapIndex: 10
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        nodeBiome: None
+        randomRotation: True
+        colour: [0.08, 0.24, 0.08]
+
+    TreeFoliage:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        mapIndex: 7
+        nodeBiome: None
+        randomRotation: True
+        colour: [0.08, 0.24, 0.08]
+
+    TreeSnowFoliage:
+        mapIndex: 8
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        nodeBiome: None
+        randomRotation: True
+        colour: [0.08, 0.24, 0.08]
+
+    TreeWallFoliage:
+        mapIndex: 52
+        nodeType: HIGH_GROUND_NODE_TYPE
+        walkable: False
+        buildable: False
+        floorType: High
+        randomRotation: True
+        colour: [0.075, 0.225, 0.125]
+
+    TreeEvergreenFoliage:
+        mapIndex: 21
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        nodeBiome: None
+        randomRotation: True
+        colour: [0.05, 0.2, 0.1]
+
+    TreeEvergreenHighFoliage:
+        mapIndex: 51
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        randomRotation: True
+        colour: [0.075, 0.225, 0.125]
+
+    TreeSmallEvergreenFoliage:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        mapIndex: 22
+        nodeBiome: None
+        randomRotation: True
+        colour: [0.075, 0.225, 0.125]
+
+    TreeSnowEvergreenFoliage:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        mapIndex: 23
+        nodeBiome: None
+        randomRotation: True
+        colour: [0.075, 0.225, 0.125]
+
+    # ROCKS.
+    RockClusterFoliage:
+        mapIndex: 11
+        walkable: True
+        randomRotation: True
+        colour: [0.55, 0.55, 0.5]
+
+    RockClusterSnowFoliage:
+        mapIndex: 12
+        walkable: True
+        randomRotation: True
+        colour: [0.41, 0.41, 0.41]
+        
+        
+    # BOULDERS
+
+    RoundBoulder:
+        mapIndex: 57
+        walkable: False
+        buildable: False
+        # For now we offset thenodeBiome: direction
+        # so disabling random rotation.
+        # Shouldn't matter that much for round boulders anyways.
+        randomRotation: False
+        colour: [0.75, 0.55, 0.5]
+
+    # UNBUILDABLE.
+    GroundUnbuildable:
+        walkable: True
+        buildable: False
+        mapIndex: 53
+        colour: [0.5, 0.5, 0.55]
+
+    ThrottenGroundUnbuildable:
+        walkable: True
+        buildable: False
+        throtten: Level01
+        mapIndex: 54
+        colour: [0.3, 0.25, 0.35]
+
+    VeryThrottenGroundUnbuildable:
+        walkable: True
+        buildable: False
+        throtten: Level02
+        mapIndex: 55
+        colour: [0.35, 0.3, 0.35]
+
+    CompletelyThrottenGroundUnbuildable:
+        walkable: True
+        buildable: False
+        throtten: Completely
+        mapIndex: 56
+        colour: [0.45, 0.4, 0.35]
+
+    # GROUND.
+    ThrottenGround:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        mapIndex: 4
+        nodeBiome: Desert
+        colour: [0.3, 0.25, 0.25]
+        throtten: Level01
+
+    VeryThrottenGround:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        mapIndex: 5
+        nodeBiome: Desert
+        colour: [0.35, 0.3, 0.25]
+        throtten: Level02
+
+    CompletelyThrottenGround:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        mapIndex: 6
+        nodeBiome: Desert
+        throtten: Completely
+        colour: [0.45, 0.4, 0.25]
+
+
+    # HILLS.
+
+    HillSmall:
+        mapIndex: 24
+        nodeBiome: Desert
+        buildable: True
+        colour: [0.75, 0.6, 0.55]
+
+    HillSmallDesert:
+        mapIndex: 26
+        nodeBiome: Desert
+        randomRotation: True
+        colour: [0.75, 0.6, 0.55]
+
+
+    HillSmallSnow:
+        mapIndex: 25
+        nodeBiome: Snow
+        randomRotation: True
+        colour: [0.55, 0.6, 0.75]
+
+
+
+    # CLIFFSIDES.
+
+    CliffsideDesertMiddle:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: False
+        buildable: False
+        mapIndex: 1301
+        nodeBiome: None
+        direction: None
+        directionSet: CliffsideDesertDirections
+
+    CliffsideDesertUp:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: False
+        buildable: False
+        mapIndex: 1201
+        nodeBiome: None
+        direction: Up
+        directionSet: CliffsideDesertDirections
+
+    CliffsideDesertDown:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: False
+        buildable: False
+        mapIndex: 1202
+        nodeBiome: None
+        direction: Down
+        directionSet: CliffsideDesertDirections
+
+    CliffsideDesertLeft:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: False
+        buildable: False
+        mapIndex: 1203
+        nodeBiome: None
+        direction: Left
+        directionSet: CliffsideDesertDirections
+
+    CliffsideDesertRight:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: False
+        buildable: False
+        mapIndex: 1204
+        nodeBiome: None
+        direction: Right
+        directionSet: CliffsideDesertDirections
+
+    CliffsideDesertUpLeft:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: False
+        buildable: False
+        mapIndex: 1205
+        nodeBiome: None
+        direction: UpLeft
+        directionSet: CliffsideDesertDirections
+
+    CliffsideDesertUpRight:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: False
+        buildable: False
+        mapIndex: 1206
+        nodeBiome: None
+        direction: UpRight
+        directionSet: CliffsideDesertDirections
+
+    CliffsideDesertDownLeft:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: False
+        buildable: False
+        mapIndex: 1207
+        nodeBiome: None
+        direction: DownLeft
+        directionSet: CliffsideDesertDirections
+
+    CliffsideDesertDownRight:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: False
+        buildable: False
+        mapIndex: 1208
+        nodeBiome: None
+        direction: DownRight
+        directionSet: CliffsideDesertDirections
+
+    Cliffside:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: False
+        buildable: False
+        mapIndex: 16
+        nodeBiome: None
+        throtten: Completely
+
+    CliffsideShort:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: False
+        buildable: False
+        mapIndex: 17
+        nodeBiome: None
+        throtten: Completely
+
+    CliffsideHigh:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: False
+        buildable: False
+        mapIndex: 18
+        nodeBiome: None
+        throtten: Completely
+
+    # PLANTS.
+    PlantClusterFoliage:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        mapIndex: 14
+        nodeBiome: None
+
+    FlowerClusterFoliage:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        mapIndex: 13
+        nodeBiome: None
+
+    MonumentCluster:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        mapIndex: 15
+        nodeBiome: None
+
+    PillarSmallDesert:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        mapIndex: 33
+        nodeBiome: Desert
+        throtten: Completely
+        colour: [0.55, 0.5, 0.25]
+
+    FlatStone:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        mapIndex: 38
+        nodeBiome: None
+
+    FlatStoneDesert:
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        mapIndex: 40
+        nodeBiome: Desert
+        throtten: Completely
+
+    StoneCircle:
+        nodeType: FLOOR_NODE_TYPE
+        mapIndex: 58
+        nodeBiome: None
+        randomRotation: True
+
+    TreeCliffedge:
+        mapIndex: 50
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: False
+        nodeBiome: Grass
+        randomRotation: True

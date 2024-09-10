@@ -69,4 +69,3 @@ namespace relations {
         return Vector2Int(x, y);
     }
 }
-

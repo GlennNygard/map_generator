@@ -14,7 +14,7 @@ public:
 
     FoliageProcessor(BiomeFoliageInfo biomeFoliageInfo, bool verboseLogging);
 
-	std::pair<Matrix<FoliageType>, bool> mark_foliage_nodes(
+	std::pair<Matrix<int>, bool> mark_foliage_nodes(
 		const LevelValues LevelValues);
 
 
@@ -25,72 +25,74 @@ private:
 
 	BiomeFoliageInfo m_biomeFoliageInfo;
 
-	int m_recursionCount = 0;
-	int m_emptyRecursionCount = 0;
-	int m_emptyRecursionEarlyCount = 0;
+	int m_recursionCount;
+	int m_emptyRecursionCount;
+	int m_emptyRecursionEarlyCount;
+
+	std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT> m_stillPossibleBuffer;
 
 	std::chrono::milliseconds get_time();
 	float format_time(long count);
 
 	void prepare_full_data(
-		Matrix<FoliageData> &fullFoliageDataMap,
-        const LevelValues levelValues);
+		Matrix<FoliageData>& fullFoliageDataMap,
+        const LevelValues& levelValues);
 
 	void prepare_section_data(
-        Matrix<FoliageType> &foliageMap,
+        Matrix<int> &foliageMap,
         Matrix<FoliageData> &foliageDataMap,
         Matrix<char> &requiresPropagationMap,
         const Matrix<FoliageData> &fullFoliageDataMap,
         const Vector2Int currentSectionPos);
 
 	void write_to_full_map(
-        const Matrix<FoliageType> &resultsFoliageMap,
+        const Matrix<int> &resultsFoliageMap,
 		Matrix<FoliageData> &resultsFoliageDataMap,
-        Matrix<FoliageType> &fullFoliageMap,
+        Matrix<int> &fullFoliageMap,
 		Matrix<FoliageData> &fullFoliageDataMap,
         Vector2Int sectionPos);
 
 	void clear_subsection_from_full_grid(
-		Matrix<FoliageType>& fullFoliageMap,
+		Matrix<int>& fullFoliageMap,
 		Matrix<FoliageData>& fullFoliageDataMap,
 		const Vector2Int sectionPos);
 
-    std::optional<std::pair<Matrix<FoliageType>, Matrix<FoliageData>>> process_subsection(
-		Matrix<FoliageType>& foliageMap,
+    std::optional<std::pair<Matrix<int>, Matrix<FoliageData>>> process_subsection(
+		Matrix<int>& foliageMap,
 		Matrix<FoliageData>& foliageDataMap);
 
 	Vector2Int get_next_best_node(
-		std::unordered_set<Vector2Int> remainingNodes,
+		const std::unordered_set<Vector2Int>& remainingNodes,
 		Matrix<FoliageData>& foliageDataGrid);
 
 	bool assign_foliage(
 		const Vector2Int currentNodePos,
-		const FoliageType newType,
+		const int newType,
 		BiomeFoliageInfo& foliageInfo,
-		Matrix<FoliageType>& foliageMap,
+		Matrix<int>& foliageMap,
 		Matrix<FoliageData>& foliageDataMap);
 
-	template<size_t size>
+	template<size_t foliageCount>
 	bool update_possible_types(
 		const Vector2Int initialCurrentNodePos,
-		const std::array<int, size>& remainingPossibleTypes,
+		const std::array<int, foliageCount>& remainingPossibleTypes,
 		BiomeFoliageInfo& foliageInfo,
-		Matrix<FoliageType>& foliageMap,
+		Matrix<int>& foliageMap,
 		Matrix<FoliageData>& foliageDataMap);
 
-	template<size_t size>
+	template<size_t foliageCount>
 	bool update_possible_types_recursively(
 		const Vector2Int lastNodePos,
 		const Vector2Int currentNodePos,
 		BiomeFoliageInfo& foliageInfo,
-		const std::array<int, size>& lastNodePossibleTypes,
-		Matrix<FoliageType>& foliageMap,
+		const std::array<int, foliageCount>& lastNodePossibleTypes,
+		Matrix<int>& foliageMap,
 		Matrix<FoliageData>& foliageDataMap,
 		Matrix<int>& propagatedNodes,
 		std::queue<std::pair<Vector2Int,Vector2Int>>& actionQueue);
 
-	template<size_t size>
-	FoliageType make_selection(
-		const std::array<int, size>& possibleTypes,
-		const std::array<int, size>& mainWeights);
+	template<size_t foliageCount>
+	int make_selection(
+		const std::array<int, foliageCount>& possibleTypes,
+		const std::array<int, foliageCount>& mainWeights);
 };

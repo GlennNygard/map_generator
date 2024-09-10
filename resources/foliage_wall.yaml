@@ -1,0 +1,325 @@
+---
+
+DirectionSets:
+    directionSet:
+        WallUp: 1
+        WallDown: 2
+        WallLeft: 3
+        WallRight: 4
+
+        WallUpLeft: 5
+        WallUpRight: 6
+        WallDownLeft: 7
+        WallDownRight: 8
+        WallMiddle: 9
+
+        WallThreeUp: 10
+        WallThreeDown: 11
+        WallThreeLeft: 12
+        WallThreeRight: 13
+
+        WallFrontBackUp: 14
+        WallFrontBackLeft: 15
+
+        WallAll: 16
+
+        WallCenterInsideUpLeft: 17
+        WallCenterInsideUpRight: 18
+        WallCenterInsideDownLeft: 19
+        WallCenterInsideDownRight: 20
+
+        NoSelection: 21
+        NoSelection: 22
+        NoSelection: 23
+        NoSelection: 24
+
+        NoSelection: 25
+        NoSelection: 26
+        NoSelection: 27
+        NoSelection: 28
+
+        NoSelection: 29
+        NoSelection: 30
+        NoSelection: 31
+        NoSelection: 32
+
+        WallDiagonalUpLeft: 33
+        WallDiagonalUpRight: 34
+        WallDiagonalDownLeft: 35
+        WallDiagonalDownRight: 36
+
+Foliage:
+    WallUp:
+        mapIndex: 1
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: Up
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: []
+
+    WallDown:
+        mapIndex: 2
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: Down
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: [180]
+
+    WallLeft:
+        mapIndex: 3
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: Left
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: [270]
+
+    WallRight:
+        mapIndex: 4
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: Right
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: [90]
+
+    WallUpLeft:
+        mapIndex: 5
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: UpLeft
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: []
+
+    WallUpRight:
+        mapIndex: 6
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: UpRight
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: [90]
+
+    WallDownLeft:
+        mapIndex: 7
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: DownLeft
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: [270]
+
+    WallDownRight:
+        mapIndex: 8
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: DownRight
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: [180]
+
+    WallMiddle:
+        mapIndex: 9
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: None
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: [0, 90, 180, 270]
+
+    WallThreeUp:
+        mapIndex: 10
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: Up
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: []
+
+    WallThreeDown:
+        mapIndex: 11
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: Down
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: [180]
+
+    WallThreeLeft:
+        mapIndex: 12
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: Left
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: [270]
+
+    WallThreeRight:
+        mapIndex: 13
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: Right
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: [90]
+
+    WallFrontBackUp:
+        mapIndex: 14
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: Up
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: []
+
+    WallFrontBackLeft:
+        mapIndex: 15
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: Down
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: []
+
+    WallAll:
+        mapIndex: 16
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: Down
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: []
+
+    WallCenterInsideUpLeft:
+        mapIndex: 17
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: UpLeft
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: []
+
+    WallCenterInsideUpRight:
+        mapIndex: 18
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: UpRight
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: []
+
+    WallCenterInsideDownLeft:
+        mapIndex: 19
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: DownLeft
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: []
+
+    WallCenterInsideDownRight:
+        mapIndex: 20
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: DownRight
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: []
+
+    WallDiagonalUpLeft:
+        mapIndex: 21
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: UpLeft
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: []
+
+    WallDiagonalUpRight:
+        mapIndex: 22
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: UpRight
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: [90]
+
+    WallDiagonalDownLeft:
+        mapIndex: 23
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: DownLeft
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: [270]
+
+    WallDiagonalDownRight:
+        mapIndex: 24
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: DownRight
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: [180]
+
+    WallMiddleEmpty:
+        mapIndex: 25
+        nodeType: HIGH_GROUND_NODE_TYPE
+        nodeBiome: None
+        walkable: False
+        buildable: False
+        direction: None
+        directionSet: directionSet
+        colour: [0.25, 0.1, 0.1]
+        possibleRotations: [0, 90, 180, 270]

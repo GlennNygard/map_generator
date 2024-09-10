@@ -1,21 +1,52 @@
-#include "foliage_definitions.h"
+#include <filesystem>
 
-const std::array<FoliageInfo, static_cast<size_t>(FoliageType::Foliage_MAX)> FoliageDefinitions::get_foliage_definitions() {
-    if(FoliageDefinitions::_foliageDict) {
-        return *FoliageDefinitions::_foliageDict;
+#include "foliage_definitions.h"
+#include "foliage_reader.h"
+
+
+void FoliageDefinitions::create_foliage_definitions() {
+    nameToFoliageIndex = std::unordered_map<std::string, int>();
+
+    std::vector<FoliageInfo> foliageList = {};
+
+    std::filesystem::path resourcePath (RESOURCE_PATH);
+
+    int currentFoliageIndex = 0;
+    currentFoliageIndex = foliagereader::read(
+        foliageList,
+        resourcePath / "foliage_common.yaml",
+        0, currentFoliageIndex);
+
+    currentFoliageIndex = foliagereader::read(
+        foliageList,
+        resourcePath / "foliage_chasm.yaml",
+        1400, currentFoliageIndex);
+
+    currentFoliageIndex = foliagereader::read(
+        foliageList,
+        resourcePath / "foliage_wall_higher.yaml",
+        1500, currentFoliageIndex);
+
+    currentFoliageIndex = foliagereader::read(
+        foliageList,
+        resourcePath / "foliage_wall.yaml",
+        1600, currentFoliageIndex);
+
+    currentFoliageIndex = foliagereader::read(
+        foliageList,
+        resourcePath / "foliage_bordertree.yaml",
+        1700, currentFoliageIndex);
+
+    currentFoliageIndex = foliagereader::read(
+        foliageList,
+        resourcePath / "foliage_cliffside_high.yaml",
+        1800, currentFoliageIndex);
+
+    for(auto info : foliageList) {
+        nameToFoliageIndex[info.foliageName] = info.foliageType;
     }
 
-    std::array<FoliageInfo, static_cast<size_t>(FoliageType::Foliage_MAX)> foliageDict = {};
+    logger::log(std::format("Total foliage count: {}.",foliageList.size()));
 
-    foliagecommon::setup(foliageDict, 0);
-    chasm::setup(foliageDict, 1400);
-    wallhigher::setup(foliageDict, 1500);
-    wall::setup(foliageDict, 1600);
-    bordertree::setup(foliageDict, 1700);
-    cliffsidehigh::setup(foliageDict, 1800);
-
-    FoliageDefinitions::_foliageDict = foliageDict;
-    return foliageDict;
+    foliageInfoElements = foliageList;
 }
-
-std::optional<std::array<FoliageInfo, static_cast<size_t>(FoliageType::Foliage_MAX)>> FoliageDefinitions::_foliageDict;

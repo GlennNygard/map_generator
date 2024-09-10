@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <format>
 
 #include "foliage.h"
 #include "foliage_data.h"
@@ -27,10 +28,10 @@ namespace logger {
         std::cerr << message << std::endl;
     }
 
-    template<size_t foliageSize>
+    template<size_t foliageCount>
     static void log_grid(
             const Matrix<FoliageData>& grid,
-            const std::array<int, foliageSize> &walkablePossibleTypes) {
+            const std::array<int, foliageCount> &walkablePossibleTypes) {
 
         if(!RUN_PRINTS) {
             return;
@@ -66,12 +67,12 @@ namespace logger {
                     continue;
                 }
 
-                std::vector<FoliageType> remainingPossibleTypes = {};
+                std::vector<int> remainingPossibleTypes = {};
                 for(int i = 0; i < dataRemaining.size(); i++) {
                     if(dataRemaining[i] <= 0) {
                         continue;
                     }
-                    remainingPossibleTypes.push_back((FoliageType)i);
+                    remainingPossibleTypes.push_back(i);
                 }
 
                 if(remainingPossibleTypes.size() == 1) {
@@ -90,7 +91,7 @@ namespace logger {
     }
 
     static void log_grid(
-            const Matrix<FoliageType>& grid) {
+            const Matrix<int>& grid) {
         if(!RUN_PRINTS) {
             return;
         }
@@ -110,7 +111,7 @@ namespace logger {
                 auto foliageType = grid[x][y];
                 fullStringTypes += std::format(
                     "{},{} - {} \t",
-                    x, y, static_cast<int>(foliageType));
+                    x, y, (foliageType));
             }
         }
         // Print the row to the Unity console.
