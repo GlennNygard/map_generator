@@ -158,7 +158,7 @@ std::pair<Matrix<int>, bool> FoliageProcessor::mark_foliage_nodes(
             FoliageData nodeData = foliageDataMap[node.x][node.y];
             bool success = update_possible_types(
                 node,
-                nodeData.get_remaining_possible_types(),
+                nodeData.get_remaining(),
                 m_biomeFoliageInfo,
                 foliageMap,
                 foliageDataMap);
@@ -419,7 +419,7 @@ void FoliageProcessor::prepare_section_data(
             if(fullX < 0 || fullY < 0 ||
                     fullX >= fullFoliageDataMap.dim_a() ||
                     fullY >= fullFoliageDataMap.dim_b()) {
-                foliageData.set_remaining_from_list(
+                foliageData.set_remaining(
                     m_biomeFoliageInfo.get_walkable_possible_types());
                 foliageDataMap[x][y] = foliageData;
                 requiresPropagationMap[x][y] = true;
@@ -439,8 +439,8 @@ void FoliageProcessor::prepare_section_data(
             // Node has previous data.
             if(fullNodeFoliageData.hasData && fullNodeFoliageData.hasData) {
                 if(x < 1 || y < 1 || x >= foliageMap.dim_a()-1 || y >= foliageMap.dim_b()-1) {
-                    foliageData.set_remaining_from_list(
-                        fullNodeFoliageData.get_remaining_possible_types());
+                    foliageData.set_remaining(
+                        fullNodeFoliageData.get_remaining());
                     foliageDataMap[x][y] = foliageData;
                     requiresPropagationMap[x][y] = true;
                     continue;
@@ -454,7 +454,7 @@ void FoliageProcessor::prepare_section_data(
                         y < MapDefinitions::SUBSECTION_BORDER ||
                         x >= foliageMap.dim_a()-MapDefinitions::SUBSECTION_BORDER ||
                         y >= foliageMap.dim_b()-MapDefinitions::SUBSECTION_BORDER) {
-                    foliageData.set_remaining_from_list(
+                    foliageData.set_remaining(
                         m_biomeFoliageInfo.get_walkable_possible_types());
                     requiresPropagationMap[x][y] = true;
 
@@ -466,11 +466,11 @@ void FoliageProcessor::prepare_section_data(
             requiresPropagationMap[x][y] = forcedWalkable;
 
             if(forcedWalkable) {
-                foliageData.set_remaining_from_list(
+                foliageData.set_remaining(
                     m_biomeFoliageInfo.get_walkable_possible_types());
             }
             else {
-                foliageData.set_remaining_from_list(
+                foliageData.set_remaining(
                     m_biomeFoliageInfo.get_possible_types());
             }
             foliageDataMap[x][y] = foliageData;
@@ -501,8 +501,8 @@ void FoliageProcessor::write_to_full_map(
             if(x >= 1 && y >= 1 &&
                     x < resultsFoliageMap.dim_a()-1 &&
                     y < resultsFoliageMap.dim_b()-1) {
-                fullFoliageDataMap[fullX][fullY].set_remaining_from_list(
-                    resultsFoliageDataMap[x][y].get_remaining_possible_types());
+                fullFoliageDataMap[fullX][fullY].set_remaining(
+                    resultsFoliageDataMap[x][y].get_remaining());
             }
         }
     }
@@ -537,11 +537,11 @@ void FoliageProcessor::clear_subsection_from_full_grid(
                     // If we are within a 1 tile border, but not within the proper border
                     // (right side border excluded).
                     if(fullFoliageDataMap[fullX][fullY].isWalkableOnly) {
-                        fullFoliageDataMap[fullX][fullY].set_remaining_from_list(
+                        fullFoliageDataMap[fullX][fullY].set_remaining(
                             m_biomeFoliageInfo.get_walkable_possible_types());
                     }
                     else {
-                        fullFoliageDataMap[fullX][fullY].set_remaining_from_list(
+                        fullFoliageDataMap[fullX][fullY].set_remaining(
                             m_biomeFoliageInfo.get_possible_types());
                     }
                 }
@@ -631,7 +631,7 @@ bool FoliageProcessor::assign_foliage(
     if(currentFoliageType == FoliageHelpers::NO_SELECTION_INDEX) {
 
         currentFoliageType = make_selection(
-            nodeData.get_remaining_possible_types(),
+            nodeData.get_remaining(),
             foliageInfo.get_possible_types());
         if(currentFoliageType == FoliageHelpers::NO_SELECTION_INDEX) {
             // Something went wrong selecting the next type.
@@ -639,7 +639,7 @@ bool FoliageProcessor::assign_foliage(
             // Generation will have to be re-done.
             std::cout << std::format(
                 "Assigning foliage failed. Possible types: {}",
-                nodeData.get_remaining_possible_types().size()) << std::endl;
+                nodeData.get_remaining().size()) << std::endl;
             return false;
         }
     }
@@ -662,7 +662,7 @@ bool FoliageProcessor::assign_foliage(
                     continue;
                 }
 
-                auto remaining = neighbourData.get_remaining_possible_types();
+                auto remaining = neighbourData.get_remaining();
 
                 if(remaining[bonus.first] <= 0) {
                     continue;
@@ -732,7 +732,7 @@ bool FoliageProcessor::update_possible_types(
 
         if(currentNodePos != initialCurrentNodePos) {
             FoliageData nodeData = foliageDataMap[currentNodePos.x][currentNodePos.y];
-            remaining = nodeData.get_remaining_possible_types();
+            remaining = nodeData.get_remaining();
         }
 
         bool success = update_possible_types_recursively(
@@ -793,7 +793,7 @@ bool FoliageProcessor::update_possible_types_recursively(
     }
 
     FoliageData& nodeData = foliageDataMap[currentNodePos.x][currentNodePos.y];
-    auto remainingPossibleTypes = nodeData.get_remaining_possible_types();
+    auto remainingPossibleTypes = nodeData.get_remaining();
 
     int remainingCount = 0;
     int newlyRemovedCount = 0;
@@ -818,7 +818,7 @@ bool FoliageProcessor::update_possible_types_recursively(
         return true;
     }
 
-    nodeData.set_remaining_possible_types(remainingPossibleTypes);
+    nodeData.set_remaining(remainingPossibleTypes);
 
     if(remainingCount == 0) {
         if(m_verboseLogging) {

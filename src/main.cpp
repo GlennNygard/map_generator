@@ -3,7 +3,6 @@
 #include <iostream>
 #include <format>
 #include <string>
-#include <string_view>
 #include <algorithm>
 
 #include "foliage.h"
@@ -11,6 +10,7 @@
 #include "disk_manager.h"
 #include "gmath.h"
 #include "argparse.h"
+#include "logger.h"
 
 
 void create_maps(const LevelValues &levelValues, const ArgValues &argValues) {
@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
     ArgValues argValues = *argValuesOpt;
-    std::cout << "Starting up..." << std::endl;
+    logger::log("Starting up...");
 
     // Create level setup values.
     LevelValues levelValues = MapDefinitions::create_level_values(argValues.mapSize);

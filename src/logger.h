@@ -51,7 +51,7 @@ namespace logger {
             for(int x = 0; x < cols; x++) {
                 FoliageData foliageData = grid[x][y];
 
-                auto dataRemaining = foliageData.get_remaining_possible_types();
+                auto dataRemaining = foliageData.get_remaining();
 
                 auto defaultWalkable = walkablePossibleTypes;
                 bool allSame = true;

@@ -43,21 +43,15 @@ include(ExternalProject)
 # FetchContent makes dependency available before project configuration.
 include(FetchContent)
 
-#set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)
-set(EXTERNAL_INSTALL_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/external)
+set(EXTERNAL_INSTALL_LOCATION ${CMAKE_BINARY_DIR}/external)
 
 ExternalProject_Add(cxxopts
     GIT_REPOSITORY https://github.com/jarro2783/cxxopts
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}/cxxopts
 )
 
-target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${EXTERNAL_INSTALL_LOCATION}/cxxopts/include/")
-
-# ExternalProject_Add(yaml-cpp
-#     GIT_REPOSITORY https://github.com/jbeder/yaml-cpp.git
-#     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}/yaml-cpp
-# )
-# target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${EXTERNAL_INSTALL_LOCATION}/yaml-cpp/include/")
+add_dependencies("${CMAKE_PROJECT_NAME}" cxxopts)
+target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${EXTERNAL_INSTALL_LOCATION}/cxxopts/include")
 
 FetchContent_Declare(
     yaml-cpp
@@ -69,8 +63,5 @@ FetchContent_MakeAvailable(yaml-cpp)
 
 # The library or executable that require yaml-cpp library.
 target_link_libraries("${CMAKE_PROJECT_NAME}" PUBLIC yaml-cpp::yaml-cpp)
-
-# Write configuration file back to the source tree.
-# configure_file(${CMAKE_SOURCE_DIR}/templates/app_version.hpp.in ${CMAKE_SOURCE_DIR}/include/app_version.hpp)
 
 endif()
