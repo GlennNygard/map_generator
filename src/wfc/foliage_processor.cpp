@@ -120,12 +120,16 @@ std::pair<Matrix<int>, bool> FoliageProcessor::mark_foliage_nodes(
 
         if(m_verboseLogging) {
             logger::log(std::format(
-                "STARTING ATTEMPT \n"
-                "Section: {}."
-                "Furthest: {}."
+                "STARTING SECTION ATTEMPT\n"
+                "Section: {}"
+                "Furthest: {}\n"
+                "Section index: {}."
+                "Furthest index: {}."
                 "Remaining in stack: {}.",
                 currentSectionPos.to_string(),
                 furthestSectionPos.to_string(),
+                (currentSectionPos.x+currentSectionPos.y),
+                (furthestSectionPos.x+furthestSectionPos.y),
                 sectionStack.size()));
         }
 
@@ -641,7 +645,7 @@ bool FoliageProcessor::assign_foliage(
     }
 
     // Update neighbour possible types with neighbour bonus values.
-    auto bonusTypes = m_biomeFoliageInfo.neighbourBonus[static_cast<int>(currentFoliageType)];
+    FoliageNeighbourBonus bonusTypes = m_biomeFoliageInfo.neighbourBonusList[currentFoliageType];
     if(bonusTypes.size() != 0) {
         auto neighbours = relations::get_neighbours(
             currentNodePos, MapDefinitions::SUBSECTION_FULL_SIZE);
@@ -660,10 +664,10 @@ bool FoliageProcessor::assign_foliage(
 
                 auto remaining = neighbourData.get_remaining_possible_types();
 
-                if(remaining[static_cast<int>(bonus.first)] <= 0) {
+                if(remaining[bonus.first] <= 0) {
                     continue;
                 }
-                remaining[static_cast<int>(bonus.first)] += bonus.second;
+                remaining[bonus.first] += bonus.second;
             }
         }
     }
@@ -671,7 +675,7 @@ bool FoliageProcessor::assign_foliage(
     foliageMap[currentNodePos.x][currentNodePos.y] = currentFoliageType;
 
     std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT> newRemainingPossibleTypes = {};
-    newRemainingPossibleTypes[static_cast<int>(currentFoliageType)] = 1;
+    newRemainingPossibleTypes[currentFoliageType] = 1;
 
     bool success = update_possible_types(
         currentNodePos,
@@ -778,11 +782,12 @@ bool FoliageProcessor::update_possible_types_recursively(
         if(lastNodePossibleTypes[foliageIndex] <= 0) {
             continue;
         }
-        auto relationFoliageTypes = (*lastNodeDirectionalRelations)[foliageIndex];
+        FoliageRelation relationFoliageTypes = (*lastNodeDirectionalRelations)[foliageIndex];
         if(relationFoliageTypes.size() == 0) {
             continue;
         }
-        for(auto foliageType : relationFoliageTypes) {
+        for(size_t i = 0; i < relationFoliageTypes.size(); i++) {
+            int foliageType = relationFoliageTypes[i];
             m_stillPossibleBuffer[foliageType] = 1;
         }
     }

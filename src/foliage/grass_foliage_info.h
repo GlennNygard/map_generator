@@ -164,42 +164,40 @@ class GrassFoliageInfo : public BiomeFoliageInfo {
 			{toFI("CompletelyThrottenGround"), 10},
 		};
 
-		// We set up a vector for easy access later.
-
 		setup(m_allowedTypes, m_walkableAllowedTypes, "GrassRelationsMap.txt");
-		startPossibleTypes[static_cast<int>(toFI("NoFoliage"))] =
-			possibleTypes[static_cast<int>(toFI("NoFoliage"))];
+		startPossibleTypes[(toFI("NoFoliage"))] =
+			possibleTypes[(toFI("NoFoliage"))];
 
-		neighbourBonus[static_cast<int>(toFI("NoFoliage"))] = {
+		neighbourBonusList[(toFI("NoFoliage"))] = FoliageNeighbourBonus({
 			std::pair<int, int>(toFI("NoFoliage"), 120),
 			std::pair<int, int>(toFI("ThrottenGround"), 40),
-		};
-		neighbourBonus[static_cast<int>(toFI("TreeFoliage"))] = {
+		});
+		neighbourBonusList[(toFI("TreeFoliage"))] = FoliageNeighbourBonus({
 			std::pair<int, int>(toFI("TreeFoliage"), 80),
 			std::pair<int, int>(toFI("FlowerClusterFoliage"), 20),
 			// (RoundBoulder, 20),
-		};
-		neighbourBonus[static_cast<int>(toFI("FlowerClusterFoliage"))] = {
+		});
+		neighbourBonusList[(toFI("FlowerClusterFoliage"))] = FoliageNeighbourBonus({
 			std::pair<int, int>(toFI("FlowerClusterFoliage"), 20)
-		};
-		neighbourBonus[static_cast<int>(toFI("ThrottenGround"))] = {
+		});
+		neighbourBonusList[(toFI("ThrottenGround"))] = FoliageNeighbourBonus({
 			std::pair<int, int>(toFI("ThrottenGround"), 20),
 			std::pair<int, int>(toFI("VeryThrottenGround"), 10),
-		};
+		});
 
-		neighbourBonus[static_cast<int>(toFI("VeryThrottenGround"))] = {
+		neighbourBonusList[(toFI("VeryThrottenGround"))] = FoliageNeighbourBonus({
 			std::pair<int, int>(toFI("ThrottenGround"), 20),
 			std::pair<int, int>(toFI("VeryThrottenGround"), 40),
 			std::pair<int, int>(toFI("CompletelyThrottenGround"), 10),
-		};
+		});
 
-		neighbourBonus[static_cast<int>(toFI("CompletelyThrottenGround"))] = {
+		neighbourBonusList[(toFI("CompletelyThrottenGround"))] = FoliageNeighbourBonus({
 			std::pair<int, int>(toFI("VeryThrottenGround"), 10),
 			std::pair<int, int>(toFI("CompletelyThrottenGround"), 20),
-		};
+		});
 
 		int treeCliffedgeToWallBonus = 4000;
-		neighbourBonus[static_cast<int>(toFI("TreeCliffedge"))] = {
+		neighbourBonusList[(toFI("TreeCliffedge"))] = FoliageNeighbourBonus({
 			// (TreeCliffedge, 100),
 			std::pair<int, int>(toFI("WallUp"), treeCliffedgeToWallBonus),
 			std::pair<int, int>(toFI("WallDown"), treeCliffedgeToWallBonus),
@@ -210,52 +208,34 @@ class GrassFoliageInfo : public BiomeFoliageInfo {
 			std::pair<int, int>(toFI("WallUpRight"), treeCliffedgeToWallBonus),
 			std::pair<int, int>(toFI("WallDownLeft"), treeCliffedgeToWallBonus),
 			std::pair<int, int>(toFI("WallDownRight"), treeCliffedgeToWallBonus),
-
-			// (WallCenterInsideUpLeft, treeCliffedgeToWallBonus),
-			// (WallCenterInsideUpRight, treeCliffedgeToWallBonus),
-			// (WallCenterInsideDownLeft, treeCliffedgeToWallBonus),
-			// (WallCenterInsideDownRight, treeCliffedgeToWallBonus),
-		};
-
-		// NeighbourBonus[static_cast<int>(WallUp] = new (int, int)[] {
-		// 	(TreeCliffedge, treeCliffedgeToWallBonus)
-		// };
-		// NeighbourBonus[static_cast<int>(WallDown] = new (int, int)[] {
-		// 	(TreeCliffedge, treeCliffedgeToWallBonus)
-		// };
-		// NeighbourBonus[static_cast<int>(WallLeft] = new (int, int)[] {
-		// 	(TreeCliffedge, treeCliffedgeToWallBonus)
-		// };
-		// NeighbourBonus[static_cast<int>(WallRight] = new (int, int)[] {
-		// 	(TreeCliffedge, treeCliffedgeToWallBonus)
-		// };
+		});
 
 		int borderTreeToTreeBonus = 40;
-		neighbourBonus[static_cast<int>(toFI("BorderTreeUp"))] = {
+		neighbourBonusList[(toFI("BorderTreeUp"))] = FoliageNeighbourBonus({
 			std::pair<int, int>(toFI("TreeFoliage"), borderTreeToTreeBonus)
-		};
-		neighbourBonus[static_cast<int>(toFI("BorderTreeDown"))] = {
+		});
+		neighbourBonusList[(toFI("BorderTreeDown"))] = FoliageNeighbourBonus({
 			std::pair<int, int>(toFI("TreeFoliage"), borderTreeToTreeBonus)
-		};
-		neighbourBonus[static_cast<int>(toFI("BorderTreeLeft"))] = {
+		});
+		neighbourBonusList[(toFI("BorderTreeLeft"))] = FoliageNeighbourBonus({
 			std::pair<int, int>(toFI("TreeFoliage"), borderTreeToTreeBonus)
-		};
-		neighbourBonus[static_cast<int>(toFI("BorderTreeRight"))] = {
+		});
+		neighbourBonusList[(toFI("BorderTreeRight"))] = FoliageNeighbourBonus({
 			std::pair<int, int>(toFI("TreeFoliage"), borderTreeToTreeBonus)
-		};
+		});
 
-		neighbourBonus[static_cast<int>(toFI("BorderTreeUpLeft"))] = {
+		neighbourBonusList[(toFI("BorderTreeUpLeft"))] = FoliageNeighbourBonus({
 			std::pair<int, int>(toFI("TreeFoliage"), borderTreeToTreeBonus)
-		};
-		neighbourBonus[static_cast<int>(toFI("BorderTreeUpRight"))] = {
+		});
+		neighbourBonusList[(toFI("BorderTreeUpRight"))] = FoliageNeighbourBonus({
 			std::pair<int, int>(toFI("TreeFoliage"), borderTreeToTreeBonus)
-		};
-		neighbourBonus[static_cast<int>(toFI("BorderTreeDownLeft"))] = {
+		});
+		neighbourBonusList[(toFI("BorderTreeDownLeft"))] = FoliageNeighbourBonus({
 			std::pair<int, int>(toFI("TreeFoliage"), borderTreeToTreeBonus)
-		};
-		neighbourBonus[static_cast<int>(toFI("BorderTreeDownRight"))] = {
+		});
+		neighbourBonusList[(toFI("BorderTreeDownRight"))] = FoliageNeighbourBonus({
 			std::pair<int, int>(toFI("TreeFoliage"), borderTreeToTreeBonus)
-		};
+		});
     }
 
 	std::unordered_map<int, int> m_allowedTypes;

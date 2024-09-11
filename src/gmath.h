@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <format>
 #include <cmath>
 
 
@@ -35,7 +36,7 @@ struct Vector2Int {
     }
 
     std::string to_string() const {
-        return std::to_string(x) + std::to_string(y);
+        return std::format("({},{})", std::to_string(x), std::to_string(y));
     }
 };
 

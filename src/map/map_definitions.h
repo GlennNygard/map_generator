@@ -22,7 +22,8 @@ struct LevelValues {
 
     LevelValues() {}
 
-    static const LevelValues create_values(Vector2Int sectionCount, LevelBiome biome);
+    static const LevelValues create_values(
+        Vector2Int sectionCount, LevelBiome biome);
 };
 
 class MapDefinitions {

@@ -165,7 +165,6 @@ Matrix<int> MapConstructor::random_fill_section(
             float multX = ease_out_cubic(std::abs(((float)(x)/sectionCountX)-0.5f)*0.5f);
             float multY = ease_out_cubic(std::abs(((float)(y)/sectionCountY)-0.5f)*0.5f);
 
-            // Node node = grid.GetGridNode(x + section.gridStartX, y + section.gridStartY);
             int val = static_cast<int>(std::round(100 * (multX + multY)));
             if((rand() % val) < randomFillPercent) {
                 nodeMap[x][y] = FoliageHelpers::HIGH_GROUND_NODE_TYPE;

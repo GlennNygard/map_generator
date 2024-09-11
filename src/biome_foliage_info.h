@@ -9,21 +9,76 @@
 #include "logger.h"
 
 
+struct FoliageNeighbourBonus {
+
+    FoliageNeighbourBonus() = default;
+
+    FoliageNeighbourBonus(std::vector<std::pair<int, int>> neighbourBonus) {
+        m_neighbourBonus = neighbourBonus;
+    }
+
+    // Getter.
+    std::pair<int, int> operator [](int i) const {
+        return m_neighbourBonus[i];}
+    // Setter.
+    std::pair<int, int> & operator [](int i) {
+        return m_neighbourBonus[i];}
+
+    size_t size() const {
+        return m_neighbourBonus.size();
+    }
+
+private:
+    std::vector<std::pair<int, int>> m_neighbourBonus;
+};
+
+struct FoliageRelation {
+
+    FoliageRelation() = default;
+
+    FoliageRelation(std::vector<int> relations) {
+        m_relations = relations;
+    }
+
+    // Getter.
+    int operator [](int i) const {
+        return m_relations[i];}
+    // Setter.
+    int & operator [](int i) {
+        return m_relations[i];}
+
+    size_t size() const {
+        return m_relations.size();
+    }
+
+private:
+    std::vector<int> m_relations;
+};
+
 class BiomeFoliageInfo {
 public:
 
-    std::vector<std::vector<int>> upRelations;
-    std::vector<std::vector<int>> downRelations;
-    std::vector<std::vector<int>> leftRelations;
-    std::vector<std::vector<int>> rightRelations;
+    std::array<FoliageRelation, FoliageHelpers::MAX_FOLIAGE_COUNT> upRelations;
+    std::array<FoliageRelation, FoliageHelpers::MAX_FOLIAGE_COUNT> downRelations;
+    std::array<FoliageRelation, FoliageHelpers::MAX_FOLIAGE_COUNT> leftRelations;
+    std::array<FoliageRelation, FoliageHelpers::MAX_FOLIAGE_COUNT> rightRelations;
 
-    std::vector<std::vector<int>> upLeftRelations;
-    std::vector<std::vector<int>> upRightRelations;
-    std::vector<std::vector<int>> downLeftRelations;
-    std::vector<std::vector<int>> downRightRelations;
+    std::array<FoliageRelation, FoliageHelpers::MAX_FOLIAGE_COUNT> upLeftRelations;
+    std::array<FoliageRelation, FoliageHelpers::MAX_FOLIAGE_COUNT> upRightRelations;
+    std::array<FoliageRelation, FoliageHelpers::MAX_FOLIAGE_COUNT> downLeftRelations;
+    std::array<FoliageRelation, FoliageHelpers::MAX_FOLIAGE_COUNT> downRightRelations;
+
+    std::unordered_map<int, std::unordered_set<int>> impossibleTypesDict;
+
+    std::unordered_set<int> defaultHigherSet;
+
+    std::unordered_map<int, std::unordered_map<int, int>> relationsDict;
+	std::vector<FoliageNeighbourBonus> neighbourBonusList;
+
+    BiomeFoliageInfo();
 
     template<typename T, typename V>
-    std::vector<T> keys_from_map(std::unordered_map<T, V> map);
+    std::vector<T> keys_from_map(const std::unordered_map<T, V>& map);
 
     /**
      * All types available with the current biome. Use this when resetting
@@ -42,16 +97,7 @@ public:
     const std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT>& get_start_possible_types() {
         return startPossibleTypes;}
 
-    BiomeFoliageInfo();
-
-    std::unordered_map<int, std::unordered_set<int>> impossibleTypesDict;
-
-    std::unordered_set<int> defaultHigherSet;
-
-    std::unordered_map<int, std::unordered_map<int, int>> relationsDict;
-	std::vector<std::vector<std::pair<int, int>>> neighbourBonus;
-
-    std::pair<std::vector<std::vector<int>>*, Direction> get_relations_from_nodes(
+    std::pair<std::array<FoliageRelation, FoliageHelpers::MAX_FOLIAGE_COUNT>*, Direction> get_relations_from_nodes(
         Vector2Int lastNodePos, Vector2Int currentNodePos);
 
 protected:
