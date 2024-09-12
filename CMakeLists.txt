@@ -5,37 +5,49 @@ option(PRODUCTION_BUILD "Make this a production build." OFF)
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Release>:Release>")
 set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
-project(map_generator)
+project(map_generator_library)
 
-# MY_SOURCES is defined to be a list of all the source files for my game 
-# DON'T ADD THE SOURCES BY HAND, they are already added with this macro
+# Enable testing for this project
+enable_testing()
+
 file(GLOB_RECURSE MY_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
+list(REMOVE_ITEM MY_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp")
 
-add_executable("${CMAKE_PROJECT_NAME}" "${MY_SOURCES}")
+# Define the target as a shared library
+add_library(map_generator_library SHARED "${MY_SOURCES}")
 
 target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/")
 target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/foliage/")
 target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/foliage_definitions/")
 target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/map/")
 target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src/wfc/")
-target_include_directories("${CMAKE_PROJECT_NAME}" PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/external/")
+
+target_include_directories(map_generator_library PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/external/")
 
 if(PRODUCTION_BUILD)
     # Setup the asset path macro to be in the root folder of the executable.
-    target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC RESOURCE_PATH="./resources/")
-    target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC OUTPUT_PATH="./output/")
+    target_compile_definitions(map_generator_library PUBLIC RESOURCE_PATH="./resources/")
+    target_compile_definitions(map_generator_library PUBLIC OUTPUT_PATH="./output/")
 
     # Remove the option to debug asserts.
-    target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC PRODUCTION_BUILD=1) 
-
+    target_compile_definitions(map_generator_library PUBLIC PRODUCTION_BUILD=1) 
 else()
     # This is useful to get an ASSETS_PATH in your IDE during development.
-    target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC RESOURCE_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/")
-    target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC OUTPUT_PATH="${CMAKE_CURRENT_SOURCE_DIR}/output/")
-    target_compile_definitions("${CMAKE_PROJECT_NAME}" PUBLIC PRODUCTION_BUILD=0)
+    target_compile_definitions(map_generator_library PUBLIC RESOURCE_PATH="${CMAKE_CURRENT_SOURCE_DIR}/resources/")
+    target_compile_definitions(map_generator_library PUBLIC OUTPUT_PATH="${CMAKE_CURRENT_SOURCE_DIR}/output/")
+    target_compile_definitions(map_generator_library PUBLIC PRODUCTION_BUILD=0)
+endif()
+
+add_subdirectory(src)
+
+
+# Testing.
+
+add_subdirectory(tests)
 
 
 # External tools.
+
 
 # ExternalProject will download and configure dependencies on build,
 # after cmake configures the project.
@@ -64,4 +76,3 @@ FetchContent_MakeAvailable(yaml-cpp)
 # The library or executable that require yaml-cpp library.
 target_link_libraries("${CMAKE_PROJECT_NAME}" PUBLIC yaml-cpp::yaml-cpp)
 
-endif()

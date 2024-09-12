@@ -24,6 +24,11 @@ const void BiomeFoliageInfo::setup(
         std::unordered_map<int, int> walkableAllowedTypes,
         std::string relationsFile) {
 
+    struct TempRelation {
+        bool hasData = false;
+        std::unordered_map<int, int> map;
+    };
+
     DiskManager mdm = DiskManager();
     auto relationsPath = mdm.get_relational_map_path(relationsFile);
     auto mapObjectOptional = mdm.load_map_object(relationsPath);
@@ -38,13 +43,6 @@ const void BiomeFoliageInfo::setup(
     neighbourBonusList = std::vector<FoliageNeighbourBonus>(foliageCount);
     std::vector<int> defaultSet (foliageCount);
     std::vector<int> walkableDefaultSet (foliageCount);
-
-    struct TempRelation {
-
-        bool hasData = false;
-
-        std::unordered_map<int, int> map;
-    };
 
     std::array<TempRelation, FoliageHelpers::MAX_FOLIAGE_COUNT> upRelationsDict = {};
     std::array<TempRelation, FoliageHelpers::MAX_FOLIAGE_COUNT> downRelationsDict = {};
