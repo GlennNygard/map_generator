@@ -31,8 +31,7 @@ private:
             int sectionCountY,
             int randomFillPercent);
 
-    std::pair<Matrix<int>, bool> create_random_foliage_map(
-            const LevelValues &levelValues);
+    std::pair<Matrix<int>, bool> create_random_foliage_map();
 
     void carve_main_room(
         Matrix<int> &foliageMap,

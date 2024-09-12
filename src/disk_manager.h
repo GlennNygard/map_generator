@@ -106,28 +106,29 @@ public:
     static const std::unordered_map<LevelBiome, int> BIOME_MAPCOUNT_DICT;
 
 
+    static std::string join(const std::vector<std::string> &lst, const std::string &delim);
+
+    static std::string get_relational_map_path(std::string mapName);
+
+    static const bool get_path_exists(std::string loadPath) {
+        return std::filesystem::exists(loadPath);
+    }
+
     /**
      * Mappings from foliage types to map integers.
      * These integers are written to map files and should
      * never be changed.
      */
     std::unordered_map<int, int> mapFoliageMapping;
-    static std::string join(const std::vector<std::string> &lst, const std::string &delim);
-
 
     Matrix<MapNode> load_map(std::filesystem::path mapPath);
     std::optional<MapObject> load_map_object(std::string resourcePath);
 
     std::vector<std::string> split(std::string str, std::string delimiter);
 
-    static const bool get_path_exists(std::string loadPath) {
-        return std::filesystem::exists(loadPath);
-    }
-
     std::string get_base_map_path();
     std::string get_map_path(std::string mapName);
     std::string get_map_path(LevelBiome biome, MapSize mapSize);
-    std::string get_relational_map_path(std::string mapName);
 
     std::string get_map_name(
         std::string mapNamePrefix, int currentIndex);
@@ -157,15 +158,15 @@ private:
     static const std::string SEPARATOR;
     static const std::string CONTENT_SEPARATOR;
 
-    std::filesystem::path _mapsPath;
-    std::filesystem::path _mapsThumbnailsPath;
+    static const std::unordered_map<int, int> MAP_NODE_TYPE_MAPPING;
+    static const std::unordered_map<int, LevelBiome> MAP_NODE_BIOME_MAPPING;
 
-    std::filesystem::path _relationalMapPath;
+    std::filesystem::path m_mapsPath;
+    std::filesystem::path m_mapsThumbnailsPath;
+
+    std::filesystem::path m_relationalMapPath;
 
     std::unordered_map<int, int> m_foliageMapMapping;
-
-    static const std::unordered_map<int, int> m_mapNodeTypeMapping;
-    static const std::unordered_map<int, LevelBiome> m_mapNodeBiomeMapping;
 
     void perform_map_save(
         const Matrix<MapNode>& map,
@@ -182,6 +183,6 @@ private:
     }
 
     std::unordered_map<int, int> get_map_node_type_mapping() {
-        return m_mapNodeTypeMapping;
+        return MAP_NODE_TYPE_MAPPING;
     }
 };

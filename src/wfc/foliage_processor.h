@@ -12,11 +12,12 @@ class FoliageProcessor {
 
 public:
 
-    FoliageProcessor(BiomeFoliageInfo biomeFoliageInfo, bool verboseLogging);
+    FoliageProcessor(
+		BiomeFoliageInfo biomeFoliageInfo,
+		LevelValues levelValues,
+		bool verboseLogging);
 
-	std::pair<Matrix<int>, bool> mark_foliage_nodes(
-		const LevelValues LevelValues);
-
+	std::pair<Matrix<int>, bool> mark_foliage_nodes();
 
 private:
 
@@ -24,6 +25,7 @@ private:
 	bool m_issuesFound;
 
 	BiomeFoliageInfo m_biomeFoliageInfo;
+	LevelValues m_levelValues;
 
 	int m_recursionCount;
 	int m_emptyRecursionCount;
@@ -55,6 +57,7 @@ private:
 	void clear_subsection_from_full_grid(
 		Matrix<int>& fullFoliageMap,
 		Matrix<FoliageData>& fullFoliageDataMap,
+		const LevelValues& levelValues,
 		const Vector2Int sectionPos);
 
     std::optional<std::pair<Matrix<int>, Matrix<FoliageData>>> process_subsection(

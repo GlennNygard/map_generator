@@ -64,7 +64,7 @@ const std::unordered_map<LevelBiome, int> DiskManager::BIOME_MAPCOUNT_DICT = {
 };
 
 
-const std::unordered_map<int,int> DiskManager::m_mapNodeTypeMapping = std::unordered_map<int,int> {
+const std::unordered_map<int,int> DiskManager::MAP_NODE_TYPE_MAPPING = std::unordered_map<int,int> {
     {DiskManager::FLOOR_GENERIC_TYPE, FoliageHelpers::FLOOR_NODE_TYPE},
     {DiskManager::HIGH_GENERIC_TYPE, FoliageHelpers::HIGH_GROUND_NODE_TYPE},
     {DiskManager::BORDER_GENERIC_TYPE, FoliageHelpers::BORDER_NODE_TYPE},
@@ -76,7 +76,7 @@ const std::unordered_map<int,int> DiskManager::m_mapNodeTypeMapping = std::unord
     {DiskManager::LOW_DESERT_TYPE, FoliageHelpers::LOW_GROUND_NODE_TYPE},
 };
 
-const std::unordered_map<int, LevelBiome> DiskManager::m_mapNodeBiomeMapping = std::unordered_map<int,LevelBiome> {
+const std::unordered_map<int, LevelBiome> DiskManager::MAP_NODE_BIOME_MAPPING = std::unordered_map<int,LevelBiome> {
     {DiskManager::FLOOR_GENERIC_TYPE, LevelBiome::None},
     {DiskManager::HIGH_GENERIC_TYPE, LevelBiome::None},
     {DiskManager::BORDER_GENERIC_TYPE, LevelBiome::None},
@@ -91,14 +91,14 @@ const std::unordered_map<int, LevelBiome> DiskManager::m_mapNodeBiomeMapping = s
 
 DiskManager::DiskManager() {
 
-    _relationalMapPath = std::filesystem::path (RESOURCE_PATH);
-    _mapsPath = std::filesystem::path (OUTPUT_PATH) / "maps";
-    _mapsThumbnailsPath = std::filesystem::path (OUTPUT_PATH) / "thumbnails";
+    m_relationalMapPath = std::filesystem::path (RESOURCE_PATH);
+    m_mapsPath = std::filesystem::path (OUTPUT_PATH) / "maps";
+    m_mapsThumbnailsPath = std::filesystem::path (OUTPUT_PATH) / "thumbnails";
 
     // Create reverse dict.
     m_foliageMapMapping = std::unordered_map<int, int>();
     mapFoliageMapping = std::unordered_map<int, int>();
-    auto foliageDefs = foliagedef::get_foliage_definitions().foliageInfoElements;
+    auto foliageDefs = FoliageDefinitions::instance().foliageInfoElements;
     for(int i = 0; i < foliageDefs.size(); i++) {
         auto foliageInfo = foliageDefs[i];
         if(!foliageInfo.containsResourceData) {
@@ -282,24 +282,24 @@ Matrix<MapNode> DiskManager::load_map(
 }
 
 std::string DiskManager::get_base_map_path() {
-    return _mapsPath;
+    return m_mapsPath;
 }
 
 std::string DiskManager::get_map_path(std::string mapName) {
-    std::filesystem::path path (_mapsPath);
+    std::filesystem::path path (m_mapsPath);
     path /= (mapName);
     return path.generic_string();
 }
 
 std::string DiskManager::get_map_path(LevelBiome biome, MapSize size) {
     std::string mapName = get_map_name_prefix(biome, size);
-    std::filesystem::path path (_mapsPath);
+    std::filesystem::path path (m_mapsPath);
     path /= (mapName);
     return path.generic_string();
 }
 
 std::string DiskManager::get_relational_map_path(std::string mapName) {
-    std::filesystem::path path (_relationalMapPath);
+    std::filesystem::path path (RESOURCE_PATH);
     path /= (mapName);
     return path.generic_string();
 }
@@ -344,7 +344,7 @@ Matrix<MapNode> DiskManager::convert_string_to_map(std::string loadText) {
             auto _mapNodeTypeMapping = get_map_node_type_mapping();
             mapNode.nodeType = _mapNodeTypeMapping.at(mapType);
             if(nodeData.size() == 2) {
-                mapNode.nodeBiome = m_mapNodeBiomeMapping.at(mapType);
+                mapNode.nodeBiome = MAP_NODE_BIOME_MAPPING.at(mapType);
             }
 
             else if(nodeData.size() == 3) {
@@ -393,7 +393,7 @@ void DiskManager::save_map_thumbnail(
         const std::string mapName,
         const std::string mapNamePrefix) {
 
-    std::filesystem::path directoryPath = _mapsThumbnailsPath / mapNamePrefix;
+    std::filesystem::path directoryPath = m_mapsThumbnailsPath / mapNamePrefix;
 
     if(!get_path_exists(directoryPath)) {
         std::filesystem::create_directories(directoryPath);
@@ -406,8 +406,6 @@ void DiskManager::save_map_thumbnail(
 
     const int channelNum = 3;
 
-    // Color32[] mapColours = new Color32[fullSizeX * fullSizeY];
-
     std::vector<unsigned char> mapColours (fullSizeX * fullSizeX * channelNum);
 
     for(int y = 0; y < fullMap.dim_b(); y++) {
@@ -418,7 +416,7 @@ void DiskManager::save_map_thumbnail(
             FoliageInfo foliageInfo;
             // We only filter here for speed.
             if(mapNode.foliageType != FoliageHelpers::NO_FOLIAGE_INDEX && mapNode.foliageType != FoliageHelpers::NO_SELECTION_INDEX) {
-                foliageInfo = foliagedef::get_foliage_definitions().foliageInfoElements[mapNode.foliageType];
+                foliageInfo = FoliageDefinitions::instance().foliageInfoElements[mapNode.foliageType];
             }
 
             Colour finalCol = foliageInfo.nodeColour;

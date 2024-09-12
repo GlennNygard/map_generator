@@ -4,6 +4,17 @@
 #include "foliage_reader.h"
 
 
+std::optional<FoliageDefinitions> FoliageDefinitions::foliageDefinitions;
+
+FoliageDefinitions& FoliageDefinitions::instance() {
+    if(foliageDefinitions) {
+        return *foliageDefinitions;
+    }
+
+    foliageDefinitions = FoliageDefinitions();
+    return *foliageDefinitions;
+}
+
 void FoliageDefinitions::create_foliage_definitions() {
     nameToFoliageIndex = std::unordered_map<std::string, int>();
 

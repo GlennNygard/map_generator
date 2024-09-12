@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 #include <unordered_set>
+#include <filesystem>
 
 #include "foliage.h"
 #include "disk_manager.h"
@@ -108,10 +109,10 @@ protected:
     const void setup(
 			std::unordered_map<int, int> allowedTypes,
 			std::unordered_map<int, int> walkableAllowedTypes,
-			std::string relationsFile);
+			std::filesystem::path relationsPath);
 
     const int toFI(std::string foliageName) {
-        auto nameToFoliageIndex = foliagedef::get_foliage_definitions().get_name_to_foliage_index_map();
+        auto nameToFoliageIndex = FoliageDefinitions::instance().get_name_to_foliage_index_map();
         auto itr = nameToFoliageIndex.find(foliageName);
         if(itr == nameToFoliageIndex.end()) {
             logger::log_error("Could not find entry for foliage: "+foliageName);

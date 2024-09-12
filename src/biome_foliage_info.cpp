@@ -1,6 +1,4 @@
-#include <unordered_map>
-#include <unordered_set>
-#include <expected>
+
 
 #include "biome_foliage_info.h"
 #include "foliage.h"
@@ -22,7 +20,7 @@ BiomeFoliageInfo::BiomeFoliageInfo() {
 const void BiomeFoliageInfo::setup(
         std::unordered_map<int, int> allowedTypes,
         std::unordered_map<int, int> walkableAllowedTypes,
-        std::string relationsFile) {
+        std::filesystem::path relationsPath) {
 
     struct TempRelation {
         bool hasData = false;
@@ -30,15 +28,14 @@ const void BiomeFoliageInfo::setup(
     };
 
     DiskManager mdm = DiskManager();
-    auto relationsPath = mdm.get_relational_map_path(relationsFile);
     auto mapObjectOptional = mdm.load_map_object(relationsPath);
     if(!mapObjectOptional) {
-        logger::log_error("Could not load relations file: "+relationsPath);
+        logger::log_error("Could not load relations file: "+relationsPath.generic_string());
         return;
     }
     auto mapObject = *mapObjectOptional;
 
-    const size_t foliageCount = foliagedef::get_foliage_definitions().get_foliage_count();
+    const size_t foliageCount = FoliageDefinitions::instance().get_foliage_count();
 
     neighbourBonusList = std::vector<FoliageNeighbourBonus>(foliageCount);
     std::vector<int> defaultSet (foliageCount);

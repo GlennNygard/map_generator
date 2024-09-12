@@ -56,7 +56,7 @@ namespace foliagereader {
         std::vector<int> vec = {};
         for(auto itr = node.begin(); itr != node.end(); itr++) {
             int mapIndex = itr->second.as<int>();
-
+            vec.push_back(mapIndex);
         }
         return vec;
     }
@@ -76,7 +76,7 @@ namespace foliagereader {
         std::vector<int> directionSet;
         bool hasDirectionSet = false;
         if(data["DirectionSets"]) {
-            directionSet = read_direction_set(data["DirectionSets"][0]);
+            directionSet = read_direction_set(data["DirectionSets"].begin()->second);
             hasDirectionSet = true;
         }
 

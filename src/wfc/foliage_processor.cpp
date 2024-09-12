@@ -11,9 +11,13 @@
 #include "relations.h"
 
 
-FoliageProcessor::FoliageProcessor(BiomeFoliageInfo biomeFoliageInfo, bool verboseLogging) {
+FoliageProcessor::FoliageProcessor(
+        BiomeFoliageInfo biomeFoliageInfo,
+        LevelValues levelValues,
+        bool verboseLogging) {
     m_issuesFound = false;
     m_biomeFoliageInfo = biomeFoliageInfo;
+    m_levelValues = levelValues;
     m_verboseLogging = verboseLogging;
 
     m_recursionCount = 0;
@@ -33,17 +37,16 @@ float FoliageProcessor::format_time(long count) {
     return static_cast<float>(count) / 1000;
 }
 
-std::pair<Matrix<int>, bool> FoliageProcessor::mark_foliage_nodes(
-        const LevelValues levelValues) {
+std::pair<Matrix<int>, bool> FoliageProcessor::mark_foliage_nodes() {
 
-    const int fullMapSideCountX = levelValues.gridCountX;
-    const int fullMapSideCountY = levelValues.gridCountY;
+    const int fullMapSideCountX = m_levelValues.gridCountX;
+    const int fullMapSideCountY = m_levelValues.gridCountY;
 
-    const int subsectionCountX = levelValues.subsectionCountX;
-    const int subsectionCountY = levelValues.subsectionCountY;
+    const int subsectionCountX = m_levelValues.subsectionCountX;
+    const int subsectionCountY = m_levelValues.subsectionCountY;
 
-    const int subsectionBorderedSideCountX = levelValues.subsectionBorderedSideCountX;
-    const int subsectionBorderedSideCountY = levelValues.subsectionBorderedSideCountY;
+    const int subsectionBorderedSideCountX = m_levelValues.subsectionBorderedSideCountX;
+    const int subsectionBorderedSideCountY = m_levelValues.subsectionBorderedSideCountY;
 
     const int maxAttempts = subsectionCountX*subsectionCountY * 3;
 
@@ -71,11 +74,11 @@ std::pair<Matrix<int>, bool> FoliageProcessor::mark_foliage_nodes(
         subsectionBorderedSideCountX,
         subsectionBorderedSideCountY);
 
-    prepare_full_data(fullFoliageDataMap, levelValues);
+    prepare_full_data(fullFoliageDataMap, m_levelValues);
 
     std::stack<Vector2Int> sectionStack = {};
-    for(int secX = subsectionCountX-1; secX >= 0; secX--) {
-        for(int secY = subsectionCountY-1; secY >= 0; secY--) {
+    for(int secX = subsectionCountX-m_levelValues.subsectionBorderCountX; secX >= 0; secX--) {
+        for(int secY = subsectionCountY-m_levelValues.subsectionBorderCountX; secY >= 0; secY--) {
             sectionStack.push(Vector2Int{secX, secY});
         }
     }
@@ -205,7 +208,7 @@ std::pair<Matrix<int>, bool> FoliageProcessor::mark_foliage_nodes(
             }
             // If we are on the furthest attempted section,
             // i.e the same as the one we failed.
-            if(currentIndex > furthestIndex) {
+            if(currentIndex > furthestIndex || furthestIndex == 0) {
                 currentSubsectionAttempts = 0;
                 currentRetryAttempts = 0;
                 retryIndex = 0;
@@ -236,7 +239,7 @@ std::pair<Matrix<int>, bool> FoliageProcessor::mark_foliage_nodes(
                 for(Vector2Int retryPos : retryList) {
                     clear_subsection_from_full_grid(
                         fullFoliageMap, fullFoliageDataMap,
-                        retryPos);
+                        m_levelValues, retryPos);
                 }
             }
             else if(currentSubsectionAttempts >= 2) {
@@ -247,17 +250,19 @@ std::pair<Matrix<int>, bool> FoliageProcessor::mark_foliage_nodes(
                 for(Vector2Int retryPos : retryList) {
                     clear_subsection_from_full_grid(
                         fullFoliageMap, fullFoliageDataMap,
-                        retryPos);
+                        m_levelValues, retryPos);
                 }
             }
+            // Default retry.
             else {
                 retryIndex = std::max(retryIndex-2, 0);
                 clear_subsection_from_full_grid(
                     fullFoliageMap, fullFoliageDataMap,
+                    m_levelValues,
                     currentSectionPos);
                 clear_subsection_from_full_grid(
                     fullFoliageMap, fullFoliageDataMap,
-                    retryList[retryIndex]);
+                    m_levelValues, retryList[retryIndex]);
             }
             retryTime += (get_time() - time).count();
             continue;
@@ -308,35 +313,35 @@ std::pair<Matrix<int>, bool> FoliageProcessor::mark_foliage_nodes(
         logger::log("GENERATION FAILED.");
     }
 
-    double executionTime = format_time(requiredTime + retryTime);
-    double timePerSubsection = (executionTime/(subsectionCountX*subsectionCountY));
-    double effectiveExecutionTime = format_time(requiredTime);
-    double effectiveTimePerSubsection = (effectiveExecutionTime/((subsectionCountX*subsectionCountY)-overallAttempts));
+    float executionTime = format_time(requiredTime + retryTime);
+    float timePerSubsection = (executionTime/(subsectionCountX*subsectionCountY));
+    float effectiveExecutionTime = format_time(requiredTime);
+    float effectiveTimePerSubsection = (effectiveExecutionTime/((subsectionCountX*subsectionCountY)-overallAttempts));
 
     logger::log(
         std::format("Total sections: {}. ", subsectionCountX*subsectionCountY) +
         std::format("Failed attempts: {}. ", overallAttempts)  +
         std::format("Time: {}. ", format_time((get_time() - startTime).count())) +
-        std::format("Time to execute. Effective: {}. All: {}. ",
+        std::format("Time to execute. Effective: {:.2f}s. All: {:.2f}s. ",
             effectiveExecutionTime, executionTime) +
-        std::format("Avg time per subsection. Effective: {}. ",
+        std::format("Avg time per subsection. Effective: {:.2f}s. ",
             effectiveTimePerSubsection) +
-        std::format(" (All: {})",timePerSubsection));
+        std::format(" (All: {:.2f}s)",timePerSubsection));
 
     return std::pair(fullFoliageMap, !failed);
 };
 
 void FoliageProcessor::prepare_full_data(
         Matrix<FoliageData>& fullFoliageDataMap,
-        const LevelValues& levelValues) {
+        const LevelValues& m_levelValues) {
     std::vector<Vector2Int> forcedWalkableSubsections = {};
 
-    int halfX = (levelValues.subsectionCountX/2);
-    int halfY = (levelValues.subsectionCountY/2);
+    int halfX = (m_levelValues.subsectionCountX/2);
+    int halfY = (m_levelValues.subsectionCountY/2);
 
     Vector2Int rangeX = {1,1};
     Vector2Int rangeY = {1,1};
-    if(levelValues.subsectionCountX % 2 == 0) {
+    if(m_levelValues.subsectionCountX % 2 == 0) {
         rangeX.x = halfX-1;
         rangeX.y = halfX+1;
     }
@@ -345,7 +350,7 @@ void FoliageProcessor::prepare_full_data(
         rangeX.y = halfX+1;
     }
 
-    if(levelValues.subsectionCountY % 2 == 0) {
+    if(m_levelValues.subsectionCountY % 2 == 0) {
         rangeY.x = halfY-1;
         rangeY.y = halfY+1;
     }
@@ -362,16 +367,16 @@ void FoliageProcessor::prepare_full_data(
 
     logger::log(std::format(
         "Subsections: {},{}",
-        levelValues.subsectionCountX,
-        levelValues.subsectionCountY));
+        m_levelValues.subsectionCountX,
+        m_levelValues.subsectionCountY));
 
     int mapForcedWalkableSectionBorder = 2;
-    for(int secX = 0; secX < levelValues.subsectionCountX; secX++) {
-        for(int secY = 0; secY < levelValues.subsectionCountY; secY++) {
+    for(int secX = 0; secX < m_levelValues.subsectionCountX; secX++) {
+        for(int secY = 0; secY < m_levelValues.subsectionCountY; secY++) {
             if(secX > mapForcedWalkableSectionBorder &&
-                    secX <levelValues.subsectionCountX-mapForcedWalkableSectionBorder &&
+                    secX <m_levelValues.subsectionCountX-mapForcedWalkableSectionBorder &&
                     secY > mapForcedWalkableSectionBorder &&
-                    secY < levelValues.subsectionCountY-mapForcedWalkableSectionBorder) {
+                    secY < m_levelValues.subsectionCountY-mapForcedWalkableSectionBorder) {
                 continue;
             }
             forcedWalkableSubsections.push_back(Vector2Int(secX, secY));
@@ -379,8 +384,8 @@ void FoliageProcessor::prepare_full_data(
     }
 
     for(auto secPos : forcedWalkableSubsections) {
-        for(int x = 0; x < levelValues.subsectionBorderedSideCountX; x++) {
-            for(int y = 0; y < levelValues.subsectionBorderedSideCountY; y++) {
+        for(int x = 0; x < m_levelValues.subsectionBorderedSideCountX; x++) {
+            for(int y = 0; y < m_levelValues.subsectionBorderedSideCountY; y++) {
                 Vector2Int fullCoord = relations::convert_to_global(
                     secPos.x, secPos.y, x, y);
                 int fullX = fullCoord.x;
@@ -450,10 +455,10 @@ void FoliageProcessor::prepare_section_data(
             // Node does not have previous data.
             else {
                 // Constrain border edges.
-                if(x < MapDefinitions::SUBSECTION_BORDER ||
-                        y < MapDefinitions::SUBSECTION_BORDER ||
-                        x >= foliageMap.dim_a()-MapDefinitions::SUBSECTION_BORDER ||
-                        y >= foliageMap.dim_b()-MapDefinitions::SUBSECTION_BORDER) {
+                if(x < m_levelValues.borderSideCountX ||
+                        y < m_levelValues.borderSideCountY ||
+                        x >= foliageMap.dim_a()-m_levelValues.borderSideCountX ||
+                        y >= foliageMap.dim_b()-m_levelValues.borderSideCountY) {
                     foliageData.set_remaining(
                         m_biomeFoliageInfo.get_walkable_possible_types());
                     requiresPropagationMap[x][y] = true;
@@ -511,10 +516,13 @@ void FoliageProcessor::write_to_full_map(
 void FoliageProcessor::clear_subsection_from_full_grid(
         Matrix<int>& fullFoliageMap,
         Matrix<FoliageData>& fullFoliageDataMap,
+        const LevelValues& m_levelValues,
         const Vector2Int sectionPos) {
 
-    for(int x = 0; x < MapDefinitions::SUBSECTION_FULL_SIZE; x++) {
-        for(int y = 0; y < MapDefinitions::SUBSECTION_FULL_SIZE; y++) {
+    const int subsectionFullSideCount = m_levelValues.subsectionBorderedSideCountX;
+
+    for(int x = 0; x < subsectionFullSideCount; x++) {
+        for(int y = 0; y < subsectionFullSideCount; y++) {
             Vector2Int fullCoord = relations::convert_to_global(sectionPos.x, sectionPos.y, x, y);
             int fullX = fullCoord.x;
             int fullY = fullCoord.y;
@@ -526,14 +534,14 @@ void FoliageProcessor::clear_subsection_from_full_grid(
             fullFoliageMap[fullX][fullY] = FoliageHelpers::NO_SELECTION_INDEX;
 
             if(x >= 1 && y >= 1 &&
-                    x < MapDefinitions::SUBSECTION_FULL_SIZE-1 &&
-                    y < MapDefinitions::SUBSECTION_FULL_SIZE-1) {
+                    x < subsectionFullSideCount-1 &&
+                    y < subsectionFullSideCount-1) {
                 // If we are within 1 tile border from the edge.
-                if((x < MapDefinitions::SUBSECTION_BORDER ||
-                        y < MapDefinitions::SUBSECTION_BORDER ||
-                        y >= MapDefinitions::SUBSECTION_FULL_SIZE-MapDefinitions::SUBSECTION_BORDER) &&
+                if((x < m_levelValues.borderSideCountX ||
+                        y < m_levelValues.borderSideCountY ||
+                        y >= subsectionFullSideCount-m_levelValues.borderSideCountY) &&
                         // Exclude the right side border.
-                        x < MapDefinitions::SUBSECTION_FULL_SIZE-MapDefinitions::SUBSECTION_BORDER) {
+                        x < subsectionFullSideCount-m_levelValues.borderSideCountX) {
                     // If we are within a 1 tile border, but not within the proper border
                     // (right side border excluded).
                     if(fullFoliageDataMap[fullX][fullY].isWalkableOnly) {
@@ -549,8 +557,8 @@ void FoliageProcessor::clear_subsection_from_full_grid(
                     fullFoliageDataMap[fullX][fullY].hasData = false;
                 }
             }
-            else if(x >= MapDefinitions::SUBSECTION_FULL_SIZE-1 &&
-                    y >= 1 && y < MapDefinitions::SUBSECTION_FULL_SIZE-1) {
+            else if(x >= subsectionFullSideCount-1 &&
+                    y >= 1 && y < subsectionFullSideCount-1) {
                 fullFoliageDataMap[fullX][fullY].hasData = false;
             }
         }
@@ -648,7 +656,7 @@ bool FoliageProcessor::assign_foliage(
     FoliageNeighbourBonus bonusTypes = m_biomeFoliageInfo.neighbourBonusList[currentFoliageType];
     if(bonusTypes.size() != 0) {
         auto neighbours = relations::get_neighbours(
-            currentNodePos, MapDefinitions::SUBSECTION_FULL_SIZE);
+            currentNodePos, foliageDataMap.dim_a());
         for(auto neighbourPos : neighbours) {
             auto selectedFoliageType = foliageMap[neighbourPos.x][neighbourPos.y];
             if(selectedFoliageType != FoliageHelpers::NO_SELECTION_INDEX) {
@@ -694,32 +702,30 @@ bool FoliageProcessor::update_possible_types(
         Matrix<FoliageData>& foliageDataMap){
 
     Matrix<int> propagatedNodes (
-        MapDefinitions::SUBSECTION_FULL_SIZE,
-        MapDefinitions::SUBSECTION_FULL_SIZE);
+        foliageDataMap.dim_a(),
+        foliageDataMap.dim_b());
     auto _actionQueue = std::queue<std::pair<Vector2Int,Vector2Int>>();
 
-    {
-        for(int x = 0; x < propagatedNodes.dim_a(); x++) {
-            for(int y = 0; y < propagatedNodes.dim_b(); y++) {
-                propagatedNodes[x][y] = false;
-            }
+    for(int x = 0; x < propagatedNodes.dim_a(); x++) {
+        for(int y = 0; y < propagatedNodes.dim_b(); y++) {
+            propagatedNodes[x][y] = false;
+        }
+    }
+
+    std::vector<Vector2Int> unfilteredNeighbours;
+    unfilteredNeighbours = relations::get_neighbours(
+        initialCurrentNodePos, foliageDataMap.dim_a());
+
+    for(Vector2Int nnp : unfilteredNeighbours) {
+
+        if(foliageMap[nnp.x][nnp.y] != FoliageHelpers::NO_SELECTION_INDEX) {
+            continue;
         }
 
-        std::vector<Vector2Int> unfilteredNeighbours;
-        unfilteredNeighbours = relations::get_neighbours(
-            initialCurrentNodePos, MapDefinitions::SUBSECTION_FULL_SIZE);
+        Vector2Int neighbourNodePos = nnp;
 
-        for(Vector2Int nnp : unfilteredNeighbours) {
-
-            if(foliageMap[nnp.x][nnp.y] != FoliageHelpers::NO_SELECTION_INDEX) {
-                continue;
-            }
-
-            Vector2Int neighbourNodePos = nnp;
-
-            propagatedNodes[nnp.x][nnp.y] = true;
-            _actionQueue.push({initialCurrentNodePos, neighbourNodePos});
-        }
+        propagatedNodes[nnp.x][nnp.y] = true;
+        _actionQueue.push({initialCurrentNodePos, neighbourNodePos});
     }
 
     while(_actionQueue.size() > 0) {
@@ -855,9 +861,9 @@ bool FoliageProcessor::update_possible_types_recursively(
             if(neighbourFoliageStrings.size() == 8) {
                 auto nf = neighbourFoliageStrings;
                 neighboursString = std::format(
-                "{0}, {1}, {2}"
-                "{3}, SELECTING, {4}"
-                "{5}, {6}, {7}",
+                    "{0}, {1}, {2}"
+                    "{3}, SELECTING, {4}"
+                    "{5}, {6}, {7}",
                     nf[0],nf[1],nf[2],nf[3],nf[4],nf[5],nf[6],nf[7]);
             }
             else {
@@ -874,11 +880,11 @@ bool FoliageProcessor::update_possible_types_recursively(
     std::vector<Vector2Int> unfilteredNeighbours;
     if(use4WayNeighbours) {
         unfilteredNeighbours = relations::get_4_way_neighbours(
-            currentNodePos, MapDefinitions::SUBSECTION_FULL_SIZE);
+            currentNodePos, foliageDataMap.dim_a());
     }
     else {
         unfilteredNeighbours = relations::get_neighbours(
-            currentNodePos, MapDefinitions::SUBSECTION_FULL_SIZE);
+            currentNodePos, foliageDataMap.dim_a());
     }
 
 

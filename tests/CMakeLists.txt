@@ -22,15 +22,21 @@ file(GLOB_RECURSE TEST_SOURCES CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/*.
 # Add the test executable.
 add_executable(tests ${TEST_SOURCES})
 
-# Link against map_generator (from root CMakeLists.txt) and Catch2.
+target_compile_definitions(tests PUBLIC UNIT_TEST)
+
+if(PRODUCTION_BUILD)
+    # Setup the asset path macro to be in the root folder of the executable.
+    target_compile_definitions(tests PUBLIC RESOURCE_PATH_TEST="./res/")
+else()
+    # This is useful to get an ASSETS_PATH in your IDE during development.
+    target_compile_definitions(tests PUBLIC RESOURCE_PATH_TEST="${CMAKE_CURRENT_SOURCE_DIR}/res/")
+endif()
+
+# Link against map_generator_library (from root CMakeLists.txt) and Catch2.
 target_link_libraries(tests PRIVATE map_generator_library Catch2::Catch2WithMain)
 
-# Automatically register Catch2 tests (so you can run 'ctest' without manually registering tests).
 include(CTest)
 include(Catch)
-# set(CMAKE_CATCH_DISCOVER_TESTS_DISCOVERY_MODE PRE_TEST)
 
 add_test(NAME tests
         COMMAND $<TARGET_FILE:tests>)
-
-# catch_discover_tests(tests)

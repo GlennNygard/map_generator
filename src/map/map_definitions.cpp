@@ -38,11 +38,17 @@ const LevelValues LevelValues::create_values(Vector2Int sectionCount, LevelBiome
     lv.subsectionCountX = lv.gridCountX / MapDefinitions::SUBSECTION_SIZE;
     lv.subsectionCountY = lv.gridCountY / MapDefinitions::SUBSECTION_SIZE;
 
-    lv.subsectionBorderedSideCountX = MapDefinitions::SUBSECTION_FULL_SIZE;
-    lv.subsectionBorderedSideCountY = MapDefinitions::SUBSECTION_FULL_SIZE;
+    lv.borderSideCountX = MapDefinitions::SUBSECTION_BORDER;
+    lv.borderSideCountY = MapDefinitions::SUBSECTION_BORDER;
+
+    lv.subsectionBorderedSideCountX = MapDefinitions::SUBSECTION_SIZE + lv.borderSideCountX*2;
+    lv.subsectionBorderedSideCountY = MapDefinitions::SUBSECTION_SIZE + lv.borderSideCountY*2;
 
     lv.gridBoundsX = Vector2Int(0,lv.gridCountX);
     lv.gridBoundsY = Vector2Int(0,lv.gridCountY);
+
+    lv.subsectionBorderCountX = 1;
+    lv.subsectionBorderCountY = 1;
 
     return lv;
 }

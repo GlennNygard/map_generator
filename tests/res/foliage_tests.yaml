@@ -1,0 +1,45 @@
+---
+
+DirectionSets:
+    DirectionSet:
+        DireSetUp: 01
+        DireSetDown: 02
+        DireSetLeft: 03
+        DireSetRight: 04
+
+Foliage:
+    Foliage01:
+        mapIndex: 0
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        nodeBiome: None
+        colour: [0.05, 0.05, 0.05]
+
+    Foliage02:
+        mapIndex: 1
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        nodeBiome: None
+        colour: [0.12, 0.125, 0.12]
+
+    Foliage03:
+        mapIndex: 9
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        nodeBiome: None
+        randomRotation: True
+        directionSet: DirectionSet
+        colour: [0.10, 0.36, 0.10]
+
+    Foliage04:
+        mapIndex: 10
+        nodeType: FLOOR_NODE_TYPE
+        walkable: True
+        buildable: True
+        nodeBiome: None
+        randomRotation: True
+        directionSet: DirectionSet
+        colour: [0.08, 0.24, 0.08]

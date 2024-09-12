@@ -40,6 +40,7 @@ class FoliageInfo {
 		nodeType = FoliageHelpers::FLOOR_NODE_TYPE;
 		walkable = true;
 		buildable = true;
+		directionSet = nullptr;
 
 		nodeBiome = LevelBiome::None;
         throttenValue = ThrottenAmount::None;
@@ -54,7 +55,6 @@ class FoliageInfo {
 			LevelBiome nodeBiome=LevelBiome::None,
 			Direction direction=Direction::DirectionNone) {
 
-		this->containsResourceData = true;
         this->foliageType = foliageType;
         this->nodeType = nodeType;
 		this->walkable = walkable;
@@ -62,12 +62,14 @@ class FoliageInfo {
 		this->mapIndex = mapIndex;
         this->nodeBiome = nodeBiome;
         this->direction = direction;
+		containsResourceData = true;
 
-		this->nodeColour = Colour();
-		this->floorType = FoliageFloor::Normal;
+		nodeColour = Colour();
+		floorType = FoliageFloor::Normal;
 
-		this->randomRotation = false;
-		this->height = 0;
+		randomRotation = false;
+		height = 0;
+		directionSet = nullptr;
     }
 
 	FoliageInfo& SetFoliageName(std::string value) {
@@ -119,7 +121,7 @@ class FoliageInfo {
 	}
 
 	FoliageInfo& SetDirectionSet(const std::vector<int> &value) {
-		this->directionSet = &value;
+		this->directionSet = new std::vector<int>(value);
 		containsResourceData = true;
 		return *this;
 	}

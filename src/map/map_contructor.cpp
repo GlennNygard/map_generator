@@ -23,7 +23,7 @@ MapConstructor::MapConstructor(LevelValues levelValues, bool verboseLogging) {
         biomeFoliageInfo = GrassFoliageInfo();
     }
     m_foliageProcessor = std::make_unique<
-        FoliageProcessor>(biomeFoliageInfo, verboseLogging);
+        FoliageProcessor>(biomeFoliageInfo, levelValues, verboseLogging);
 }
 
 std::optional<MapObject> MapConstructor::create_map(int currentIndex) {
@@ -52,8 +52,7 @@ std::pair<MapObject, bool> MapConstructor::construct_random_map(int levelSeed) {
     logger::log(std::format("Using level SEED: {0}", levelSeed));
     srand(levelSeed);
 
-    std::pair<Matrix<int> , bool> randomFoliageMapPair = create_random_foliage_map(
-        m_levelValues);
+    std::pair<Matrix<int> , bool> randomFoliageMapPair = create_random_foliage_map();
 
     auto fullFoliageMap = randomFoliageMapPair.first;
     bool success = randomFoliageMapPair.second;
@@ -65,7 +64,7 @@ std::pair<MapObject, bool> MapConstructor::construct_random_map(int levelSeed) {
     for(int x = 0; x < fullNodeMap.dim_a(); x++) {
         for(int y = 0; y < fullNodeMap.dim_b(); y++) {
             int foliage = fullFoliageMap[x][y];
-            FoliageInfo foliageInfo = foliagedef::get_foliage_definitions().foliageInfoElements[(int)foliage];
+            FoliageInfo foliageInfo = FoliageDefinitions::instance().foliageInfoElements[(int)foliage];
             fullNodeMap[x][y] = foliageInfo.nodeType;
         }
     }
@@ -99,11 +98,11 @@ void MapConstructor::carve_main_room(
                     y >= 0 &&
                     y < sectionCountY) {
 
-                float dist = square_dist(nodePos - Vector2Int(x,y));
+                float dist = gmath::square_dist(nodePos - Vector2Int(x,y));
                 if(dist > shortRadius*shortRadius) {
                     continue;
                 }
-                if(!foliagedef::get_foliage_definitions().foliageInfoElements[
+                if(!FoliageDefinitions::instance().foliageInfoElements[
                         static_cast<int>(foliageMap[x][y])].walkable) {
                     foliageMap[x][y] = FoliageHelpers::NO_FOLIAGE_INDEX;
                 }
@@ -131,8 +130,7 @@ void MapConstructor::set_map_borders(
     }
 }
 
-std::pair<Matrix<int>, bool> MapConstructor::create_random_foliage_map(
-        const LevelValues &levelValues) {
+std::pair<Matrix<int>, bool> MapConstructor::create_random_foliage_map() {
     // Create random terrain.
     // Full map.
     int maxAttempts = 3;
@@ -140,7 +138,7 @@ std::pair<Matrix<int>, bool> MapConstructor::create_random_foliage_map(
     Matrix<int> fullFoliageGrid = {};
     bool success = true;
     while(fullFoliageGrid.empty() && currentAttempt < maxAttempts) {
-        auto resultPair = m_foliageProcessor->mark_foliage_nodes(levelValues);
+        auto resultPair = m_foliageProcessor->mark_foliage_nodes();
         fullFoliageGrid = resultPair.first;
         success = resultPair.second;
         if(!success) {
@@ -162,8 +160,8 @@ Matrix<int> MapConstructor::random_fill_section(
     Matrix<int> nodeMap(sectionCountX,sectionCountY);
     for(int x = 0; x < sectionCountX; x++) {
         for(int y = 0; y < sectionCountY; y++) {
-            float multX = ease_out_cubic(std::abs(((float)(x)/sectionCountX)-0.5f)*0.5f);
-            float multY = ease_out_cubic(std::abs(((float)(y)/sectionCountY)-0.5f)*0.5f);
+            float multX = gmath::ease_out_cubic(std::abs(((float)(x)/sectionCountX)-0.5f)*0.5f);
+            float multY = gmath::ease_out_cubic(std::abs(((float)(y)/sectionCountY)-0.5f)*0.5f);
 
             int val = static_cast<int>(std::round(100 * (multX + multY)));
             if((rand() % val) < randomFillPercent) {

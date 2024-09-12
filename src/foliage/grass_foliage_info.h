@@ -13,7 +13,7 @@ class GrassFoliageInfo : public BiomeFoliageInfo {
 	public:
     GrassFoliageInfo() {
 
-		const size_t foliageCount = foliagedef::get_foliage_definitions().get_foliage_count();
+		const size_t foliageCount = FoliageDefinitions::instance().get_foliage_count();
 
 		m_allowedTypes = {
 			{toFI("RockClusterFoliage"), 40},
@@ -164,7 +164,9 @@ class GrassFoliageInfo : public BiomeFoliageInfo {
 			{toFI("CompletelyThrottenGround"), 10},
 		};
 
-		setup(m_allowedTypes, m_walkableAllowedTypes, "GrassRelationsMap.txt");
+		auto relationsPath = DiskManager::get_relational_map_path("GrassRelationsMap.txt");
+
+		setup(m_allowedTypes, m_walkableAllowedTypes, relationsPath);
 		startPossibleTypes[(toFI("NoFoliage"))] =
 			possibleTypes[(toFI("NoFoliage"))];
 
@@ -238,7 +240,8 @@ class GrassFoliageInfo : public BiomeFoliageInfo {
 		});
     }
 
-	std::unordered_map<int, int> m_allowedTypes;
+private:
 
+	std::unordered_map<int, int> m_allowedTypes;
 	std::unordered_map<int, int> m_walkableAllowedTypes;
 };

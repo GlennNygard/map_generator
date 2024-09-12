@@ -11,11 +11,12 @@
 class FoliageDefinitions {
 public:
 
-    int foliageNoSelection;
+    static std::optional<FoliageDefinitions> foliageDefinitions;
 
-    FoliageDefinitions() {
-        create_foliage_definitions();
-    }
+    static FoliageDefinitions& instance();
+
+    std::unordered_map<std::string, int> nameToFoliageIndex;
+    std::vector<FoliageInfo> foliageInfoElements;
 
     const size_t get_foliage_count() const {
         return foliageInfoElements.size();
@@ -25,22 +26,9 @@ public:
         return nameToFoliageIndex;
     }
 
-    std::unordered_map<std::string, int> nameToFoliageIndex;
-    std::vector<FoliageInfo> foliageInfoElements;
-
 private:
+    FoliageDefinitions() {
+        create_foliage_definitions();
+    }
     void create_foliage_definitions();
 };
-
-namespace foliagedef {
-    static std::optional<FoliageDefinitions> foliageDefinitions;
-
-    static FoliageDefinitions get_foliage_definitions() {
-        if(foliageDefinitions) {
-            return *foliageDefinitions;
-        }
-
-        foliageDefinitions = FoliageDefinitions();
-        return *foliageDefinitions;
-    }
-}
