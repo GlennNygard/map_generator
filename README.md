@@ -1,6 +1,7 @@
 
 ## Map Generator.
 
+This is a simplified version of the map generator used in the game Brace the Swarm. The map exported from this algorithm can be used 'as is' in the game.
 ### How to use.
 
 Clone repo to desired location.
@@ -23,14 +24,14 @@ Run the map generator from the build/ directory. From the root directory, just r
 ./build/bin/map_generator
 ```
 
-The total count of maps created or their size can be modified through the command line arguments.
+Some parameters, like the total count of maps created as well as their size, can be modified through the command line arguments.
 ```
 map_generator --filename "MyCoolMap"
 map_generator --count 5
 map_generator --size medium
 ```
 
-See all possible arguments with:
+See a list of all possible arguments with:
 ```
 map_generator --help
 ```
@@ -39,11 +40,11 @@ map_generator --help
 If the map size and map complexity is set high enough, **the map generation might take a very long time or even fail**. Failure is an expected part of many constraint-solving algorithms, especially when using large input sets like here. In most cases the algorithm will automatically try again if it fails.
 
 
-### Expected outcomes.
+### Outputs.
 
 The outcome of the algorithm should look a little like the map presented below.
 
-[Image 1](./images/bts_loadout_map_representation_showcase.jpg)
+![Image 1](./images/bts_loadout_map_representation_showcase.jpg)
 
 Keep in mind that exact node colours will be a bit different. The exported thumbnails can be seen in the folder below after the program has run.
 
@@ -61,7 +62,7 @@ There is no real way of visualising the map right now, so this is purely serves 
 
 When visualised in the game Brace the Swarm, the generated maps would look something like this
 
-[Image 2](./images/bts_classic_td_map_above.jpg)
+![Image 2](./images/bts_classic_td_map_above.jpg)
 
 BTS uses a more complex version of this algorithm for its internal map creation, and maps from this generator can be used as is for the game.
 In the future, I might get around to creating a public way of displaying and interacting with the maps generated as well.
@@ -69,9 +70,9 @@ In the future, I might get around to creating a public way of displaying and int
 
 ### Current shortcomings.
 
-There are some inefficiencies in the algorithm, especially with the size of the input set (which accounts for almost 150 different elements). Reducing this will dramatically decrease the amount of calculations needed to be done, and heavily reduce the likelihood of generations failing.
+There are some aspects that will slow down the algorithm, such as the size of the input set (which accounts for almost 150 different elements). Reducing this will dramatically decrease the amount of calculations needed to solve a given section of the map, and heavily reduce the likelihood of the generation process failing.
 
-Without reductions, expect generations to anywhere from 5-100+ seconds per map depending on hardware and map size.
+Without reductions, expect the generation to take anywhere from 5-100+ seconds per map depending on hardware and map size.
 
 While the memory concerns and layout during runtime is currently ok for the most part, there's still a lot that can be done here by reducing the space needed for various components and store them in a more efficient manner.
 
