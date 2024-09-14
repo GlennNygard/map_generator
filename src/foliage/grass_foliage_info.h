@@ -13,7 +13,7 @@ class GrassFoliageInfo : public BiomeFoliageInfo {
 	public:
     GrassFoliageInfo(FoliageDefinitions& foliageDefinitions) : BiomeFoliageInfo(foliageDefinitions) {
 
-		const size_t foliageCount = foliageDefinitions.get_foliage_count();
+		const size_t foliageCount = foliageDefinitions.GetFoliageCount();
 
 		auto& fd = foliageDefinitions;
 
@@ -168,7 +168,7 @@ class GrassFoliageInfo : public BiomeFoliageInfo {
 
 		auto relationsPath = DiskManager::get_relational_map_path("GrassRelationsMap.txt");
 
-		setup(m_allowedTypes, m_walkableAllowedTypes, foliageDefinitions, relationsPath);
+		Setup(m_allowedTypes, m_walkableAllowedTypes, foliageDefinitions, relationsPath);
 		startFoliagePriority[(fd.toFI("NoFoliage"))] =
 			foliagePriority[(fd.toFI("NoFoliage"))];
 		

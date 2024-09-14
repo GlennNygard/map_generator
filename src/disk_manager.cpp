@@ -112,10 +112,10 @@ DiskManager::DiskManager(FoliageDefinitions& foliageDefinitions) {
 }
 
 
-void DiskManager::save_map(
-        const MapObject &mapObject,
-        const std::string mapName,
-        const std::string mapNamePrefix,
+void DiskManager::SaveMap(
+        const MapObject& mapObject,
+        const std::string& mapName,
+        const std::string& mapNamePrefix,
         const int currentIndex) {
     std::string mapPath = get_map_path(mapNamePrefix);
 
@@ -254,8 +254,7 @@ std::vector<std::string> DiskManager::split(std::string str, std::string delimit
     return res;
 }
 
-Matrix<MapNode> DiskManager::load_map(
-        std::filesystem::path mapPath) {
+Matrix<MapNode> DiskManager::LoadMap(const std::filesystem::path& mapPath) {
 
     if(!get_path_exists(mapPath)) {
         return Matrix<MapNode>();
@@ -380,9 +379,9 @@ Matrix<MapNode> DiskManager::convert_string_to_map(std::string loadText) {
     return map;
 }
 
-std::optional<MapObject> DiskManager::load_map_object(std::string resourcePath) {
+std::optional<MapObject> DiskManager::LoadMapObject(const std::string& resourcePath) {
     
-    auto map = load_map(resourcePath);
+    auto map = LoadMap(resourcePath);
     if(map.empty()) {
         return std::nullopt;
     }
@@ -390,10 +389,10 @@ std::optional<MapObject> DiskManager::load_map_object(std::string resourcePath) 
     return mapObject;
 }
 
-void DiskManager::save_map_thumbnail(
+void DiskManager::SaveMapThumbnail(
         const Matrix<MapNode>& fullMap,
-        const std::string mapName,
-        const std::string mapNamePrefix) {
+        const std::string& mapName,
+        const std::string& mapNamePrefix) {
 
     std::filesystem::path directoryPath = m_mapsThumbnailsPath / mapNamePrefix;
 

@@ -2,7 +2,7 @@
 #include <format>
 
 #include "map_constructor.h"
-#include "foliage_processor.h"
+#include "map_processor.h"
 #include "biome_foliage_info.h"
 #include "grass_foliage_info.h"
 #include "foliage_info.h"
@@ -14,28 +14,29 @@
 MapConstructor::MapConstructor(
         const LevelValues& levelValues,
         FoliageDefinitions& foliageDefinitions,
-        bool verboseLogging) {
-    m_levelValues = levelValues;
+        bool verboseLogging) :
+            m_levelValues(levelValues),
+            m_verboseLogging(verboseLogging) {
     m_foliageDefinitions = std::make_unique<FoliageDefinitions>(foliageDefinitions);
-    std::optional<BiomeFoliageInfo> biomeFoliageInfo;
+
     if(levelValues.biome == LevelBiome::Grass) {
-        biomeFoliageInfo = GrassFoliageInfo(foliageDefinitions);
+        m_biomeFoliageInfo = std::make_unique<GrassFoliageInfo>(foliageDefinitions);
     }
+    // ...
     // Support for more biomes will be added in the future.
+    // <- Insert here.
     // ...
     else {
-        biomeFoliageInfo = GrassFoliageInfo(foliageDefinitions);
+        m_biomeFoliageInfo = std::make_unique<GrassFoliageInfo>(foliageDefinitions);
     }
-    m_foliageProcessor = std::make_unique<
-        FoliageProcessor>(std::move(*biomeFoliageInfo), levelValues, verboseLogging);
 }
 
-std::optional<MapObject> MapConstructor::create_map(int currentIndex) {
+std::optional<MapObject> MapConstructor::CreateMap(int currentIndex) {
     logger::Log(std::format(
         "Starting map creation: {}",
         std::to_string(currentIndex)));
 
-    auto mapPair = construct_random_map();
+    auto mapPair = ConstructRandomMap();
 
     MapObject mapObject = mapPair.first;
     bool success = mapPair.second;
@@ -48,16 +49,15 @@ std::optional<MapObject> MapConstructor::create_map(int currentIndex) {
     return mapObject;
 }
 
-std::pair<MapObject, bool> MapConstructor::construct_random_map(int levelSeed) {
+std::pair<MapObject, bool> MapConstructor::ConstructRandomMap(int levelSeed) {
 
     if(levelSeed == -1) {
-        // levelSeed = time(0);
-        levelSeed = 10;
+        levelSeed = time(0);
     }
     logger::Log(std::format("Using level SEED: {0}", levelSeed));
     srand(levelSeed);
 
-    std::pair<Matrix<FoliageType> , bool> randomFoliageMapPair = create_random_foliage_map();
+    std::pair<Matrix<FoliageType> , bool> randomFoliageMapPair = CreateRandomFoliageMap();
 
     auto fullFoliageMap = randomFoliageMapPair.first;
     bool success = randomFoliageMapPair.second;
@@ -82,8 +82,8 @@ std::pair<MapObject, bool> MapConstructor::construct_random_map(int levelSeed) {
     return std::pair(mapObject, success);
 }
 
-void MapConstructor::carve_main_room(
-        Matrix<int> &foliageMap,
+void MapConstructor::CarveMainRoom(
+        Matrix<int>& foliageMap,
         const Vector2Int worldPos,
         const float nodeDiameter,
         const int sectionCountX,
@@ -103,7 +103,7 @@ void MapConstructor::carve_main_room(
                     y >= 0 &&
                     y < sectionCountY) {
 
-                float dist = gmath::square_dist(nodePos - Vector2Int(x,y));
+                float dist = gmath::SqrDistance(nodePos - Vector2Int(x,y));
                 if(dist > shortRadius*shortRadius) {
                     continue;
                 }
@@ -116,10 +116,7 @@ void MapConstructor::carve_main_room(
     }
 }
 
-void MapConstructor::set_map_borders(
-        Matrix<int> &foliageMap,
-        int borderCount) {
-
+void MapConstructor::SetMapBorders(Matrix<int>& foliageMap, int borderCount) {
     for(int x = 0; x < foliageMap.dim_a(); x++) {
         for(int y = 0; y < foliageMap.dim_b(); y++) {
             if(x >= borderCount &&
@@ -135,15 +132,22 @@ void MapConstructor::set_map_borders(
     }
 }
 
-std::pair<Matrix<FoliageType>, bool> MapConstructor::create_random_foliage_map() {
+std::pair<Matrix<FoliageType>, bool> MapConstructor::CreateRandomFoliageMap() {
     // Create random terrain.
     // Full map.
     int maxAttempts = 3;
     int currentAttempt = 0;
     Matrix<FoliageType> fullFoliageGrid = {};
     bool success = true;
+
+    MapProcessor mapProcessor (
+        *m_biomeFoliageInfo,
+        m_levelValues,
+        m_verboseLogging);
     while(fullFoliageGrid.empty() && currentAttempt < maxAttempts) {
-        auto resultPair = m_foliageProcessor->ProcessNewMap();
+
+        auto resultPair = mapProcessor.RunProcessing();
+
         fullFoliageGrid = resultPair.first;
         success = resultPair.second;
         if(!success) {
@@ -157,7 +161,7 @@ std::pair<Matrix<FoliageType>, bool> MapConstructor::create_random_foliage_map()
     return std::pair(fullFoliageGrid, success);
 }
 
-Matrix<int> MapConstructor::random_fill_section(
+Matrix<int> MapConstructor::RandomFillSection(
         int sectionCountX,
         int sectionCountY,
         int randomFillPercent) {
@@ -165,8 +169,8 @@ Matrix<int> MapConstructor::random_fill_section(
     Matrix<int> nodeMap(sectionCountX,sectionCountY);
     for(int x = 0; x < sectionCountX; x++) {
         for(int y = 0; y < sectionCountY; y++) {
-            float multX = gmath::ease_out_cubic(std::abs(((float)(x)/sectionCountX)-0.5f)*0.5f);
-            float multY = gmath::ease_out_cubic(std::abs(((float)(y)/sectionCountY)-0.5f)*0.5f);
+            float multX = gmath::EaseOutCubic(std::abs(((float)(x)/sectionCountX)-0.5f)*0.5f);
+            float multY = gmath::EaseOutCubic(std::abs(((float)(y)/sectionCountY)-0.5f)*0.5f);
 
             int val = static_cast<int>(std::round(100 * (multX + multY)));
             if((rand() % val) < randomFillPercent) {

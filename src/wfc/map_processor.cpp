@@ -8,12 +8,12 @@
 MapProcessor::MapProcessor(
         BiomeFoliageInfo& biomeFoliageInfo,
         const LevelValues& levelValues,
-        bool verboseLogging) :
+        const bool verboseLogging) :
             m_biomeFoliageInfo(biomeFoliageInfo),
-            m_levelValues(levelValues) {
+            m_levelValues(levelValues),
+            m_verboseLogging(verboseLogging) {
 
     m_issuesFound = false;
-    m_verboseLogging = verboseLogging;
 
     m_recursionCount = 0;
 	m_emptyRecursionCount = 0;
@@ -762,7 +762,7 @@ bool MapProcessor::UpdatePossibleTypesRecursively(
     Matrix<FoliageType>& foliageMap = sectionState.foliageMap;
     Matrix<FoliageData>& foliageDataMap = sectionState.foliageDataMap;
 
-    auto res = m_biomeFoliageInfo.get_relations_from_nodes(lastNodePos, currentNodePos);
+    auto res = m_biomeFoliageInfo.GetRelationsFromNodes(lastNodePos, currentNodePos);
     auto lastNodeDirectionalRelations = res.first;
     Direction direction = res.second;
 

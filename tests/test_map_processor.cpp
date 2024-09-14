@@ -1,6 +1,6 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "foliage_processor.h"
+#include "map_processor.h"
 #include "biome_foliage_info.h"
 #include "matrix.h"
 
@@ -24,11 +24,11 @@ class TestBiomeFoliage : public BiomeFoliageInfo {
 		};
 
         auto relationsPath = std::filesystem::path (RESOURCE_PATH_TEST) / "test_relations_map_02.txt";
-		setup(allowedTypes, walkableAllowedTypes, fd, relationsPath);
+		Setup(allowedTypes, walkableAllowedTypes, fd, relationsPath);
 		startFoliagePriority[(fd.toFI("NoFoliage"))] =
 			foliagePriority[(fd.toFI("NoFoliage"))];
 
-        const size_t foliageCount = fd.get_foliage_count();
+        const size_t foliageCount = fd.GetFoliageCount();
 		auto tempList = std::vector<std::vector<std::pair<FoliageType, int>>>(foliageCount);
 		tempList[(fd.toFI("NoFoliage"))] = {
 			std::pair<int, int>(fd.toFI("NoFoliage"), 120),
@@ -78,12 +78,15 @@ TEST_CASE("Foliage processor works correctly.", "[foliage_processor]") {
     bool verboseLogging = false;
     TestBiomeFoliage biomeInfo = TestBiomeFoliage(fd);
 
-    FoliageProcessor processor = FoliageProcessor(
-        std::move(biomeInfo), create_test_levelvalues(), verboseLogging);
+    MapProcessor mapProcessor (
+        biomeInfo,
+        create_test_levelvalues(),
+        verboseLogging);
+    
+    auto resultPair = mapProcessor.RunProcessing();
 
-    auto results = processor.ProcessNewMap();
-    bool success = results.second;
-    auto matrix = results.first;
+    bool success = resultPair.second;
+    auto matrix = resultPair.first;
 
     SECTION("Foliage processor finished sucessfully with correct foliage types.") {
         REQUIRE(success);

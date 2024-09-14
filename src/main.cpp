@@ -28,16 +28,16 @@ void CreateMaps(const LevelValues &levelValues, const ArgValues &argValues) {
             mapNamePrefix, currentIndex);
 
         // Create map.
-        auto mapObjectOpt = mapConstructor.create_map(currentIndex);
+        auto mapObjectOpt = mapConstructor.CreateMap(currentIndex);
         if(!mapObjectOpt) {
             continue;
         }
         MapObject mapObject = *mapObjectOpt;
 
         // Save map.
-        mapDiskManager.save_map(mapObject, mapName, mapNamePrefix, currentIndex);
+        mapDiskManager.SaveMap(mapObject, mapName, mapNamePrefix, currentIndex);
         // Save thumbnail.
-        mapDiskManager.save_map_thumbnail(mapObject.map, mapName, mapNamePrefix);
+        mapDiskManager.SaveMapThumbnail(mapObject.map, mapName, mapNamePrefix);
         currentIndex++;
     }
 }

@@ -6,12 +6,11 @@
 #include "logger.h"
 
 
-
-const void BiomeFoliageInfo::setup(
+const void BiomeFoliageInfo::Setup(
         std::unordered_map<FoliageType, int>& allowedTypes,
         std::unordered_map<FoliageType, int>& walkableAllowedTypes,
         FoliageDefinitions& foliageDefinitions,
-        std::filesystem::path relationsPath) {
+        const std::filesystem::path& relationsPath) {
 
     struct TempRelation {
         bool hasData = false;
@@ -23,16 +22,15 @@ const void BiomeFoliageInfo::setup(
     startFoliagePriority = {};
 
     DiskManager mdm = DiskManager(foliageDefinitions);
-    auto mapObjectOptional = mdm.load_map_object(relationsPath);
+    auto mapObjectOptional = mdm.LoadMapObject(relationsPath);
     if(!mapObjectOptional) {
         logger::log_error("Could not load relations file: "+relationsPath.generic_string());
         return;
     }
     auto mapObject = *mapObjectOptional;
 
-    const size_t foliageCount = foliageDefinitions.get_foliage_count();
+    const size_t foliageCount = foliageDefinitions.GetFoliageCount();
 
-    // neighbourBonusList = std::vector<FoliageNeighbourBonus>(foliageCount);
     std::vector<int> defaultSet (foliageCount);
     std::vector<int> walkableDefaultSet (foliageCount);
 
@@ -170,40 +168,40 @@ const void BiomeFoliageInfo::setup(
     for(size_t i = 0; i < FoliageHelpers::MAX_FOLIAGE_COUNT; i++) {
         if(upRelationsDict[i].hasData) {
             upRelations[i] = FoliageRelation(
-                keys_from_map(upRelationsDict[i].map));
+                KeysFromMap(upRelationsDict[i].map));
         }
         if(downRelationsDict[i].hasData) {
             downRelations[i] = FoliageRelation(
-                keys_from_map(downRelationsDict[i].map));
+                KeysFromMap(downRelationsDict[i].map));
         }
         if(leftRelationsDict[i].hasData) {
             leftRelations[i] = FoliageRelation(
-                keys_from_map(leftRelationsDict[i].map));
+                KeysFromMap(leftRelationsDict[i].map));
         }
         if(rightRelationsDict[i].hasData) {
             rightRelations[i] = FoliageRelation(
-                keys_from_map(rightRelationsDict[i].map));
+                KeysFromMap(rightRelationsDict[i].map));
         }
         if(upLeftRelationsDict[i].hasData) {
             upLeftRelations[i] = FoliageRelation(
-                keys_from_map(upLeftRelationsDict[i].map));
+                KeysFromMap(upLeftRelationsDict[i].map));
         }
         if(upRightRelationsDict[i].hasData) {
             upRightRelations[i] = FoliageRelation(
-                keys_from_map(upRightRelationsDict[i].map));
+                KeysFromMap(upRightRelationsDict[i].map));
         }
         if(downLeftRelationsDict[i].hasData) {
             downLeftRelations[i] = FoliageRelation(
-                keys_from_map(downLeftRelationsDict[i].map));
+                KeysFromMap(downLeftRelationsDict[i].map));
         }
         if(downRightRelationsDict[i].hasData) {
             downRightRelations[i] = FoliageRelation(
-                keys_from_map(downRightRelationsDict[i].map));
+                KeysFromMap(downRightRelationsDict[i].map));
         }
     }
 }
 
-std::pair<std::array<FoliageRelation, FoliageHelpers::MAX_FOLIAGE_COUNT>*, Direction> BiomeFoliageInfo::get_relations_from_nodes(
+std::pair<std::array<FoliageRelation, FoliageHelpers::MAX_FOLIAGE_COUNT>*, Direction> BiomeFoliageInfo::GetRelationsFromNodes(
         Vector2Int lastNodePos, Vector2Int currentNodePos) {
     // Check for up relations.
     if(currentNodePos.x == lastNodePos.x && currentNodePos.y > lastNodePos.y) {
@@ -244,7 +242,7 @@ std::pair<std::array<FoliageRelation, FoliageHelpers::MAX_FOLIAGE_COUNT>*, Direc
 }
 
 template<typename T, typename V>
-std::vector<T> BiomeFoliageInfo::keys_from_map(const std::unordered_map<T, V>& map) {
+std::vector<T> BiomeFoliageInfo::KeysFromMap(const std::unordered_map<T, V>& map) {
     std::vector<T> keys;
     keys.reserve(map.size());
 

@@ -122,8 +122,8 @@ public:
      */
     std::unordered_map<int, FoliageType> mapFoliageMapping;
 
-    Matrix<MapNode> load_map(std::filesystem::path mapPath);
-    std::optional<MapObject> load_map_object(std::string resourcePath);
+    Matrix<MapNode> LoadMap(const std::filesystem::path& mapPath);
+    std::optional<MapObject> LoadMapObject(const std::string& resourcePath);
 
     std::vector<std::string> split(std::string str, std::string delimiter);
 
@@ -143,15 +143,15 @@ public:
      * Android / iOS doesn't support file access to the Asset
      * folder.
      */
-    void save_map(
+    void SaveMap(
         const MapObject& mapObject,
-        const std::string mapName,
-        const std::string mapNamePrefix,
+        const std::string& mapName,
+        const std::string& mapNamePrefix,
         const int currentIndex);
-    void save_map_thumbnail(
+    void SaveMapThumbnail(
         const Matrix<MapNode>& fullMap,
-        const std::string mapName,
-        const std::string mapNamePrefix);
+        const std::string& mapName,
+        const std::string& mapNamePrefix);
 
 private:
 

@@ -19,7 +19,7 @@ public:
 
     std::vector<FoliageInfo> foliageInfoElements;
 
-    const size_t get_foliage_count() const {
+    const size_t GetFoliageCount() const {
         return foliageInfoElements.size();
     }
 

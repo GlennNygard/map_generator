@@ -8,7 +8,7 @@ struct ArgValues {
     MapSize mapSize = MapSize::MapSize_Small;
     // MapSize mapSize = MapSize::MapSize_Large;
     int mapCount = 1;
-    bool verboseLogging = true;
+    bool verboseLogging = false;
 };
 
 std::optional<ArgValues> ParseArgs(int argc, char *argv[]);

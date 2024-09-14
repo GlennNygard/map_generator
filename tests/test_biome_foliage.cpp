@@ -24,11 +24,11 @@ class TestBiomeFoliage : public BiomeFoliageInfo {
 		};
 
         auto relationsPath = std::filesystem::path (RESOURCE_PATH_TEST) / "test_relations_map.txt";
-		setup(allowedTypes, walkableAllowedTypes, fd, relationsPath);
+		Setup(allowedTypes, walkableAllowedTypes, fd, relationsPath);
 		startFoliagePriority[(fd.toFI("NoFoliage"))] =
 			foliagePriority[(fd.toFI("NoFoliage"))];
 
-        const size_t foliageCount = fd.get_foliage_count();
+        const size_t foliageCount = fd.GetFoliageCount();
         auto tempList = std::vector<std::vector<std::pair<FoliageType, int>>>(foliageCount);
 		tempList[(fd.toFI("NoFoliage"))] = {
 			std::pair<int, int>(fd.toFI("NoFoliage"), 120),

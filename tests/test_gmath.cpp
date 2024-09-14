@@ -17,8 +17,8 @@ TEST_CASE( "Gmath vectors work correctly", "[gmath]" ) {
     Vector2Int vec1 (0,0);
     Vector2Int vec2 (3,5);
 
-    float dist = gmath::dist(vec1 - vec2);
-    float sqrDist = gmath::square_dist(vec1 - vec2);
+    float dist = gmath::Distance(vec1 - vec2);
+    float sqrDist = gmath::SqrDistance(vec1 - vec2);
 
     SECTION("Vectors are correct.") {
         CHECK( vec1.x == 0 );
@@ -43,12 +43,12 @@ TEST_CASE( "Gmath vectors work correctly", "[gmath]" ) {
     }
 
     SECTION("Vector distance.") {
-        CHECK( gmath::dist(vec1 - vec2) == 15.0 );
-        CHECK( gmath::dist(vec2 - vec1) == 15.0 );
+        CHECK( gmath::Distance(vec1 - vec2) == 15.0 );
+        CHECK( gmath::Distance(vec2 - vec1) == 15.0 );
     }
 
     SECTION("Vector sqr distance.") {
-        CHECK( gmath::square_dist(vec1 - vec2) == 225.0 );
-        CHECK( gmath::square_dist(vec2 - vec1) == 225.0 );
+        CHECK( gmath::SqrDistance(vec1 - vec2) == 225.0 );
+        CHECK( gmath::SqrDistance(vec2 - vec1) == 225.0 );
     }
 }

@@ -119,7 +119,7 @@ private:
 	int m_currentSubsectionAttempts = 0;
 	int m_currentRetryAttempts = 0;
 
-    bool m_verboseLogging;
+    const bool m_verboseLogging;
 	bool m_issuesFound;
 
 	BiomeFoliageInfo m_biomeFoliageInfo;

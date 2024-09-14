@@ -116,7 +116,7 @@ public:
 
 
     template<typename T, typename V>
-    std::vector<T> keys_from_map(const std::unordered_map<T, V>& map);
+    std::vector<T> KeysFromMap(const std::unordered_map<T, V>& map);
 
     /**
      * All types available with the current biome. Use this when resetting
@@ -135,7 +135,7 @@ public:
     const std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT>& get_start_foliage_priority() {
         return startFoliagePriority;}
 
-    virtual std::pair<std::array<FoliageRelation, FoliageHelpers::MAX_FOLIAGE_COUNT>*, Direction> get_relations_from_nodes(
+    virtual std::pair<std::array<FoliageRelation, FoliageHelpers::MAX_FOLIAGE_COUNT>*, Direction> GetRelationsFromNodes(
         Vector2Int lastNodePos, Vector2Int currentNodePos);
 
 protected:
@@ -143,9 +143,9 @@ protected:
     std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT> walkableFoliagePriority;
 	std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT> startFoliagePriority;
 
-    const void setup(
+    const void Setup(
         std::unordered_map<FoliageType, int>& allowedTypes,
         std::unordered_map<FoliageType, int>& walkableAllowedTypes,
         FoliageDefinitions& foliageDefinitions,
-        std::filesystem::path relationsPath);
+        const std::filesystem::path& relationsPath);
 };
