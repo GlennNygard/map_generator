@@ -14,7 +14,7 @@ namespace logger {
     static const bool RUN_PRINTS = true;
     static const bool RUN_GRID_PRINTS = false;
 
-    static void log(std::string message) {
+    static void Log(std::string message) {
         if(!RUN_PRINTS) {
             return;
         }
@@ -29,7 +29,7 @@ namespace logger {
     }
 
     template<size_t foliageCount>
-    static void log_grid(
+    static void LogGrid(
             const Matrix<FoliageData>& grid,
             const std::array<int, foliageCount> &walkablePossibleTypes) {
 
@@ -51,12 +51,12 @@ namespace logger {
             for(int x = 0; x < cols; x++) {
                 FoliageData foliageData = grid[x][y];
 
-                auto dataRemaining = foliageData.get_remaining();
+                auto dataRemaining = foliageData.GetRemaining();
 
                 auto defaultWalkable = walkablePossibleTypes;
                 bool allSame = true;
-                for(size_t i = 0; i < dataRemaining.size(); i++) {
-                    if(dataRemaining[i] != defaultWalkable[i]) {
+                for(FoliageIndex fIndex = 0; fIndex < dataRemaining.size(); fIndex++) {
+                    if(dataRemaining[fIndex] != defaultWalkable[fIndex]) {
                         allSame = false;
                         break;
                     }
@@ -68,11 +68,11 @@ namespace logger {
                 }
 
                 std::vector<int> remainingPossibleTypes = {};
-                for(int i = 0; i < dataRemaining.size(); i++) {
-                    if(dataRemaining[i] <= 0) {
+                for(FoliageIndex fIndex = 0; fIndex < dataRemaining.size(); fIndex++) {
+                    if(dataRemaining[fIndex] <= 0) {
                         continue;
                     }
-                    remainingPossibleTypes.push_back(i);
+                    remainingPossibleTypes.push_back(fIndex);
                 }
 
                 if(remainingPossibleTypes.size() == 1) {
@@ -90,8 +90,9 @@ namespace logger {
         std::cout << fullStringPossible << std::endl;
     }
 
+    template<typename Index>
     static void log_grid(
-            const Matrix<int>& grid) {
+            const Matrix<Index>& grid) {
         if(!RUN_PRINTS) {
             return;
         }

@@ -21,14 +21,14 @@ const std::unordered_map<MapSize, Vector2Int> MapDefinitions::mapSizeMappings = 
     {MapSize::MapSize_Massive, Vector2Int(15,15)},
 };
 
-const LevelValues MapDefinitions::create_level_values(MapSize mapSize) {
+const LevelValues MapDefinitions::CreateLevelValues(MapSize mapSize) {
     LevelBiome mapBiome = LevelBiome::Grass;
     Vector2Int sectionCount = MapDefinitions::mapSizeMappings.at(mapSize);
-    LevelValues levelValues = LevelValues::create_values(sectionCount, mapBiome);
+    LevelValues levelValues = LevelValues::CreateValues(sectionCount, mapBiome);
     return levelValues;
 }
 
-const LevelValues LevelValues::create_values(Vector2Int sectionCount, LevelBiome biome) {
+const LevelValues LevelValues::CreateValues(Vector2Int sectionCount, LevelBiome biome) {
     auto lv = LevelValues();
     lv.biome = biome;
 

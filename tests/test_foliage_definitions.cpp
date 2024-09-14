@@ -3,14 +3,7 @@
 #include "foliage_definitions.h"
 
 
-class FoliageDefinitionsFixture {
-
-    FoliageDefinitions foliageDefinitions = FoliageDefinitions::instance();
-
-};
-
-
-int toFI(std::string foliageName, FoliageDefinitions fd) {
+int toFI(std::string foliageName, FoliageDefinitions& fd) {
     auto nameToFoliageIndex = fd.get_name_to_foliage_index_map();
     auto itr = nameToFoliageIndex.find(foliageName);
     if(itr == nameToFoliageIndex.end()) {
@@ -19,19 +12,20 @@ int toFI(std::string foliageName, FoliageDefinitions fd) {
     return itr->second;
 }
 
-int toMI(std::string foliageName, FoliageDefinitions fd) {
+int toMI(std::string foliageName, FoliageDefinitions& fd) {
     int foliageIndex = toFI(foliageName, fd);
     auto fiToFIIndex = fd.foliageInfoElements;
     return fiToFIIndex[foliageIndex].mapIndex;
 }
 
 
-TEST_CASE_METHOD(FoliageDefinitionsFixture, "Foliage definitions correct.", "[foliage_definitions]") {
+TEST_CASE("Foliage definitions correct.", "[foliage_definitions]") {
 
-    auto fd = FoliageDefinitions::instance();
+    FoliageDefinitions fd = FoliageDefinitions();
 
     SECTION("Name to map index translation.") {
-        CHECK(toMI("NoFoliage", fd) == 1);
+        CHECK(toMI("NoSelection", fd) == FoliageHelpers::NO_SELECTION_INDEX);
+        CHECK(toMI("NoFoliage", fd) == FoliageHelpers::NO_FOLIAGE_INDEX);
         CHECK(toMI("CliffsideDesertMiddle", fd) == 1301);
         CHECK(toMI("WallThreeUp", fd) == 1610);
         CHECK(toMI("BorderTreeDownRight", fd) == 1708);

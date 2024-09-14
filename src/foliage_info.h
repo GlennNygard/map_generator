@@ -10,7 +10,7 @@ class FoliageInfo {
     public:
 
 	std::string foliageName;
-    int foliageType;
+    FoliageType foliageType;
     int nodeType;
 	bool walkable;
 	bool buildable;

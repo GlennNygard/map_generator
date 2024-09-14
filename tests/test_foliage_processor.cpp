@@ -7,34 +7,38 @@
 
 class TestBiomeFoliage : public BiomeFoliageInfo {
     public:
-    TestBiomeFoliage() {
+    TestBiomeFoliage(FoliageDefinitions& fd) : BiomeFoliageInfo(fd) {
 
 		allowedTypes = {
-			{toFI("NoFoliage"), 40},
-			{toFI("TreeFoliage"), 90},
-			{toFI("TreeSmallFoliage"), 10},
-            {toFI("FlowerClusterFoliage"), 2},
-			{toFI("PlantClusterFoliage"), 1},
+			{fd.toFI("NoFoliage"), 40},
+			{fd.toFI("TreeFoliage"), 90},
+			{fd.toFI("TreeSmallFoliage"), 10},
+            {fd.toFI("FlowerClusterFoliage"), 2},
+			{fd.toFI("PlantClusterFoliage"), 1},
 		};
 		walkableAllowedTypes = {
-            {toFI("NoFoliage"), 40},
-			{toFI("TreeSmallFoliage"), 2},
-			{toFI("FlowerClusterFoliage"), 2},
-			{toFI("PlantClusterFoliage"), 1},
+            {fd.toFI("NoFoliage"), 40},
+			{fd.toFI("TreeSmallFoliage"), 2},
+			{fd.toFI("FlowerClusterFoliage"), 2},
+			{fd.toFI("PlantClusterFoliage"), 1},
 		};
 
         auto relationsPath = std::filesystem::path (RESOURCE_PATH_TEST) / "test_relations_map_02.txt";
-		setup(allowedTypes, walkableAllowedTypes, relationsPath);
-		startPossibleTypes[(toFI("NoFoliage"))] =
-			possibleTypes[(toFI("NoFoliage"))];
+		setup(allowedTypes, walkableAllowedTypes, fd, relationsPath);
+		startFoliagePriority[(fd.toFI("NoFoliage"))] =
+			foliagePriority[(fd.toFI("NoFoliage"))];
 
-		neighbourBonusList[(toFI("NoFoliage"))] = FoliageNeighbourBonus({
-			std::pair<int, int>(toFI("NoFoliage"), 120),
-			std::pair<int, int>(toFI("TreeFoliage"), 40),
-		});
+        const size_t foliageCount = fd.get_foliage_count();
+		auto tempList = std::vector<std::vector<std::pair<FoliageType, int>>>(foliageCount);
+		tempList[(fd.toFI("NoFoliage"))] = {
+			std::pair<int, int>(fd.toFI("NoFoliage"), 120),
+			std::pair<int, int>(fd.toFI("TreeFoliage"), 40),
+		};
+
+        neighbourBonusList = FoliageSquashedList(tempList);
     }
-	std::unordered_map<int, int> allowedTypes;
-	std::unordered_map<int, int> walkableAllowedTypes;
+	std::unordered_map<FoliageType, int> allowedTypes;
+	std::unordered_map<FoliageType, int> walkableAllowedTypes;
 };
 
 
@@ -69,26 +73,28 @@ TEST_CASE("Foliage processor works correctly.", "[foliage_processor]") {
 
     std::srand(10);
 
+    auto fd = FoliageDefinitions();
+
     bool verboseLogging = false;
-    TestBiomeFoliage biomeInfo = TestBiomeFoliage();
+    TestBiomeFoliage biomeInfo = TestBiomeFoliage(fd);
 
     FoliageProcessor processor = FoliageProcessor(
-        biomeInfo, create_test_levelvalues(), verboseLogging);
+        std::move(biomeInfo), create_test_levelvalues(), verboseLogging);
 
-    auto results = processor.mark_foliage_nodes();
+    auto results = processor.ProcessNewMap();
     bool success = results.second;
     auto matrix = results.first;
 
-    SECTION("Foliage processor finished sucessfully.") {
+    SECTION("Foliage processor finished sucessfully with correct foliage types.") {
         REQUIRE(success);
         CHECK(matrix.dim_a() == 18);
         CHECK(matrix.dim_b() == 18);
 
         CHECK(matrix[10][10] == 5);
         CHECK(matrix[0][0] == 5);
-        CHECK(matrix[12][6] == 5);
-        CHECK(matrix[12][6] == 5);
+        CHECK(matrix[12][6] == 1);
+        CHECK(matrix[12][7] == 5);
         CHECK(matrix[5][5] == 1);
-        CHECK(matrix[10][17] == 1);
+        CHECK(matrix[10][17] == 5);
     }
 }

@@ -8,6 +8,7 @@
 #include "disk_manager.h"
 #include "foliage_definitions.h"
 #include "logger.h"
+#include "squashed_list.h"
 
 
 struct FoliageNeighbourBonus {
@@ -17,6 +18,9 @@ struct FoliageNeighbourBonus {
     FoliageNeighbourBonus(std::vector<std::pair<int, int>> neighbourBonus) {
         m_neighbourBonus = neighbourBonus;
     }
+
+    FoliageNeighbourBonus(std::vector<std::pair<int, int>>&& neighbourBonus) 
+        : m_neighbourBonus(std::move(neighbourBonus)) {}
 
     // Getter.
     std::pair<int, int> operator [](int i) const {
@@ -37,15 +41,14 @@ struct FoliageRelation {
 
     FoliageRelation() = default;
 
-    FoliageRelation(std::vector<int> relations) {
-        m_relations = relations;
-    }
+    FoliageRelation(std::vector<FoliageType> relations) 
+        : m_relations(std::move(relations)) {}
 
     // Getter.
-    int operator [](int i) const {
+    FoliageType operator [](FoliageType i) const {
         return m_relations[i];}
     // Setter.
-    int & operator [](int i) {
+    FoliageType & operator [](FoliageType i) {
         return m_relations[i];}
 
     size_t size() const {
@@ -53,11 +56,12 @@ struct FoliageRelation {
     }
 
 private:
-    std::vector<int> m_relations;
+    std::vector<FoliageType> m_relations;
 };
 
 class BiomeFoliageInfo {
 public:
+    using FoliageSquashedList = FoliageSquashedList<FoliageHelpers::MAX_FOLIAGE_COUNT, 10>;
 
     std::array<FoliageRelation, FoliageHelpers::MAX_FOLIAGE_COUNT> upRelations;
     std::array<FoliageRelation, FoliageHelpers::MAX_FOLIAGE_COUNT> downRelations;
@@ -69,14 +73,47 @@ public:
     std::array<FoliageRelation, FoliageHelpers::MAX_FOLIAGE_COUNT> downLeftRelations;
     std::array<FoliageRelation, FoliageHelpers::MAX_FOLIAGE_COUNT> downRightRelations;
 
-    std::unordered_map<int, std::unordered_set<int>> impossibleTypesDict;
+    FoliageSquashedList neighbourBonusList;
 
-    std::unordered_set<int> defaultHigherSet;
+    BiomeFoliageInfo(FoliageDefinitions& foliageDefinitions) {}
 
-    std::unordered_map<int, std::unordered_map<int, int>> relationsDict;
-	std::vector<FoliageNeighbourBonus> neighbourBonusList;
+    // Move constructor.
+    BiomeFoliageInfo(BiomeFoliageInfo&& other) noexcept
+        : upRelations(std::move(other.upRelations)),
+          downRelations(std::move(other.downRelations)),
+          leftRelations(std::move(other.leftRelations)),
+          rightRelations(std::move(other.rightRelations)),
+          upLeftRelations(std::move(other.upLeftRelations)),
+          upRightRelations(std::move(other.upRightRelations)),
+          downLeftRelations(std::move(other.downLeftRelations)),
+          downRightRelations(std::move(other.downRightRelations)),
+          neighbourBonusList(std::move(other.neighbourBonusList)),
+          foliagePriority(std::move(other.foliagePriority)),
+          walkableFoliagePriority(std::move(other.walkableFoliagePriority)),
+          startFoliagePriority(std::move(other.startFoliagePriority)) {}
 
-    BiomeFoliageInfo();
+    // Move assignment operator.
+    BiomeFoliageInfo& operator=(BiomeFoliageInfo&& other) noexcept {
+        if(this != &other) { // Self-assignment check
+            upRelations = std::move(other.upRelations);
+            downRelations = std::move(other.downRelations);
+            leftRelations = std::move(other.leftRelations);
+            rightRelations = std::move(other.rightRelations);
+            upLeftRelations = std::move(other.upLeftRelations);
+            upRightRelations = std::move(other.upRightRelations);
+            downLeftRelations = std::move(other.downLeftRelations);
+            downRightRelations = std::move(other.downRightRelations);
+            neighbourBonusList = std::move(other.neighbourBonusList);
+            foliagePriority = std::move(other.foliagePriority);
+            walkableFoliagePriority = std::move(other.walkableFoliagePriority);
+            startFoliagePriority = std::move(other.startFoliagePriority);
+        }
+        return *this;
+    }
+
+    BiomeFoliageInfo(const BiomeFoliageInfo&) = default;
+    BiomeFoliageInfo& operator=(const BiomeFoliageInfo&) = delete;
+
 
     template<typename T, typename V>
     std::vector<T> keys_from_map(const std::unordered_map<T, V>& map);
@@ -85,38 +122,30 @@ public:
      * All types available with the current biome. Use this when resetting
      * a tracker to the default values.
      */
-    const std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT>& get_possible_types() {
-        return possibleTypes;}
+    const std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT>& GetFoliagePriority() {
+        return foliagePriority;}
 
     /**
      * All types walkable available with the current biome.
      * Use this when resetting a tracker to the default values.
      */
-    const std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT>& get_walkable_possible_types() {
-        return walkablePossibleTypes;}
+    const std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT>& GetWalkableFoliagePriority() {
+        return walkableFoliagePriority;}
 
-    const std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT>& get_start_possible_types() {
-        return startPossibleTypes;}
+    const std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT>& get_start_foliage_priority() {
+        return startFoliagePriority;}
 
-    std::pair<std::array<FoliageRelation, FoliageHelpers::MAX_FOLIAGE_COUNT>*, Direction> get_relations_from_nodes(
+    virtual std::pair<std::array<FoliageRelation, FoliageHelpers::MAX_FOLIAGE_COUNT>*, Direction> get_relations_from_nodes(
         Vector2Int lastNodePos, Vector2Int currentNodePos);
 
 protected:
-    std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT> possibleTypes;
-    std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT> walkablePossibleTypes;
-	std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT> startPossibleTypes;
+    std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT> foliagePriority;
+    std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT> walkableFoliagePriority;
+	std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT> startFoliagePriority;
 
     const void setup(
-			std::unordered_map<int, int> allowedTypes,
-			std::unordered_map<int, int> walkableAllowedTypes,
-			std::filesystem::path relationsPath);
-
-    const int toFI(std::string foliageName) {
-        auto nameToFoliageIndex = FoliageDefinitions::instance().get_name_to_foliage_index_map();
-        auto itr = nameToFoliageIndex.find(foliageName);
-        if(itr == nameToFoliageIndex.end()) {
-            logger::log_error("Could not find entry for foliage: "+foliageName);
-        }
-        return itr->second;
-    }
+        std::unordered_map<FoliageType, int>& allowedTypes,
+        std::unordered_map<FoliageType, int>& walkableAllowedTypes,
+        FoliageDefinitions& foliageDefinitions,
+        std::filesystem::path relationsPath);
 };

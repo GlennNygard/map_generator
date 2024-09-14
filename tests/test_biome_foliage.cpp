@@ -6,35 +6,39 @@
 
 class TestBiomeFoliage : public BiomeFoliageInfo {
     public:
-    TestBiomeFoliage() {
+    TestBiomeFoliage(FoliageDefinitions& fd) : BiomeFoliageInfo(fd) {
 
 		allowedTypes = {
-			{toFI("NoFoliage"), 40},
-			{toFI("TreeFoliage"), 90},
-			{toFI("TreeSmallFoliage"), 10},
-			{toFI("TreeCliffedge"), 30},
+			{fd.toFI("NoFoliage"), 40},
+			{fd.toFI("TreeFoliage"), 90},
+			{fd.toFI("TreeSmallFoliage"), 10},
+			{fd.toFI("TreeCliffedge"), 30},
 		};
 
 		walkableAllowedTypes = {
-            {toFI("NoFoliage"), 40},
-			{toFI("TreeFoliage"), 10},
-			{toFI("TreeSmallFoliage"), 2},
-			{toFI("FlowerClusterFoliage"), 2},
-			{toFI("PlantClusterFoliage"), 1},
+            {fd.toFI("NoFoliage"), 40},
+			{fd.toFI("TreeFoliage"), 10},
+			{fd.toFI("TreeSmallFoliage"), 2},
+			{fd.toFI("FlowerClusterFoliage"), 2},
+			{fd.toFI("PlantClusterFoliage"), 1},
 		};
 
         auto relationsPath = std::filesystem::path (RESOURCE_PATH_TEST) / "test_relations_map.txt";
-		setup(allowedTypes, walkableAllowedTypes, relationsPath);
-		startPossibleTypes[(toFI("NoFoliage"))] =
-			possibleTypes[(toFI("NoFoliage"))];
+		setup(allowedTypes, walkableAllowedTypes, fd, relationsPath);
+		startFoliagePriority[(fd.toFI("NoFoliage"))] =
+			foliagePriority[(fd.toFI("NoFoliage"))];
 
-		neighbourBonusList[(toFI("NoFoliage"))] = FoliageNeighbourBonus({
-			std::pair<int, int>(toFI("NoFoliage"), 120),
-			std::pair<int, int>(toFI("TreeFoliage"), 40),
-		});
+        const size_t foliageCount = fd.get_foliage_count();
+        auto tempList = std::vector<std::vector<std::pair<FoliageType, int>>>(foliageCount);
+		tempList[(fd.toFI("NoFoliage"))] = {
+			std::pair<int, int>(fd.toFI("NoFoliage"), 120),
+			std::pair<int, int>(fd.toFI("TreeFoliage"), 40),
+		};
+
+        neighbourBonusList = FoliageSquashedList(tempList);
     }
-	std::unordered_map<int, int> allowedTypes;
-	std::unordered_map<int, int> walkableAllowedTypes;
+	std::unordered_map<FoliageType, int> allowedTypes;
+	std::unordered_map<FoliageType, int> walkableAllowedTypes;
 };
 
 
@@ -50,7 +54,8 @@ int count_relational_value(std::array<FoliageRelation, FoliageHelpers::MAX_FOLIA
 
 struct BiomeFixture {
 
-    TestBiomeFoliage biomeInfo = TestBiomeFoliage();
+    FoliageDefinitions fd = FoliageDefinitions();
+    TestBiomeFoliage biomeInfo = TestBiomeFoliage(fd);
 };
 
 

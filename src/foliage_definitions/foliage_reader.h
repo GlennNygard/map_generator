@@ -82,6 +82,13 @@ namespace foliagereader {
 
         auto foliageList = data["Foliage"];
         for(auto itr = foliageList.begin(); itr != foliageList.end(); ++itr) {
+
+            if(currentIndex >= FoliageHelpers::MAX_FOLIAGE_COUNT) {
+                logger::log_error(
+                    "Foliage index is higher than max foliage count.");
+                break;
+            }
+
             std::string foliageName = itr->first.as<std::string>();
             auto foliageData = itr->second;
 

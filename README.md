@@ -1,7 +1,9 @@
 
 ## Map Generator.
 
-This is a simplified version of the map generator used in the game Brace the Swarm. The map exported from this algorithm can be used 'as is' in the game.
+CLI map creator using Wave Function Collapse and constraint-solving algorithms to create 2D maps.
+
+This is a simplified version of the map generator used in the game Brace the Swarm, and the maps exported from this creator can be used 'as is' in the game.
 ### How to use.
 
 Clone repo to desired location.
@@ -19,7 +21,7 @@ cmake --build build --target map_generator
 
 This will fetch any required 3rd party libraries and build the project.
 
-Run the map generator from the build/ directory. From the root directory, just run:
+To run the map generator, just run the following command from the root directory:
 ```
 ./build/bin/map_generator
 ```
@@ -42,11 +44,11 @@ If the map size and map complexity is set high enough, **the map generation migh
 
 ### Outputs.
 
-The outcome of the algorithm should look a little like the map presented below.
+The final export of the algorithm should look a little like the map presented below.
 
 ![Image 1](./images/bts_loadout_map_representation_showcase.jpg)
 
-Keep in mind that exact node colours will be a bit different. The exported thumbnails can be seen in the folder below after the program has run.
+Keep in mind that exact node colours will be a bit different, and also that the _feel_ of the map can change quite a bit with the size. The exported thumbnails can be seen in the folder below after the program has run.
 
 ```
 output/thumbnails
@@ -70,12 +72,12 @@ In the future, I might get around to creating a public way of displaying and int
 
 ### Current shortcomings.
 
-There are some aspects that will slow down the algorithm, such as the size of the input set (which accounts for almost 150 different elements). Reducing this will dramatically decrease the amount of calculations needed to solve a given section of the map, and heavily reduce the likelihood of the generation process failing.
+There are some aspects that will heavily slow down the algorithm, such as the size of the input set (which accounts for almost 150 different elements) and map size. Reducing these will dramatically decrease the amount of calculations needed to solve a given section of the map, and heavily reduce the likelihood of the generation process failing.
 
 Without reductions, expect the generation to take anywhere from 5-100+ seconds per map depending on hardware and map size.
 
-While the memory concerns and layout during runtime is currently ok for the most part, there's still a lot that can be done here by reducing the space needed for various components and store them in a more efficient manner.
+While the memory layout and management during runtime is ok for the most part, there's still a lot that can be done here by reducing the space needed for various components and store them in a more efficient manner.
 
-Some of these optimisations already exists in the game version of this algorithm, and will hopefully make their way here as well.
+Some of these optimisations already exists in the 'game' version of this algorithm, and will hopefully make their way here as well.
 
-The final outputs are in a simple and readable .txt file. The upsides with this is that debugging (if you know the file layout) and simple modifications are very easy. The main downside is the space requirements. It is therefore important that files are compressed before use.
+The final outputs are in a simple and readable .txt file. The benefits of this is that debugging is easy (if you know the file layout) and simple modifications are trivial to do. The main downside is the space needed to store them. It is therefore important that files are compressed before use.

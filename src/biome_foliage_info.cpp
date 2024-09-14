@@ -7,27 +7,22 @@
 
 
 
-BiomeFoliageInfo::BiomeFoliageInfo() {
-    impossibleTypesDict = std::unordered_map<int, std::unordered_set<int>>();
-    defaultHigherSet = std::unordered_set<int>();
-    relationsDict = std::unordered_map<int, std::unordered_map<int, int>>();
-
-    walkablePossibleTypes = {};
-    possibleTypes = {};
-    startPossibleTypes = {};
-}
-
 const void BiomeFoliageInfo::setup(
-        std::unordered_map<int, int> allowedTypes,
-        std::unordered_map<int, int> walkableAllowedTypes,
+        std::unordered_map<FoliageType, int>& allowedTypes,
+        std::unordered_map<FoliageType, int>& walkableAllowedTypes,
+        FoliageDefinitions& foliageDefinitions,
         std::filesystem::path relationsPath) {
 
     struct TempRelation {
         bool hasData = false;
-        std::unordered_map<int, int> map;
+        std::unordered_map<FoliageType, int> map;
     };
 
-    DiskManager mdm = DiskManager();
+    foliagePriority = {};
+    walkableFoliagePriority = {};
+    startFoliagePriority = {};
+
+    DiskManager mdm = DiskManager(foliageDefinitions);
     auto mapObjectOptional = mdm.load_map_object(relationsPath);
     if(!mapObjectOptional) {
         logger::log_error("Could not load relations file: "+relationsPath.generic_string());
@@ -35,9 +30,9 @@ const void BiomeFoliageInfo::setup(
     }
     auto mapObject = *mapObjectOptional;
 
-    const size_t foliageCount = FoliageDefinitions::instance().get_foliage_count();
+    const size_t foliageCount = foliageDefinitions.get_foliage_count();
 
-    neighbourBonusList = std::vector<FoliageNeighbourBonus>(foliageCount);
+    // neighbourBonusList = std::vector<FoliageNeighbourBonus>(foliageCount);
     std::vector<int> defaultSet (foliageCount);
     std::vector<int> walkableDefaultSet (foliageCount);
 
@@ -134,7 +129,7 @@ const void BiomeFoliageInfo::setup(
                         direction = Direction::DirectionDownRight;
                     }
 
-                    std::unordered_map<int, int> valueDict = {};
+                    std::unordered_map<FoliageType, int> valueDict = {};
                     if((*relationsDict)[currentFoliageType].hasData) {
                         valueDict = (*relationsDict)[currentFoliageType].map;
                     }
@@ -149,8 +144,8 @@ const void BiomeFoliageInfo::setup(
                     auto allowedTypesIter = allowedTypes.find(currentFoliageType);
                     if(allowedTypesIter != allowedTypes.end()) {
                         int priority = allowedTypesIter->second;
-                        if(possibleTypes[(currentFoliageType)] <= 0) {
-                            possibleTypes[(currentFoliageType)] = priority;
+                        if(foliagePriority[(currentFoliageType)] <= 0) {
+                            foliagePriority[(currentFoliageType)] = priority;
                             defaultSet[defaultIndex] = currentFoliageType;
                             defaultIndex++;
                         }
@@ -158,8 +153,8 @@ const void BiomeFoliageInfo::setup(
                     auto walkableAllowedTypesIter = walkableAllowedTypes.find(currentFoliageType);
                     if(walkableAllowedTypesIter != walkableAllowedTypes.end()) {
                         int priority = walkableAllowedTypesIter->second;
-                        if(walkablePossibleTypes[(currentFoliageType)] <= 0) {
-                            walkablePossibleTypes[(currentFoliageType)] = priority;
+                        if(walkableFoliagePriority[(currentFoliageType)] <= 0) {
+                            walkableFoliagePriority[(currentFoliageType)] = priority;
                             walkableDefaultSet[walkableDefaultIndex] = currentFoliageType;
                             walkableDefaultIndex++;
                         }

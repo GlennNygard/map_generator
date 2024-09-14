@@ -4,7 +4,7 @@
 
 #include "argparse.h"
 
-std::optional<ArgValues> parse_args(int argc, char *argv[]) {
+std::optional<ArgValues> ParseArgs(int argc, char *argv[]) {
     cxxopts::Options options(
         "MapGenerator",
         "Simple map generator using WFC algorithms to create a simple map .txt file.");

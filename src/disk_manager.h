@@ -8,12 +8,13 @@
 #include "matrix.h"
 #include "foliage.h"
 #include "map_definitions.h"
+#include "foliage_definitions.h"
 #include "argparse.h"
 
 
 struct MapNode {
 	int nodeType;
-	int foliageType;
+	FoliageType foliageType;
 	LevelBiome nodeBiome;
 };
 
@@ -40,7 +41,7 @@ public:
         lengthY = map.dim_b();
     }
 
-    MapObject(Matrix<int> nodeTypeMap, Matrix<int> foliageMap) {
+    MapObject(Matrix<int> nodeTypeMap, Matrix<FoliageType> foliageMap) {
         lengthX = nodeTypeMap.dim_a();
         lengthY = nodeTypeMap.dim_b();
         map = Matrix<MapNode>(lengthX, lengthY);
@@ -82,7 +83,7 @@ public:
     static const int LOW_SNOW_TYPE = 303;
 
 
-    DiskManager();
+    DiskManager(FoliageDefinitions& foliageDefinitions);
 
     static const std::string getAssetPath() {
         std::filesystem::path path ("./");
@@ -115,11 +116,11 @@ public:
     }
 
     /**
-     * Mappings from foliage types to map integers.
+     * Mappings from map integers to foliage types.
      * These integers are written to map files and should
      * never be changed.
      */
-    std::unordered_map<int, int> mapFoliageMapping;
+    std::unordered_map<int, FoliageType> mapFoliageMapping;
 
     Matrix<MapNode> load_map(std::filesystem::path mapPath);
     std::optional<MapObject> load_map_object(std::string resourcePath);
@@ -166,7 +167,9 @@ private:
 
     std::filesystem::path m_relationalMapPath;
 
-    std::unordered_map<int, int> m_foliageMapMapping;
+    std::unordered_map<FoliageType, int> m_foliageMapMapping;
+
+    std::unique_ptr<FoliageDefinitions> m_foliageDefinitions;
 
     void perform_map_save(
         const Matrix<MapNode>& map,
@@ -178,7 +181,7 @@ private:
 
     Matrix<MapNode> convert_string_to_map(std::string loadText);
 
-    std::unordered_map<int, int> get_foliage_map_mapping() {
+    std::unordered_map<FoliageType, int> get_foliage_map_mapping() {
         return m_foliageMapMapping;
     }
 

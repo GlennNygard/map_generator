@@ -29,10 +29,10 @@ struct LevelValues {
     Vector2Int gridBoundsX;
     Vector2Int gridBoundsY;
 
-    LevelValues() {}
-
-    static const LevelValues create_values(
+    static const LevelValues CreateValues(
         Vector2Int sectionCount, LevelBiome biome);
+
+    const int get_max_attempts() const {return subsectionCountX * subsectionCountY * 3;}
 };
 
 class MapDefinitions {
@@ -51,5 +51,5 @@ class MapDefinitions {
 	static const std::unordered_map<std::string, MapSize> stringSizeMappings;
 	static const std::unordered_map<MapSize, Vector2Int> mapSizeMappings;
 
-    static const LevelValues create_level_values(MapSize mapSize);
+    static const LevelValues CreateLevelValues(MapSize mapSize);
 };

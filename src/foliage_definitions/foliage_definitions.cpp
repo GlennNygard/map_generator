@@ -6,17 +6,8 @@
 
 std::optional<FoliageDefinitions> FoliageDefinitions::foliageDefinitions;
 
-FoliageDefinitions& FoliageDefinitions::instance() {
-    if(foliageDefinitions) {
-        return *foliageDefinitions;
-    }
-
-    foliageDefinitions = FoliageDefinitions();
-    return *foliageDefinitions;
-}
-
 void FoliageDefinitions::create_foliage_definitions() {
-    nameToFoliageIndex = std::unordered_map<std::string, int>();
+    m_nameToFoliageIndex = std::unordered_map<std::string, FoliageType>();
 
     std::vector<FoliageInfo> foliageList = {};
 
@@ -54,10 +45,10 @@ void FoliageDefinitions::create_foliage_definitions() {
         1800, currentFoliageIndex);
 
     for(auto info : foliageList) {
-        nameToFoliageIndex[info.foliageName] = info.foliageType;
+        m_nameToFoliageIndex[info.foliageName] = info.foliageType;
     }
 
-    logger::log(std::format("Total foliage count: {}.",foliageList.size()));
+    logger::Log(std::format("Total foliage count: {}.",foliageList.size()));
 
     foliageInfoElements = foliageList;
 }

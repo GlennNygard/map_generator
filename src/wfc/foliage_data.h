@@ -20,7 +20,7 @@ struct FoliageData {
 		m_remainingPossibleTypes = {};
 	}
 
-	const std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT>& get_remaining() {
+	const std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT>& GetRemaining() {
 		m_dirty = true;
 		return m_remainingPossibleTypes;
 	};
@@ -32,7 +32,7 @@ struct FoliageData {
 		hasData = true;
 	}
 
-	size_t get_remaining_length() {
+	size_t GetRemainingLength() {
 		if(m_dirty) {
 			if(!hasData) {
 				m_remainingLength = m_remainingPossibleTypes.size();

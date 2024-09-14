@@ -13,14 +13,15 @@
 #include "logger.h"
 
 
-void create_maps(const LevelValues &levelValues, const ArgValues &argValues) {
-    MapConstructor mapConstructor(levelValues, argValues.verboseLogging);
-    auto mapDiskManager = DiskManager();
+void CreateMaps(const LevelValues &levelValues, const ArgValues &argValues) {
+    auto foliageDefinitions = FoliageDefinitions();
+    MapConstructor mapConstructor(
+        levelValues, foliageDefinitions, argValues.verboseLogging);
+    auto mapDiskManager = DiskManager(foliageDefinitions);
     // Create map name prefix.
     std::string mapNamePrefix = mapDiskManager.get_map_prefix(
         argValues, levelValues.biome);
-    int currentIndex = 0;
-    while(currentIndex < argValues.mapCount) {
+    for(int currentIndex = 0; currentIndex < argValues.mapCount; ++currentIndex) {
 
         // Create map name.
         std::string mapName = mapDiskManager.get_map_name(
@@ -42,16 +43,16 @@ void create_maps(const LevelValues &levelValues, const ArgValues &argValues) {
 }
 
 int main(int argc, char *argv[]) {
+    logger::Log("Starting up...");
 
-    auto argValuesOpt = parse_args(argc, argv);
+    auto argValuesOpt = ParseArgs(argc, argv);
     if(!argValuesOpt) {
         return 0;
     }
     ArgValues argValues = *argValuesOpt;
-    logger::log("Starting up...");
 
     // Create level setup values.
-    LevelValues levelValues = MapDefinitions::create_level_values(argValues.mapSize);
+    LevelValues levelValues = MapDefinitions::CreateLevelValues(argValues.mapSize);
 
-    create_maps(levelValues, argValues);
+    CreateMaps(levelValues, argValues);
 }

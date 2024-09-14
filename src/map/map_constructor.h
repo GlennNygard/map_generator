@@ -10,7 +10,10 @@ class MapConstructor {
 
 public:
 
-    MapConstructor(LevelValues levelValues, bool verboseLogging);
+    MapConstructor(
+        const LevelValues& levelValues,
+        FoliageDefinitions& foliageDefinitions,
+        bool verboseLogging);
 
     std::optional<MapObject> create_map(int currentIndex);
 
@@ -18,6 +21,7 @@ public:
 private:
 
     std::unique_ptr<FoliageProcessor> m_foliageProcessor;
+    std::unique_ptr<FoliageDefinitions> m_foliageDefinitions;
     LevelValues m_levelValues;
 
     std::pair<MapObject, bool> construct_random_map(int levelSeed=-1);
@@ -31,7 +35,7 @@ private:
             int sectionCountY,
             int randomFillPercent);
 
-    std::pair<Matrix<int>, bool> create_random_foliage_map();
+    std::pair<Matrix<FoliageType>, bool> create_random_foliage_map();
 
     void carve_main_room(
         Matrix<int> &foliageMap,

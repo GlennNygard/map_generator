@@ -1,6 +1,9 @@
 #pragma once
 
 
+using FoliageType = uint16_t;
+using FoliageIndex = int;
+
 struct Colour {
     uint8_t r,g,b;
     Colour() {r = 100; g = 0; b = 10;};
@@ -69,8 +72,8 @@ class FoliageHelpers {
     public:
 
     static const size_t MAX_FOLIAGE_COUNT = 144;
-    static const int NO_SELECTION_INDEX = 0;
-    static const int NO_FOLIAGE_INDEX = 1;
+    static const FoliageType NO_SELECTION_INDEX = 0;
+    static const FoliageType NO_FOLIAGE_INDEX = 1;
 
     static const int FLOOR_NODE_TYPE = 0;
     static const int HIGH_GROUND_NODE_TYPE = 1;

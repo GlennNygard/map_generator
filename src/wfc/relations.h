@@ -8,7 +8,7 @@
 
 namespace relations {
 
-    static std::vector<Vector2Int> get_neighbours(Vector2Int gridPos, int mapSize) {
+    static std::vector<Vector2Int> GetNeighbours(Vector2Int gridPos, int mapSize) {
         int lengthX = mapSize;
         int lengthY = mapSize;
         std::vector<Vector2Int> vecList = {};

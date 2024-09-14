@@ -89,16 +89,18 @@ const std::unordered_map<int, LevelBiome> DiskManager::MAP_NODE_BIOME_MAPPING = 
 };
 
 
-DiskManager::DiskManager() {
+DiskManager::DiskManager(FoliageDefinitions& foliageDefinitions) {
+
+    m_foliageDefinitions = std::make_unique<FoliageDefinitions>(foliageDefinitions);
 
     m_relationalMapPath = std::filesystem::path (RESOURCE_PATH);
     m_mapsPath = std::filesystem::path (OUTPUT_PATH) / "maps";
     m_mapsThumbnailsPath = std::filesystem::path (OUTPUT_PATH) / "thumbnails";
 
     // Create reverse dict.
-    m_foliageMapMapping = std::unordered_map<int, int>();
-    mapFoliageMapping = std::unordered_map<int, int>();
-    auto foliageDefs = FoliageDefinitions::instance().foliageInfoElements;
+    m_foliageMapMapping = std::unordered_map<FoliageType, int>();
+    mapFoliageMapping = std::unordered_map<int, FoliageType>();
+    auto foliageDefs = foliageDefinitions.foliageInfoElements;
     for(int i = 0; i < foliageDefs.size(); i++) {
         auto foliageInfo = foliageDefs[i];
         if(!foliageInfo.containsResourceData) {
@@ -320,7 +322,7 @@ Matrix<MapNode> DiskManager::convert_string_to_map(std::string loadText) {
     int lengthX = std::stoi(content[0]);
     int lengthY = std::stoi(content[1]);
 
-    logger::log(std::format(
+    logger::Log(std::format(
         "Loading map of size {0}x{1}.", lengthX, lengthY));
 
     Matrix<MapNode> map (lengthX, lengthY);
@@ -353,15 +355,15 @@ Matrix<MapNode> DiskManager::convert_string_to_map(std::string loadText) {
             }
 
             try {
-                int foliageIndex = std::stoi(foliageString);
+                int mapFoliageIndex = std::stoi(foliageString);
 
-                auto iter = mapFoliageMapping.find(foliageIndex);
+                auto iter = mapFoliageMapping.find(mapFoliageIndex);
                 if(iter != mapFoliageMapping.end()) {
-                    int ft = iter->second;
+                    FoliageType ft = iter->second;
                     mapNode.foliageType = ft;
                 }
                 else {
-                    logger::log(
+                    logger::Log(
                         "m_mapFoliageMapping is missing the map key: "+foliageString);
                 }
             }
@@ -416,7 +418,7 @@ void DiskManager::save_map_thumbnail(
             FoliageInfo foliageInfo;
             // We only filter here for speed.
             if(mapNode.foliageType != FoliageHelpers::NO_FOLIAGE_INDEX && mapNode.foliageType != FoliageHelpers::NO_SELECTION_INDEX) {
-                foliageInfo = FoliageDefinitions::instance().foliageInfoElements[mapNode.foliageType];
+                foliageInfo = m_foliageDefinitions->foliageInfoElements[mapNode.foliageType];
             }
 
             Colour finalCol = foliageInfo.nodeColour;

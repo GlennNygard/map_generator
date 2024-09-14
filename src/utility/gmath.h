@@ -37,7 +37,7 @@ struct Vector2Int {
         y -= other.y;
     }
 
-    std::string to_string() const {
+    std::string ToString() const {
         return std::format("({},{})", std::to_string(x), std::to_string(y));
     }
 };
