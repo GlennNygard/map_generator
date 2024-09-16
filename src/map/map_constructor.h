@@ -15,7 +15,6 @@ public:
     MapConstructor(
         const LevelValues& levelValues,
         FoliageDefinitions& foliageDefinitions,
-        const bool verboseLogging,
         const int seed);
 
     std::optional<MapObject> CreateMap(int currentIndex);
@@ -23,7 +22,6 @@ public:
 private:
 
 	const LevelValues m_levelValues;
-    const bool m_verboseLogging;
     const int m_overrideSeed;
 
 	BiomeInfoVariant m_biomeFoliageInfo;

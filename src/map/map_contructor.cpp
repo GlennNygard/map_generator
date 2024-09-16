@@ -13,11 +13,9 @@
 MapConstructor::MapConstructor(
         const LevelValues& levelValues,
         FoliageDefinitions& foliageDefinitions,
-        const bool verboseLogging,
         const int overrideSeed) :
             m_levelValues(levelValues),
             m_biomeFoliageInfo(CreateBiomeInfo(levelValues.biome, foliageDefinitions)),
-            m_verboseLogging(verboseLogging),
             m_overrideSeed(overrideSeed) {
     m_foliageDefinitions = std::make_unique<FoliageDefinitions>(foliageDefinitions);
 }
@@ -94,8 +92,7 @@ std::pair<Matrix<FoliageType>, bool> MapConstructor::CreateRandomFoliageMap() {
 
     MapProcessor mapProcessor (
         m_biomeFoliageInfo,
-        m_levelValues,
-        m_verboseLogging);
+        m_levelValues);
     while(fullFoliageGrid.empty() && currentAttempt < maxAttempts) {
 
         auto resultPair = mapProcessor.RunProcessing();

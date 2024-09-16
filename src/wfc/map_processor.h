@@ -98,13 +98,24 @@ public:
 
     MapProcessor(
         BiomeInfoVariant& biomeFoliageInfo,
-        const LevelValues& levelValues,
-        bool verboseLogging);
+        const LevelValues& levelValues);
 
     std::pair<Matrix<FoliageType>, bool> RunProcessing();
 
 
 private:
+
+	const LevelValues m_levelValues;
+    const DefaultFoliageSquashedList m_neighbourBonusList;
+    const FoliageArray m_foliagePriority;
+    const FoliageArray m_walkableFoliagePriority;
+
+    static const DefaultFoliageSquashedList& LoadNeighbourBonusList(
+        BiomeInfoVariant& biomeFoliageInfo);
+    static const FoliageArray& LoadFoliagePriority(
+        BiomeInfoVariant& biomeFoliageInfo);
+    static const FoliageArray& LoadWalkableFoliagePriority(
+        BiomeInfoVariant& biomeFoliageInfo);
 
 	BiomeInfoVariant m_biomeFoliageInfo;
 
@@ -127,19 +138,6 @@ private:
 	int m_emptyRecursionEarlyCount;
 
     std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT> m_stillPossibleBuffer;
-
-    const bool m_verboseLogging;
-	const LevelValues m_levelValues;
-    const DefaultFoliageSquashedList m_neighbourBonusList;
-    const FoliageArray m_foliagePriority;
-    const FoliageArray m_walkableFoliagePriority;
-
-    static const DefaultFoliageSquashedList& LoadNeighbourBonusList(
-        BiomeInfoVariant& biomeFoliageInfo);
-    static const FoliageArray& LoadFoliagePriority(
-        BiomeInfoVariant& biomeFoliageInfo);
-    static const FoliageArray& LoadWalkableFoliagePriority(
-        BiomeInfoVariant& biomeFoliageInfo);
 
     SectionState InitialiseSectionState() const;
 

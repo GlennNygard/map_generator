@@ -7,11 +7,9 @@
 
 MapProcessor::MapProcessor(
         BiomeInfoVariant& biomeFoliageInfo,
-        const LevelValues& levelValues,
-        const bool verboseLogging) :
+        const LevelValues& levelValues) :
             m_biomeFoliageInfo(biomeFoliageInfo),
             m_levelValues(levelValues),
-            m_verboseLogging(verboseLogging),
 
             m_neighbourBonusList(LoadNeighbourBonusList(biomeFoliageInfo)),
             m_foliagePriority(LoadFoliagePriority(biomeFoliageInfo)),
@@ -97,7 +95,7 @@ std::pair<Matrix<FoliageType>, bool> MapProcessor::RunProcessing() {
 
         bool overallFailed = RunInitialPropagation(sectionState);
 
-        if(overallFailed && m_verboseLogging) {
+        if(overallFailed && logger::VERBOSE_LOGGING) {
             logger::LogError("Initial propagation failed.");
         }
 
@@ -184,7 +182,7 @@ const Vector2Int MapProcessor::GetNextSectionPos() {
     Vector2Int currentSectionPos;
     if(m_retryList.size() > 0) {
         if(m_retryIndex >= m_retryList.size()) {
-            if(m_verboseLogging) {
+            if(logger::VERBOSE_LOGGING) {
                 logger::Log(
                     std::format(
                         "Current: {0}."
@@ -206,7 +204,7 @@ const Vector2Int MapProcessor::GetNextSectionPos() {
         m_sectionStack.pop();
     }
 
-    if(m_verboseLogging) {
+    if(logger::VERBOSE_LOGGING) {
         logger::Log(std::format(
             "STARTING SECTION ATTEMPT\n"
             "Section: {}"
@@ -408,7 +406,7 @@ const MapProcessor::FailureResults MapProcessor::HandleFailure(const Vector2Int&
     m_overallAttempts++;
     m_currentSubsectionAttempts++;
     m_currentRetryAttempts++;
-    if(m_verboseLogging) {
+    if(logger::VERBOSE_LOGGING) {
         logger::Log(
             std::format(
             "Processing subsection ({},{}) failed. "
@@ -489,7 +487,7 @@ void  MapProcessor::HandleSuccess(
         m_furthestSectionPos = currentSectionPos;
     }
 
-    if(m_verboseLogging) {
+    if(logger::VERBOSE_LOGGING) {
         std::cout << "Writing results: " << std::endl;
         logger::LogGrid(sectionState.foliageDataMap,
             m_walkableFoliagePriority);
@@ -844,7 +842,7 @@ bool MapProcessor::UpdatePossibleTypesRecursively(
     nodeData.SetRemaining(remainingPossibleTypes);
 
     if(remainingCount == 0) {
-        if(m_verboseLogging) {
+        if(logger::VERBOSE_LOGGING) {
             std::vector<std::string> lastNodePossibleTypesStrings = {};
             for(int value : lastNodePossibleTypes) {
                 lastNodePossibleTypesStrings.push_back(

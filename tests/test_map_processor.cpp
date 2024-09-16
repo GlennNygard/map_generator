@@ -34,18 +34,16 @@ LevelValues CreateTestLevelValues() {
 
 
 TEST_CASE("Map processor works correctly.", "[map_processor]") {
+    logger::VERBOSE_LOGGING = false;
 
     std::srand(10);
 
     auto fd = FoliageDefinitions();
-
-    bool verboseLogging = false;
     BiomeInfoVariant testBiomeInfo = TestingBiomeInfo(fd);
 
     MapProcessor mapProcessor (
         testBiomeInfo,
-        CreateTestLevelValues(),
-        verboseLogging);
+        CreateTestLevelValues());
     
     auto resultPair = mapProcessor.RunProcessing();
 

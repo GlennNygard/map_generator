@@ -121,7 +121,7 @@ const std::string DiskManager::GetMapName(
 }
 
 const std::string DiskManager::GetMapPrefix(
-        const ArgValues& argValues,
+        const argparse::ArgValues& argValues,
         const LevelBiome mapBiome) {
     std::string mapNamePrefix = argValues.mapNamePrefix;
     if(mapNamePrefix.empty()) {

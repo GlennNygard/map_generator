@@ -11,6 +11,8 @@
 
 namespace logger {
 
+    extern bool VERBOSE_LOGGING;
+
     static const bool RUN_PRINTS = true;
     static const bool RUN_GRID_PRINTS = false;
 

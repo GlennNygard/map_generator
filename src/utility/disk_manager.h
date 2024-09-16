@@ -109,7 +109,7 @@ public:
         const std::string& mapNamePrefix, const int currentIndex);
 
     static const std::string GetMapPrefix(
-        const ArgValues& argValues,
+        const argparse::ArgValues& argValues,
         const LevelBiome mapBiome);
 
     static std::string Join(

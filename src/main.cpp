@@ -3,7 +3,6 @@
 #include <iostream>
 #include <format>
 #include <string>
-#include <algorithm>
 
 #include "foliage.h"
 #include "map_constructor.h"
@@ -13,16 +12,15 @@
 #include "logger.h"
 
 
-void CreateMaps(const LevelValues &levelValues, const ArgValues &argValues) {
+void CreateMaps(const LevelValues &levelValues, const argparse::ArgValues &argValues) {
     auto foliageDefinitions = FoliageDefinitions();
     MapConstructor mapConstructor(
-        levelValues, foliageDefinitions,
-        argValues.verboseLogging, argValues.seed);
+        levelValues, foliageDefinitions, argValues.seed);
     auto mapDiskManager = DiskManager(foliageDefinitions);
     // Create map name prefix.
     std::string mapNamePrefix = mapDiskManager.GetMapPrefix(
         argValues, levelValues.biome);
-    for(int currentIndex = 0; currentIndex < argValues.mapCount; ++currentIndex) {
+    for(int currentIndex = 0; currentIndex < argValues.mapCount; currentIndex++) {
 
         // Create map name.
         std::string mapName = mapDiskManager.GetMapName(
@@ -39,18 +37,18 @@ void CreateMaps(const LevelValues &levelValues, const ArgValues &argValues) {
         mapDiskManager.SaveMap(mapObject, mapName, mapNamePrefix, currentIndex);
         // Save thumbnail.
         mapDiskManager.SaveMapThumbnail(mapObject.map, mapName, mapNamePrefix);
-        currentIndex++;
     }
 }
 
 int main(int argc, char *argv[]) {
     logger::Log("Starting up...");
 
-    auto argValuesOpt = ParseArgs(argc, argv);
+    auto argValuesOpt = argparse::ParseArgs(argc, argv);
     if(!argValuesOpt) {
         return 0;
     }
-    ArgValues argValues = *argValuesOpt;
+    argparse::ArgValues argValues = *argValuesOpt;
+    logger::VERBOSE_LOGGING = argValues.verboseLogging;
 
     // Create level setup values.
     LevelValues levelValues = MapDefinitions::CreateLevelValues(argValues.mapSize);
