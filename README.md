@@ -1,7 +1,7 @@
 
 ## Map Generator.
 
-CLI map creator using Wave Function Collapse, a constraint-solving algorithm, to create 2D maps.
+Command line map creator using Wave Function Collapse, a constraint-solving algorithm, to create 2D maps.
 
 This is a simplified version of the map generator used in the game Brace the Swarm, and the maps exported from this creator can be used 'as is' in the game.
 ### How to use.
