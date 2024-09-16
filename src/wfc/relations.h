@@ -32,7 +32,7 @@ namespace relations {
         return vecList;
     }
 
-    static std::vector<Vector2Int> get_4_way_neighbours(Vector2Int gridPos, int mapSize) {
+    static std::vector<Vector2Int> Get4WayNeighbours(Vector2Int gridPos, int mapSize) {
         int lengthX = mapSize;
         int lengthY = mapSize;
         std::vector<Vector2Int> vecList = {};
@@ -51,21 +51,9 @@ namespace relations {
         return vecList;
     }
 
-    static Vector2Int convert_to_global(int secX, int secY, int x, int y) {
+    static Vector2Int ConvertToGlobal(int secX, int secY, int x, int y) {
         int fullX = ((MapDefinitions::SUBSECTION_SIZE * secX) - MapDefinitions::SUBSECTION_BORDER) + x;
         int fullY = ((MapDefinitions::SUBSECTION_SIZE * secY) - MapDefinitions::SUBSECTION_BORDER) + y;
         return {fullX,fullY};
-    }
-
-    static Vector2Int node_grid_pos_from_grid_space_point(
-            Vector2Int gridSpacePos, int countX, int countY) {
-
-        float valX = (gridSpacePos.x + (((float)countX)/2));
-        float valY = (gridSpacePos.y + (((float)countY)/2));
-
-        int x = static_cast<int>(std::floorf(valX));
-        int y = static_cast<int>(std::floorf(valY));
-
-        return Vector2Int(x, y);
     }
 }

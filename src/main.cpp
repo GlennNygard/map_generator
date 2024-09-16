@@ -16,7 +16,8 @@
 void CreateMaps(const LevelValues &levelValues, const ArgValues &argValues) {
     auto foliageDefinitions = FoliageDefinitions();
     MapConstructor mapConstructor(
-        levelValues, foliageDefinitions, argValues.verboseLogging);
+        levelValues, foliageDefinitions,
+        argValues.verboseLogging, argValues.seed);
     auto mapDiskManager = DiskManager(foliageDefinitions);
     // Create map name prefix.
     std::string mapNamePrefix = mapDiskManager.GetMapPrefix(

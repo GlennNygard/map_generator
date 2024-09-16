@@ -279,7 +279,7 @@ void MapProcessor::PrepareFullData(
     for(auto secPos : forcedWalkableSubsections) {
         for(int x = 0; x < m_levelValues.subsectionBorderedSideCountX; x++) {
             for(int y = 0; y < m_levelValues.subsectionBorderedSideCountY; y++) {
-                Vector2Int fullCoord = relations::convert_to_global(
+                Vector2Int fullCoord = relations::ConvertToGlobal(
                     secPos.x, secPos.y, x, y);
                 int fullX = fullCoord.x;
                 int fullY = fullCoord.y;
@@ -300,7 +300,7 @@ void MapProcessor::PrepareSectionData(
 
     for(int x = 0; x < sectionState.foliageMap.dim_a(); x++) {
         for(int y = 0; y < sectionState.foliageMap.dim_b(); y++) {
-            Vector2Int fullCoord = relations::convert_to_global(
+            Vector2Int fullCoord = relations::ConvertToGlobal(
                 currentSectionPos.x, currentSectionPos.y, x, y);
             int fullX = fullCoord.x;
             int fullY = fullCoord.y;
@@ -510,7 +510,7 @@ void MapProcessor::WriteToFullMap(
     // We only write back data to the top left border nodes.
     for(int x = 0; x < sectionState.foliageMap.dim_a(); x++) {
         for(int y = 0; y < sectionState.foliageMap.dim_b(); y++) {
-            Vector2Int fullCoord = relations::convert_to_global(
+            Vector2Int fullCoord = relations::ConvertToGlobal(
                 sectionPos.x, sectionPos.y, x, y);
             int fullX = fullCoord.x;
             int fullY = fullCoord.y;
@@ -536,7 +536,7 @@ void MapProcessor::ClearSubsectionFromFullGrid(const Vector2Int& sectionPos) {
 
     for(int x = 0; x < subsectionFullSideCount; x++) {
         for(int y = 0; y < subsectionFullSideCount; y++) {
-            Vector2Int fullCoord = relations::convert_to_global(sectionPos.x, sectionPos.y, x, y);
+            Vector2Int fullCoord = relations::ConvertToGlobal(sectionPos.x, sectionPos.y, x, y);
             int fullX = fullCoord.x;
             int fullY = fullCoord.y;
 
@@ -896,7 +896,7 @@ bool MapProcessor::UpdatePossibleTypesRecursively(
     // Find out what types are not impossible for neighbours.
     std::vector<Vector2Int> unfilteredNeighbours;
     if(use4WayNeighbours) {
-        unfilteredNeighbours = relations::get_4_way_neighbours(
+        unfilteredNeighbours = relations::Get4WayNeighbours(
             currentNodePos, foliageDataMap.dim_a());
     }
     else {

@@ -4,17 +4,23 @@
 
 #include "argparse.h"
 
+
 std::optional<ArgValues> ParseArgs(int argc, char *argv[]) {
     cxxopts::Options options(
         "MapGenerator",
         "Simple map generator using WFC algorithms to create a simple map .txt file.");
 
     options.add_options()
-        ("f,filename", "Output map file name.", cxxopts::value<std::string>())
-        ("s,size", "Map size. Options are: 'small', 'medium', 'large'. Default: 'small'.", cxxopts::value<std::string>())
-        ("c,count", "How many maps should be created. Default: 1.", cxxopts::value<int>())
-        ("v,verbose", "Perform all logging. Default: off.", cxxopts::value<bool>()->default_value("false"))
-        // ("input_files", "Input file(s) to concatenate", cxxopts::value<std::vector<std::string>>());
+        ("f,filename", "Output map file name.",
+            cxxopts::value<std::string>())
+        ("s,size", "Map size. Options are: 'small', 'medium', 'large'. Default: 'small'.",
+            cxxopts::value<std::string>()->default_value("small"))
+        ("c,count", "How many maps should be created. Default: 1.",
+            cxxopts::value<int>()->default_value("1"))
+        ("seed", "Override seed. All maps will use this same seed if --count > 1.",
+            cxxopts::value<int>())
+        ("v,verbose", "Perform all logging. Default: off.",
+            cxxopts::value<bool>()->default_value("false"))
         ("h,help", "Print usage.");
 
     cxxopts::ParseResult result;
@@ -25,9 +31,13 @@ std::optional<ArgValues> ParseArgs(int argc, char *argv[]) {
         return std::nullopt;
     }
 
-    ArgValues argValues = {};
+    ArgValues argValues = {
+        .mapNamePrefix = "",
+        .mapSize = MapSize::MapSize_Small,
+        .mapCount = 1,
+        .seed = -1,
+        .verboseLogging = false};
 
-    std::string mapNamePrefix;
     if(result.count("filename")) {
         argValues.mapNamePrefix = result["filename"].as<std::string>();
     }
@@ -42,6 +52,10 @@ std::optional<ArgValues> ParseArgs(int argc, char *argv[]) {
 
     if(result.count("count")) {
         argValues.mapCount = result["count"].as<int>();
+    }
+
+    if(result.count("seed")) {
+        argValues.seed = result["seed"].as<int>();
     }
 
     if(result.count("verbose")) {
