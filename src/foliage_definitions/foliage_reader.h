@@ -84,7 +84,7 @@ namespace foliagereader {
         for(auto itr = foliageList.begin(); itr != foliageList.end(); ++itr) {
 
             if(currentIndex >= FoliageHelpers::MAX_FOLIAGE_COUNT) {
-                logger::log_error(
+                logger::LogError(
                     "Foliage index is higher than max foliage count.");
                 break;
             }

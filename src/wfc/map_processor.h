@@ -5,7 +5,8 @@
 #include "map_definitions.h"
 #include "foliage_data.h"
 #include "foliage.h"
-#include "biome_foliage_info.h"
+#include "biome_info_import.h"
+#include "squashed_list.h"
 
 
 struct TimeTracker {
@@ -88,8 +89,6 @@ struct SectionState {
 
 
 class MapProcessor {
-
-
 public:
 
     enum class FailureResults {
@@ -98,7 +97,7 @@ public:
     };
 
     MapProcessor(
-        BiomeFoliageInfo& biomeFoliageInfo,
+        BiomeInfoVariant& biomeFoliageInfo,
         const LevelValues& levelValues,
         bool verboseLogging);
 
@@ -107,23 +106,21 @@ public:
 
 private:
 
+	BiomeInfoVariant m_biomeFoliageInfo;
+
     Matrix<FoliageType> m_fullFoliageMap;
 	Matrix<FoliageData> m_fullFoliageDataMap;
 	std::stack<Vector2Int> m_sectionStack;
 	std::vector<Vector2Int> m_retryList;
-	int m_retryIndex = 0;
-	int m_currentIndex = 0;
-	int m_furthestIndex = 0;
 	Vector2Int m_furthestSectionPos;
-	int m_overallAttempts = 0;
-	int m_currentSubsectionAttempts = 0;
-	int m_currentRetryAttempts = 0;
+	int m_retryIndex;
+	int m_currentIndex;
+	int m_furthestIndex;
+	int m_overallAttempts;
+	int m_currentSubsectionAttempts;
+	int m_currentRetryAttempts;
 
-    const bool m_verboseLogging;
 	bool m_issuesFound;
-
-	BiomeFoliageInfo m_biomeFoliageInfo;
-	const LevelValues m_levelValues;
 
 	int m_recursionCount;
 	int m_emptyRecursionCount;
@@ -131,6 +128,18 @@ private:
 
     std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT> m_stillPossibleBuffer;
 
+    const bool m_verboseLogging;
+	const LevelValues m_levelValues;
+    const DefaultFoliageSquashedList m_neighbourBonusList;
+    const FoliageArray m_foliagePriority;
+    const FoliageArray m_walkableFoliagePriority;
+
+    static const DefaultFoliageSquashedList& LoadNeighbourBonusList(
+        BiomeInfoVariant& biomeFoliageInfo);
+    static const FoliageArray& LoadFoliagePriority(
+        BiomeInfoVariant& biomeFoliageInfo);
+    static const FoliageArray& LoadWalkableFoliagePriority(
+        BiomeInfoVariant& biomeFoliageInfo);
 
     SectionState InitialiseSectionState() const;
 

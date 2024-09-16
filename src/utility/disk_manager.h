@@ -92,28 +92,30 @@ public:
     };
 
     /**
-     * These are use for map names when storing/getting maps to/from disk.
+     * These are use for names when storing/getting maps to/from disk.
      */
     static const std::unordered_map<MapSize, std::string> MAP_SIZE_NAME_DICT;
-
     static const std::unordered_map<MapSize, std::string> MAP_SIZE_ADDRESSABLE_NAME_DICT;
-
     static const std::unordered_map<MapSize, Vector2Int> MAP_SIZE_NODE_COUNT_DICT;
-
     static const std::unordered_map<LevelBiome, std::string> BIOME_MAPNAME_DICT;
-
     static const std::unordered_map<LevelBiome, std::string> BIOME_ADDRESSABLE_LABEL_DICT;
-
     static const std::unordered_map<LevelBiome, int> BIOME_MAPCOUNT_DICT;
 
 
-    static std::string join(const std::vector<std::string> &lst, const std::string &delim);
+    static const std::string GetRelationalMapPath(const std::string& mapName);
+    static const bool GetPathExists(const std::string& loadPath);
 
-    static std::string get_relational_map_path(std::string mapName);
+    static const std::string GetMapName(
+        const std::string& mapNamePrefix, const int currentIndex);
 
-    static const bool get_path_exists(std::string loadPath) {
-        return std::filesystem::exists(loadPath);
-    }
+    static const std::string GetMapPrefix(
+        const ArgValues& argValues,
+        const LevelBiome mapBiome);
+
+    static std::string Join(
+        const std::vector<std::string> &lst, const std::string &delim);
+    static std::vector<std::string> Split(
+        const std::string& str, const std::string& delimiter);
 
     /**
      * Mappings from map integers to foliage types.
@@ -125,18 +127,9 @@ public:
     Matrix<MapNode> LoadMap(const std::filesystem::path& mapPath);
     std::optional<MapObject> LoadMapObject(const std::string& resourcePath);
 
-    std::vector<std::string> split(std::string str, std::string delimiter);
-
-    std::string get_base_map_path();
-    std::string get_map_path(std::string mapName);
-    std::string get_map_path(LevelBiome biome, MapSize mapSize);
-
-    std::string get_map_name(
-        std::string mapNamePrefix, int currentIndex);
-
-    std::string get_map_prefix(
-        ArgValues argValues,
-        LevelBiome mapBiome);
+    const std::string GetBaseMapPath() const;
+    const std::string GetMapPath(std::string mapName) const;
+    const std::string GetMapPath(LevelBiome biome, MapSize mapSize) const;
 
     /**
      * Save a map to disk. Can only be run in the editor as
@@ -166,26 +159,18 @@ private:
     std::filesystem::path m_mapsThumbnailsPath;
 
     std::filesystem::path m_relationalMapPath;
-
     std::unordered_map<FoliageType, int> m_foliageMapMapping;
-
     std::unique_ptr<FoliageDefinitions> m_foliageDefinitions;
 
-    void perform_map_save(
+    static const std::string GetMapNamePrefix(
+        const LevelBiome biome, const MapSize mapSize);
+
+    void PerformMapSave(
         const Matrix<MapNode>& map,
-        const std::filesystem::path directoryPath,
-        const std::string mapName);
-    void write_to_file(std::string data, std::string path);
-    int node_data_to_map_type(int nodeType, LevelBiome nodeBiome);
-    std::string get_map_name_prefix(LevelBiome biome, MapSize mapSize);
+        const std::filesystem::path& directoryPath,
+        const std::string& mapName) const;
+    void WriteToFile(const std::string& data, const std::string& path) const;
+    const int NodeDataToMapType(const int nodeType, const LevelBiome nodeBiome) const;
 
-    Matrix<MapNode> convert_string_to_map(std::string loadText);
-
-    std::unordered_map<FoliageType, int> get_foliage_map_mapping() {
-        return m_foliageMapMapping;
-    }
-
-    std::unordered_map<int, int> get_map_node_type_mapping() {
-        return MAP_NODE_TYPE_MAPPING;
-    }
+    Matrix<MapNode> ConvertStringToMap(const std::string& loadText);
 };

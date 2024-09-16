@@ -6,7 +6,7 @@
 
 std::optional<FoliageDefinitions> FoliageDefinitions::foliageDefinitions;
 
-void FoliageDefinitions::create_foliage_definitions() {
+void FoliageDefinitions::CreateFoliageDefinitions() {
     m_nameToFoliageIndex = std::unordered_map<std::string, FoliageType>();
 
     std::vector<FoliageInfo> foliageList = {};

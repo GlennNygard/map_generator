@@ -112,12 +112,58 @@ DiskManager::DiskManager(FoliageDefinitions& foliageDefinitions) {
 }
 
 
+
+const std::string DiskManager::GetMapName(
+        const std::string& mapNamePrefix, const int currentIndex) {
+    std::string mapName = std::format(
+        "{}_{:03}", mapNamePrefix, currentIndex);
+    return mapName;
+}
+
+const std::string DiskManager::GetMapPrefix(
+        const ArgValues& argValues,
+        const LevelBiome mapBiome) {
+    std::string mapNamePrefix = argValues.mapNamePrefix;
+    if(mapNamePrefix.empty()) {
+        mapNamePrefix = GetMapNamePrefix(
+            mapBiome, argValues.mapSize);
+    }
+    return mapNamePrefix;
+}
+
+std::string DiskManager::Join(const std::vector<std::string> &lst, const std::string &delim) {
+    std::string ret;
+    for(const auto &s : lst) {
+        if(!ret.empty())
+            ret += delim;
+        ret += s;
+    }
+    return ret;
+}
+
+std::vector<std::string> DiskManager::Split(
+        const std::string& str, const std::string& delimiter) {
+    size_t posStart = 0, possEnd, delimLen = delimiter.length();
+    std::string token;
+    std::vector<std::string> res;
+
+    while ((possEnd = str.find(delimiter, posStart)) != std::string::npos) {
+        token = str.substr (posStart, possEnd - posStart);
+        posStart = possEnd + delimLen;
+        res.push_back (token);
+    }
+
+    res.push_back (str.substr (posStart));
+    return res;
+}
+
+
 void DiskManager::SaveMap(
         const MapObject& mapObject,
         const std::string& mapName,
         const std::string& mapNamePrefix,
         const int currentIndex) {
-    std::string mapPath = get_map_path(mapNamePrefix);
+    std::string mapPath = GetMapPath(mapNamePrefix);
 
     std::filesystem::path finalPath(mapPath);
 
@@ -125,18 +171,18 @@ void DiskManager::SaveMap(
         "Saving map {0} to path: {1}",
         mapName, finalPath.generic_string()) << std::endl;
 
-    perform_map_save(mapObject.map, finalPath, mapName);
+    PerformMapSave(mapObject.map, finalPath, mapName);
     std::cout << std::format(
-        "Save completed! Map: {0}",
+        "Save completed! Map index: {0}",
         std::to_string(currentIndex)) << std::endl;
 }
 
-void DiskManager::perform_map_save(
+void DiskManager::PerformMapSave(
         const Matrix<MapNode>& map,
-        const std::filesystem::path directoryPath,
-        const std::string mapName) {
+        const std::filesystem::path& directoryPath,
+        const std::string& mapName) const {
 
-    if(!get_path_exists(directoryPath)) {
+    if(!GetPathExists(directoryPath)) {
         std::filesystem::create_directories(directoryPath);
     }
 
@@ -154,11 +200,11 @@ void DiskManager::perform_map_save(
             MapNode mapNode = map[x][y];
 
             std::string nodeData =
-                std::to_string(node_data_to_map_type(
+                std::to_string(NodeDataToMapType(
                     mapNode.nodeType,
                     mapNode.nodeBiome)) +
                 DiskManager::CONTENT_SEPARATOR +
-                "f" + std::to_string(get_foliage_map_mapping()[mapNode.foliageType]) +
+                "f" + std::to_string(m_foliageMapMapping.at(mapNode.foliageType)) +
                 std::format(
                     "{0}{1}{2}", DiskManager::CONTENT_SEPARATOR,
                     "b", static_cast<int>(mapNode.nodeBiome));
@@ -172,17 +218,17 @@ void DiskManager::perform_map_save(
         }
     }
 
-    std::string saveString = join(content, DiskManager::SEPARATOR);
-    write_to_file(saveString, finalPath);
+    std::string saveString = Join(content, DiskManager::SEPARATOR);
+    WriteToFile(saveString, finalPath);
 }
 
-void DiskManager::write_to_file(std::string data, std::string path) {
+void DiskManager::WriteToFile(const std::string& data, const std::string& path) const {
     std::ofstream out(path);
     out << data;
     out.close();
 }
 
-int DiskManager::node_data_to_map_type(int nodeType, LevelBiome nodeBiome) {
+const int DiskManager::NodeDataToMapType(const int nodeType, const LevelBiome nodeBiome) const {
     if(nodeType == FoliageHelpers::FLOOR_NODE_TYPE && nodeBiome == LevelBiome::None) {
         return FLOOR_GENERIC_TYPE;
     }
@@ -212,51 +258,10 @@ int DiskManager::node_data_to_map_type(int nodeType, LevelBiome nodeBiome) {
     return DiskManager::FLOOR_GENERIC_TYPE;
 }
 
-std::string DiskManager::get_map_name(std::string mapNamePrefix, int currentIndex) {
-    std::string mapName = std::format(
-        "{}_{:03}", mapNamePrefix, currentIndex);
-    return mapName;
-}
-
-std::string DiskManager::get_map_prefix(
-        ArgValues argValues,
-        LevelBiome mapBiome) {
-    std::string mapNamePrefix = argValues.mapNamePrefix;
-    if(mapNamePrefix.empty()) {
-        mapNamePrefix = get_map_name_prefix(
-            mapBiome, argValues.mapSize);
-    }
-    return mapNamePrefix;
-}
-
-std::string DiskManager::join(const std::vector<std::string> &lst, const std::string &delim) {
-    std::string ret;
-    for(const auto &s : lst) {
-        if(!ret.empty())
-            ret += delim;
-        ret += s;
-    }
-    return ret;
-}
-
-std::vector<std::string> DiskManager::split(std::string str, std::string delimiter) {
-    size_t pos_start = 0, pos_end, delim_len = delimiter.length();
-    std::string token;
-    std::vector<std::string> res;
-
-    while ((pos_end = str.find(delimiter, pos_start)) != std::string::npos) {
-        token = str.substr (pos_start, pos_end - pos_start);
-        pos_start = pos_end + delim_len;
-        res.push_back (token);
-    }
-
-    res.push_back (str.substr (pos_start));
-    return res;
-}
 
 Matrix<MapNode> DiskManager::LoadMap(const std::filesystem::path& mapPath) {
 
-    if(!get_path_exists(mapPath)) {
+    if(!GetPathExists(mapPath)) {
         return Matrix<MapNode>();
     }
 
@@ -266,7 +271,7 @@ Matrix<MapNode> DiskManager::LoadMap(const std::filesystem::path& mapPath) {
     // Confirm file opening.
     if(!file.is_open()) {
         // Print error message and return
-        logger::log_error("Failed to open file: " + mapPath.generic_string());
+        logger::LogError("Failed to open file: " + mapPath.generic_string());
         return Matrix<MapNode>();
     }
 
@@ -279,44 +284,48 @@ Matrix<MapNode> DiskManager::LoadMap(const std::filesystem::path& mapPath) {
 
     // Close the file.
     file.close();
-    return convert_string_to_map(loadText);
+    return ConvertStringToMap(loadText);
 }
 
-std::string DiskManager::get_base_map_path() {
+const std::string DiskManager::GetBaseMapPath() const {
     return m_mapsPath;
 }
 
-std::string DiskManager::get_map_path(std::string mapName) {
+const std::string DiskManager::GetMapPath(std::string mapName) const {
     std::filesystem::path path (m_mapsPath);
     path /= (mapName);
     return path.generic_string();
 }
 
-std::string DiskManager::get_map_path(LevelBiome biome, MapSize size) {
-    std::string mapName = get_map_name_prefix(biome, size);
+const std::string DiskManager::GetMapPath(LevelBiome biome, MapSize size) const {
+    const std::string mapName = GetMapNamePrefix(biome, size);
     std::filesystem::path path (m_mapsPath);
     path /= (mapName);
     return path.generic_string();
 }
 
-std::string DiskManager::get_relational_map_path(std::string mapName) {
+const std::string DiskManager::GetRelationalMapPath(const std::string& mapName) {
     std::filesystem::path path (RESOURCE_PATH);
     path /= (mapName);
     return path.generic_string();
 }
 
-std::string DiskManager::get_map_name_prefix(LevelBiome biome, MapSize size) {
+const bool DiskManager::GetPathExists(const std::string& loadPath) {
+    return std::filesystem::exists(loadPath);
+}
+
+const std::string DiskManager::GetMapNamePrefix(LevelBiome biome, MapSize size) {
     std::string mapNamePrefix = std::format(
         "{}-{}", BIOME_MAPNAME_DICT.at(biome), MAP_SIZE_NAME_DICT.at(size));
     return mapNamePrefix;
 }
 
-Matrix<MapNode> DiskManager::convert_string_to_map(std::string loadText) {
+Matrix<MapNode> DiskManager::ConvertStringToMap(const std::string& loadText) {
 
     // Example formatting:
     // 512,512,1-10,0-22,1-4
 
-    std::vector<std::string> content = split(loadText, ",");
+    std::vector<std::string> content = Split(loadText, ",");
 
     int lengthX = std::stoi(content[0]);
     int lengthY = std::stoi(content[1]);
@@ -332,7 +341,7 @@ Matrix<MapNode> DiskManager::convert_string_to_map(std::string loadText) {
 
             auto mapNode = MapNode();
 
-            auto nodeData = split(
+            auto nodeData = Split(
                 content[i + DiskManager::INITIAL_OFFSET],
                 DiskManager::CONTENT_SEPARATOR);
 
@@ -342,8 +351,8 @@ Matrix<MapNode> DiskManager::convert_string_to_map(std::string loadText) {
 
             std::string foliageString = std::regex_replace(nodeData[1], std::regex("f"), "");
             const int mapType = std::stoi(nodeData[0]);
-            auto _mapNodeTypeMapping = get_map_node_type_mapping();
-            mapNode.nodeType = _mapNodeTypeMapping.at(mapType);
+            auto& mapNodeTypeMapping = MAP_NODE_TYPE_MAPPING;
+            mapNode.nodeType = mapNodeTypeMapping.at(mapType);
             if(nodeData.size() == 2) {
                 mapNode.nodeBiome = MAP_NODE_BIOME_MAPPING.at(mapType);
             }
@@ -367,7 +376,7 @@ Matrix<MapNode> DiskManager::convert_string_to_map(std::string loadText) {
                 }
             }
             catch(const std::invalid_argument& ia) {
-                logger::log_error("Cannot convert the following value to int: "+foliageString);
+                logger::LogError("Cannot convert the following value to int: "+foliageString);
                 mapNode.foliageType = FoliageHelpers::NO_FOLIAGE_INDEX;
             }
 
@@ -396,7 +405,7 @@ void DiskManager::SaveMapThumbnail(
 
     std::filesystem::path directoryPath = m_mapsThumbnailsPath / mapNamePrefix;
 
-    if(!get_path_exists(directoryPath)) {
+    if(!GetPathExists(directoryPath)) {
         std::filesystem::create_directories(directoryPath);
     }
 

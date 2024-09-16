@@ -19,12 +19,12 @@ void CreateMaps(const LevelValues &levelValues, const ArgValues &argValues) {
         levelValues, foliageDefinitions, argValues.verboseLogging);
     auto mapDiskManager = DiskManager(foliageDefinitions);
     // Create map name prefix.
-    std::string mapNamePrefix = mapDiskManager.get_map_prefix(
+    std::string mapNamePrefix = mapDiskManager.GetMapPrefix(
         argValues, levelValues.biome);
     for(int currentIndex = 0; currentIndex < argValues.mapCount; ++currentIndex) {
 
         // Create map name.
-        std::string mapName = mapDiskManager.get_map_name(
+        std::string mapName = mapDiskManager.GetMapName(
             mapNamePrefix, currentIndex);
 
         // Create map.

@@ -26,7 +26,7 @@ struct FoliageData {
 	};
 
 	template<size_t foliageCount>
-	void set_remaining(std::array<int, foliageCount> dataArr) {
+	void SetRemaining(std::array<int, foliageCount> dataArr) {
 		m_remainingPossibleTypes = dataArr;
 		m_dirty = true;
 		hasData = true;

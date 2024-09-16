@@ -5,7 +5,7 @@
 #include "gmath.h"
 #include "map_definitions.h"
 #include "foliage_definitions.h"
-#include "biome_foliage_info.h"
+#include "biome_info_import.h"
 
 
 class MapConstructor {
@@ -19,14 +19,16 @@ public:
 
     std::optional<MapObject> CreateMap(int currentIndex);
 
-
 private:
 
     const bool m_verboseLogging;
 	const LevelValues m_levelValues;
 
-	std::unique_ptr<BiomeFoliageInfo> m_biomeFoliageInfo;
+	BiomeInfoVariant m_biomeFoliageInfo;
     std::unique_ptr<FoliageDefinitions> m_foliageDefinitions;
+
+    BiomeInfoVariant CreateBiomeInfo(LevelBiome biome, FoliageDefinitions& foliageDefinitions);
+
 
     std::pair<MapObject, bool> ConstructRandomMap(int levelSeed=-1);
 

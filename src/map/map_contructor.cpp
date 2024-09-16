@@ -3,10 +3,9 @@
 
 #include "map_constructor.h"
 #include "map_processor.h"
-#include "biome_foliage_info.h"
-#include "grass_foliage_info.h"
 #include "foliage_info.h"
 #include "foliage_definitions.h"
+#include "grass_biome_info.h"
 #include "relations.h"
 #include "logger.h"
 
@@ -16,19 +15,21 @@ MapConstructor::MapConstructor(
         FoliageDefinitions& foliageDefinitions,
         bool verboseLogging) :
             m_levelValues(levelValues),
-            m_verboseLogging(verboseLogging) {
+            m_verboseLogging(verboseLogging),
+            m_biomeFoliageInfo(CreateBiomeInfo(levelValues.biome, foliageDefinitions)) {
     m_foliageDefinitions = std::make_unique<FoliageDefinitions>(foliageDefinitions);
+}
 
-    if(levelValues.biome == LevelBiome::Grass) {
-        m_biomeFoliageInfo = std::make_unique<GrassFoliageInfo>(foliageDefinitions);
+BiomeInfoVariant MapConstructor::CreateBiomeInfo(LevelBiome biome, FoliageDefinitions& foliageDefinitions) {
+    if(biome == LevelBiome::Grass) {
+        return GrassBiomeInfo(foliageDefinitions);
     }
     // ...
     // Support for more biomes will be added in the future.
     // <- Insert here.
     // ...
-    else {
-        m_biomeFoliageInfo = std::make_unique<GrassFoliageInfo>(foliageDefinitions);
-    }
+    
+    return GrassBiomeInfo(foliageDefinitions);
 }
 
 std::optional<MapObject> MapConstructor::CreateMap(int currentIndex) {
@@ -141,7 +142,7 @@ std::pair<Matrix<FoliageType>, bool> MapConstructor::CreateRandomFoliageMap() {
     bool success = true;
 
     MapProcessor mapProcessor (
-        *m_biomeFoliageInfo,
+        m_biomeFoliageInfo,
         m_levelValues,
         m_verboseLogging);
     while(fullFoliageGrid.empty() && currentAttempt < maxAttempts) {

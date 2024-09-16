@@ -8,13 +8,15 @@
 #include "logger.h"
 
 
+using FoliageArray = std::array<int, FoliageHelpers::MAX_FOLIAGE_COUNT>;
+
 class FoliageDefinitions {
 public:
 
     static std::optional<FoliageDefinitions> foliageDefinitions;
 
     FoliageDefinitions() {
-        create_foliage_definitions();
+        CreateFoliageDefinitions();
     }
 
     std::vector<FoliageInfo> foliageInfoElements;
@@ -23,15 +25,10 @@ public:
         return foliageInfoElements.size();
     }
 
-    std::unordered_map<std::string, FoliageType>& get_name_to_foliage_index_map() {
-        return m_nameToFoliageIndex;
-    }
-
-    const FoliageType toFI(std::string foliageName) {
-        auto nameToFoliageIndex = get_name_to_foliage_index_map();
-        auto itr = nameToFoliageIndex.find(foliageName);
-        if(itr == nameToFoliageIndex.end()) {
-            logger::log_error("Could not find entry for foliage: "+foliageName);
+    const FoliageType ToFI(std::string foliageName) const {
+        auto itr = m_nameToFoliageIndex.find(foliageName);
+        if(itr == m_nameToFoliageIndex.end()) {
+            logger::LogError("Could not find entry for foliage: "+foliageName);
         }
         return itr->second;
     };
@@ -40,5 +37,5 @@ private:
 
     std::unordered_map<std::string, FoliageType> m_nameToFoliageIndex;
 
-    void create_foliage_definitions();
+    void CreateFoliageDefinitions();
 };

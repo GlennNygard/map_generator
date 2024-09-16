@@ -1,3 +1,4 @@
+#pragma once
 
 #include <array>
 
@@ -11,9 +12,6 @@
  * into a single array for quick memory access.
  * 
  */
-
-
-
 template<size_t MaxOuterSize, size_t MaxInnerSize>
 class FoliageSquashedList {
 
@@ -52,16 +50,16 @@ public:
         }
     }
 
-    size_t size_a() {
+    size_t SizeA() const {
         return m_sizeA;
     }
 
-    size_t size_b(int a) {
-        return m_squashedList[a].first;
+    size_t SizeB(int a) const {
+        return m_squashedList.at(a).first;
     }
 
-    Element at(int a, int b) {
-        return m_squashedList[a*(MaxInnerSize + INNER_OFFSET) + b + 1];
+    Element At(int a, int b) const {
+        return m_squashedList.at(a*(MaxInnerSize + INNER_OFFSET) + b + 1);
     }
 
 private:

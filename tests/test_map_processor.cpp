@@ -1,48 +1,11 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "map_processor.h"
-#include "biome_foliage_info.h"
+#include "biome_info_import.h"
 #include "matrix.h"
 
 
-class TestBiomeFoliage : public BiomeFoliageInfo {
-    public:
-    TestBiomeFoliage(FoliageDefinitions& fd) : BiomeFoliageInfo(fd) {
-
-		allowedTypes = {
-			{fd.toFI("NoFoliage"), 40},
-			{fd.toFI("TreeFoliage"), 90},
-			{fd.toFI("TreeSmallFoliage"), 10},
-            {fd.toFI("FlowerClusterFoliage"), 2},
-			{fd.toFI("PlantClusterFoliage"), 1},
-		};
-		walkableAllowedTypes = {
-            {fd.toFI("NoFoliage"), 40},
-			{fd.toFI("TreeSmallFoliage"), 2},
-			{fd.toFI("FlowerClusterFoliage"), 2},
-			{fd.toFI("PlantClusterFoliage"), 1},
-		};
-
-        auto relationsPath = std::filesystem::path (RESOURCE_PATH_TEST) / "test_relations_map_02.txt";
-		Setup(allowedTypes, walkableAllowedTypes, fd, relationsPath);
-		startFoliagePriority[(fd.toFI("NoFoliage"))] =
-			foliagePriority[(fd.toFI("NoFoliage"))];
-
-        const size_t foliageCount = fd.GetFoliageCount();
-		auto tempList = std::vector<std::vector<std::pair<FoliageType, int>>>(foliageCount);
-		tempList[(fd.toFI("NoFoliage"))] = {
-			std::pair<int, int>(fd.toFI("NoFoliage"), 120),
-			std::pair<int, int>(fd.toFI("TreeFoliage"), 40),
-		};
-
-        neighbourBonusList = FoliageSquashedList(tempList);
-    }
-	std::unordered_map<FoliageType, int> allowedTypes;
-	std::unordered_map<FoliageType, int> walkableAllowedTypes;
-};
-
-
-LevelValues create_test_levelvalues() {
+LevelValues CreateTestLevelValues() {
     auto lv = LevelValues();
     lv.biome = LevelBiome::Grass;
 
@@ -69,18 +32,19 @@ LevelValues create_test_levelvalues() {
     return lv;
 }
 
-TEST_CASE("Foliage processor works correctly.", "[foliage_processor]") {
+
+TEST_CASE("Map processor works correctly.", "[map_processor]") {
 
     std::srand(10);
 
     auto fd = FoliageDefinitions();
 
     bool verboseLogging = false;
-    TestBiomeFoliage biomeInfo = TestBiomeFoliage(fd);
+    BiomeInfoVariant testBiomeInfo = TestingBiomeInfo(fd);
 
     MapProcessor mapProcessor (
-        biomeInfo,
-        create_test_levelvalues(),
+        testBiomeInfo,
+        CreateTestLevelValues(),
         verboseLogging);
     
     auto resultPair = mapProcessor.RunProcessing();

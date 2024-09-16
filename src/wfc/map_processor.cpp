@@ -1,4 +1,4 @@
-
+#include <variant>
 
 #include "map_processor.h"
 #include "logger.h"
@@ -6,20 +6,42 @@
 
 
 MapProcessor::MapProcessor(
-        BiomeFoliageInfo& biomeFoliageInfo,
+        BiomeInfoVariant& biomeFoliageInfo,
         const LevelValues& levelValues,
         const bool verboseLogging) :
             m_biomeFoliageInfo(biomeFoliageInfo),
             m_levelValues(levelValues),
-            m_verboseLogging(verboseLogging) {
+            m_verboseLogging(verboseLogging),
+
+            m_neighbourBonusList(LoadNeighbourBonusList(biomeFoliageInfo)),
+            m_foliagePriority(LoadFoliagePriority(biomeFoliageInfo)),
+            m_walkableFoliagePriority(LoadWalkableFoliagePriority(biomeFoliageInfo)),
+
+            m_recursionCount(0),
+            m_emptyRecursionCount(0),
+            m_emptyRecursionEarlyCount(0),
+            m_overallAttempts(0),
+            m_currentSubsectionAttempts(0),
+            m_currentRetryAttempts(0) {
 
     m_issuesFound = false;
-
-    m_recursionCount = 0;
-	m_emptyRecursionCount = 0;
-	m_emptyRecursionEarlyCount = 0;
-
 	m_stillPossibleBuffer = {};
+}
+
+const DefaultFoliageSquashedList& MapProcessor::LoadNeighbourBonusList(BiomeInfoVariant& biomeFoliageInfo) {
+    return std::visit([](auto& biomeInfo) -> decltype(auto) {
+        auto& val = biomeInfo.neighbourBonusList;
+        return val;}, biomeFoliageInfo);
+}
+
+const FoliageArray& MapProcessor::LoadFoliagePriority(BiomeInfoVariant& biomeFoliageInfo) {
+    return std::visit([](auto& biomeInfo) -> decltype(auto) {
+        return biomeInfo.GetFoliagePriority();}, biomeFoliageInfo);
+}
+
+const FoliageArray& MapProcessor::LoadWalkableFoliagePriority(BiomeInfoVariant& biomeFoliageInfo) {
+    return std::visit([](auto& biomeInfo) -> decltype(auto) {
+        return biomeInfo.GetWalkableFoliagePriority();}, biomeFoliageInfo);
 }
 
 std::pair<Matrix<FoliageType>, bool> MapProcessor::RunProcessing() {
@@ -71,16 +93,16 @@ std::pair<Matrix<FoliageType>, bool> MapProcessor::RunProcessing() {
 
         logger::LogGrid(
             sectionState.foliageDataMap,
-            m_biomeFoliageInfo.GetWalkableFoliagePriority());
+            m_walkableFoliagePriority);
 
         bool overallFailed = RunInitialPropagation(sectionState);
 
         if(overallFailed && m_verboseLogging) {
-            logger::log_error("Initial propagation failed.");
+            logger::LogError("Initial propagation failed.");
         }
 
         logger::LogGrid(
-            sectionState.foliageDataMap, m_biomeFoliageInfo.GetWalkableFoliagePriority());
+            sectionState.foliageDataMap, m_walkableFoliagePriority);
 
         // Process subsection!
         if(!overallFailed) {
@@ -292,8 +314,8 @@ void MapProcessor::PrepareSectionData(
             if(fullX < 0 || fullY < 0 ||
                     fullX >= m_fullFoliageDataMap.dim_a() ||
                     fullY >= m_fullFoliageDataMap.dim_b()) {
-                foliageData.set_remaining(
-                    m_biomeFoliageInfo.GetWalkableFoliagePriority());
+                foliageData.SetRemaining(
+                    m_walkableFoliagePriority);
                 sectionState.foliageDataMap[x][y] = foliageData;
                 sectionState.requiresPropagationMap[x][y] = true;
                 continue;
@@ -312,7 +334,7 @@ void MapProcessor::PrepareSectionData(
             // Node has previous data.
             if(fullNodeFoliageData.hasData && fullNodeFoliageData.hasData) {
                 if(x < 1 || y < 1 || x >= sectionState.foliageMap.dim_a()-1 || y >= sectionState.foliageMap.dim_b()-1) {
-                    foliageData.set_remaining(
+                    foliageData.SetRemaining(
                         fullNodeFoliageData.GetRemaining());
                     sectionState.foliageDataMap[x][y] = foliageData;
                     sectionState.requiresPropagationMap[x][y] = true;
@@ -327,10 +349,9 @@ void MapProcessor::PrepareSectionData(
                         y < m_levelValues.borderSideCountY ||
                         x >= sectionState.foliageMap.dim_a()-m_levelValues.borderSideCountX ||
                         y >= sectionState.foliageMap.dim_b()-m_levelValues.borderSideCountY) {
-                    foliageData.set_remaining(
-                        m_biomeFoliageInfo.GetWalkableFoliagePriority());
+                    foliageData.SetRemaining(
+                        m_walkableFoliagePriority);
                     sectionState.requiresPropagationMap[x][y] = true;
-
                     sectionState.foliageDataMap[x][y] = foliageData;
                     continue;
                 }
@@ -339,12 +360,12 @@ void MapProcessor::PrepareSectionData(
             sectionState.requiresPropagationMap[x][y] = forcedWalkable;
 
             if(forcedWalkable) {
-                foliageData.set_remaining(
-                    m_biomeFoliageInfo.GetWalkableFoliagePriority());
+                foliageData.SetRemaining(
+                    m_walkableFoliagePriority);
             }
             else {
-                foliageData.set_remaining(
-                    m_biomeFoliageInfo.GetFoliagePriority());
+                foliageData.SetRemaining(
+                    m_foliagePriority);
             }
             sectionState.foliageDataMap[x][y] = foliageData;
         }
@@ -471,8 +492,8 @@ void  MapProcessor::HandleSuccess(
     if(m_verboseLogging) {
         std::cout << "Writing results: " << std::endl;
         logger::LogGrid(sectionState.foliageDataMap,
-            m_biomeFoliageInfo.GetWalkableFoliagePriority());
-        logger::log_grid(sectionState.foliageMap);
+            m_walkableFoliagePriority);
+        logger::LogGrid(sectionState.foliageMap);
 
         logger::Log(std::format(
             "Recursion Count: {} / {} / {}",
@@ -502,7 +523,7 @@ void MapProcessor::WriteToFullMap(
             if(x >= 1 && y >= 1 &&
                     x < sectionState.foliageMap.dim_a()-1 &&
                     y < sectionState.foliageMap.dim_b()-1) {
-                m_fullFoliageDataMap[fullX][fullY].set_remaining(
+                m_fullFoliageDataMap[fullX][fullY].SetRemaining(
                     sectionState.foliageDataMap[x][y].GetRemaining());
             }
         }
@@ -537,12 +558,12 @@ void MapProcessor::ClearSubsectionFromFullGrid(const Vector2Int& sectionPos) {
                     // If we are within a 1 tile border, but not within the proper border
                     // (right side border excluded).
                     if(m_fullFoliageDataMap[fullX][fullY].isWalkableOnly) {
-                        m_fullFoliageDataMap[fullX][fullY].set_remaining(
-                            m_biomeFoliageInfo.GetWalkableFoliagePriority());
+                        m_fullFoliageDataMap[fullX][fullY].SetRemaining(
+                            m_walkableFoliagePriority);
                     }
                     else {
-                        m_fullFoliageDataMap[fullX][fullY].set_remaining(
-                            m_biomeFoliageInfo.GetFoliagePriority());
+                        m_fullFoliageDataMap[fullX][fullY].SetRemaining(
+                            m_foliagePriority);
                     }
                 }
                 else {
@@ -629,23 +650,24 @@ bool MapProcessor::AssignFoliage(
     FoliageType currentFoliageType = newType;
     if(currentFoliageType == FoliageHelpers::NO_SELECTION_INDEX) {
 
+
         currentFoliageType = MakeSelection(
             nodeData.GetRemaining(),
-            m_biomeFoliageInfo.GetFoliagePriority());
+            m_foliagePriority);
         if(currentFoliageType == FoliageHelpers::NO_SELECTION_INDEX) {
             // Something went wrong while selecting the next type.
             // Most likely there are no avilable foliage types left.
             // Generation will have to be re-done.
-            std::cout << std::format(
+            logger::Log(std::format(
                 "Assigning foliage failed. Possible types: {}",
-                nodeData.GetRemaining().size()) << std::endl;
+                nodeData.GetRemaining().size()));
             return false;
         }
     }
 
     // Update neighbour possible types with neighbour bonus values.
-    auto& neighbourBonusList = m_biomeFoliageInfo.neighbourBonusList;
-    size_t bonusTypeCount = neighbourBonusList.size_b(currentFoliageType);
+    auto& neighbourBonusList = m_neighbourBonusList;
+    size_t bonusTypeCount = neighbourBonusList.SizeB(currentFoliageType);
     if(bonusTypeCount != 0) {
         auto neighbours = relations::GetNeighbours(
             currentNodePos, sectionState.foliageDataMap.dim_a());
@@ -657,7 +679,7 @@ bool MapProcessor::AssignFoliage(
             auto neighbourData = sectionState.foliageDataMap[neighbourPos.x][neighbourPos.y];
             for(int i = 0; i < bonusTypeCount; i++) {
 
-                auto bonus = neighbourBonusList.at(currentFoliageType, i);
+                auto bonus = neighbourBonusList.At(currentFoliageType, i);
                 if(bonus.second <= 0) {
                     continue;
                 }
@@ -762,14 +784,17 @@ bool MapProcessor::UpdatePossibleTypesRecursively(
     Matrix<FoliageType>& foliageMap = sectionState.foliageMap;
     Matrix<FoliageData>& foliageDataMap = sectionState.foliageDataMap;
 
-    auto res = m_biomeFoliageInfo.GetRelationsFromNodes(lastNodePos, currentNodePos);
+    auto res = std::visit([&lastNodePos, &currentNodePos](auto& biomeInfo) -> std::pair<std::reference_wrapper<DefinitionsArray>, Direction> {
+        return biomeInfo.GetRelationsFromNodes(lastNodePos, currentNodePos);
+        }, m_biomeFoliageInfo);
+
     auto lastNodeDirectionalRelations = res.first;
     Direction direction = res.second;
 
     // We find the types in the remove dict that any
     // remaining possible types all have in common.
     // These are no longer viable as possible neighbours.
-    if(!lastNodeDirectionalRelations) {
+    if(direction == Direction::DirectionNone) {
         logger::Log("Directional WFC array does not exist, or could not be found.");
     }
 
@@ -780,7 +805,7 @@ bool MapProcessor::UpdatePossibleTypesRecursively(
         if(lastNodePossibleTypes[foliageIndex] <= 0) {
             continue;
         }
-        FoliageRelation relationFoliageTypes = (*lastNodeDirectionalRelations)[foliageIndex];
+        FoliageRelation relationFoliageTypes = lastNodeDirectionalRelations.get()[foliageIndex];
         if(relationFoliageTypes.size() == 0) {
             continue;
         }
@@ -816,7 +841,7 @@ bool MapProcessor::UpdatePossibleTypesRecursively(
         return true;
     }
 
-    nodeData.set_remaining(remainingPossibleTypes);
+    nodeData.SetRemaining(remainingPossibleTypes);
 
     if(remainingCount == 0) {
         if(m_verboseLogging) {
@@ -824,7 +849,7 @@ bool MapProcessor::UpdatePossibleTypesRecursively(
             for(int value : lastNodePossibleTypes) {
                 lastNodePossibleTypesStrings.push_back(
                     std::to_string(value));}
-            std::string lastNodePossibleTypesString = DiskManager::join(
+            std::string lastNodePossibleTypesString = DiskManager::Join(
                 lastNodePossibleTypesStrings, ", ");
             logger::Log(std::format(
                 "Node no longer has any remaining possible types. {0}\n"
@@ -839,8 +864,8 @@ bool MapProcessor::UpdatePossibleTypesRecursively(
 
             logger::LogGrid(
                 foliageDataMap,
-                m_biomeFoliageInfo.GetWalkableFoliagePriority());
-            logger::log_grid(foliageMap);
+                m_walkableFoliagePriority);
+            logger::LogGrid(foliageMap);
 
             auto neighbours = relations::GetNeighbours(
                 currentNodePos, MapDefinitions::SUBSECTION_FULL_SIZE);
@@ -859,7 +884,7 @@ bool MapProcessor::UpdatePossibleTypesRecursively(
                     nf[0],nf[1],nf[2],nf[3],nf[4],nf[5],nf[6],nf[7]);
             }
             else {
-                std::string neighboursString = DiskManager::join(neighbourFoliageStrings, ", ");
+                std::string neighboursString = DiskManager::Join(neighbourFoliageStrings, ", ");
             }
             logger::Log("No more possible types available. Last node: "+neighboursString);
         }

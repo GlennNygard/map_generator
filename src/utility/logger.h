@@ -21,7 +21,7 @@ namespace logger {
         std::cout << message << std::endl;
     }
 
-    static void log_error(std::string message) {
+    static void LogError(std::string message) {
         if(!RUN_PRINTS) {
             return;
         }
@@ -87,11 +87,11 @@ namespace logger {
                 }
             }
         }
-        std::cout << fullStringPossible << std::endl;
+        logger::Log(fullStringPossible);
     }
 
     template<typename Index>
-    static void log_grid(
+    static void LogGrid(
             const Matrix<Index>& grid) {
         if(!RUN_PRINTS) {
             return;
@@ -116,6 +116,6 @@ namespace logger {
             }
         }
         // Print the row to the Unity console.
-        std::cout << fullStringTypes << std::endl;
+        logger::Log(fullStringTypes);
     }
 }
